@@ -175,5 +175,10 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
        
     }
 
-#endregion
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ReadOnlySpan<byte> data)
+    {
+        
+    }
+
+    #endregion
 }

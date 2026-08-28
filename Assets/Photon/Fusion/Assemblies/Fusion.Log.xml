@@ -4,6 +4,280 @@
         <name>Fusion.Log</name>
     </assembly>
     <members>
+        <member name="T:Fusion.Assert">
+            <summary>
+            Provides methods for asserting conditions. Throws an AssertException when a condition is not met. Methods are only invoked in DEBUG builds unless otherwise specified.
+            </summary>
+        </member>
+        <member name="M:Fusion.Assert.Check``1(System.ReadOnlySpan{``0},System.String)">
+            <summary/>
+        </member>
+        <member name="M:Fusion.Assert.Fail">
+            <summary>
+            Always throws an AssertException.
+            </summary>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Fail(System.String)">
+            <summary>
+            Always throws an AssertException with a message.
+            </summary>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Fail(System.String,System.Object[])">
+            <summary>
+            Always throws an AssertException with a message.
+            </summary>
+            <param name="format">An error message format</param>
+            <param name="args"></param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check(System.Object,System.String)">
+            <summary>
+            Throws an AssertException if the <paramref name="condition"/> is <c>null</c>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check(System.Void*,System.String)">
+            <summary>
+            Throws an AssertException if the <paramref name="condition"/> is <c>null</c>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check(System.Boolean,System.String)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``1(System.Boolean,System.String,``0)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``2(System.Boolean,System.String,``0,``1)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``3(System.Boolean,System.String,``0,``1,``2)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``4(System.Boolean,System.String,``0,``1,``2,``3)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``1(System.Boolean,``0)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
+            </summary>
+            <typeparam name="T0"></typeparam>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``2(System.Boolean,``0,``1)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``3(System.Boolean,``0,``1,``2)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``4(System.Boolean,``0,``1,``2,``3)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Check``5(System.Boolean,``0,``1,``2,``3,``4)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.AlwaysFail">
+            <summary>
+            Throws an AssertException, even in non-DEBUG builds.
+            </summary>
+        </member>
+        <member name="M:Fusion.Assert.AlwaysFail(System.String)">
+            <summary>
+            Throws an AssertException with a message, even in non-DEBUG builds.
+            </summary>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.AlwaysFail(System.Object)">
+            <summary>
+            Throws an AssertException with a message, even in non-DEBUG builds.
+            </summary>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.AlwaysFail``1(``0)">
+            <summary>
+            Throws an AssertException with a message, even in non-DEBUG builds.
+            </summary>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always(System.Boolean,System.String)">
+            <summary>
+            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="error">An error message</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``1(System.Boolean,System.String,``0)">
+            <summary>
+            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``2(System.Boolean,System.String,``0,``1)">
+            <summary>
+            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``3(System.Boolean,System.String,``0,``1,``2)">
+            <summary>
+            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``4(System.Boolean,System.String,``0,``1,``2,``3)">
+            <summary>
+            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format">An error message format</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``1(System.Boolean,``0)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``2(System.Boolean,``0,``1)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``3(System.Boolean,``0,``1,``2)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Always``4(System.Boolean,``0,``1,``2,``3)">
+            <summary>
+            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
+            </summary>
+            <param name="condition">Value to check</param>
+            <exception cref="T:Fusion.AssertException"></exception>
+        </member>
+        <member name="M:Fusion.Assert.Log(System.Boolean,System.String)">
+            <summary>
+            Logs an assertion if the <paramref name="condition"/> is <see langword="false"/>. For Unity builds, log goes straight to UnityEngine.Debug. Otherwise, log goes to LogError stream.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Fusion.Assert.Log``1(System.Boolean,System.String,``0)">
+            <summary>
+            Logs an assertion if the <paramref name="condition"/> is <see langword="false"/>. For Unity builds, log goes straight to UnityEngine.Debug. Otherwise, log goes to LogError stream.
+            </summary>
+            <param name="condition">Value to check</param>
+        </member>
+        <member name="M:Fusion.Assert.Log``2(System.Boolean,System.String,``0,``1)">
+            <summary>
+            Logs an assertion if the <paramref name="condition"/> is <see langword="false"/>. For Unity builds, log goes straight to UnityEngine.Debug. Otherwise, log goes to LogError stream.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format"></param>
+        </member>
+        <member name="M:Fusion.Assert.Log``3(System.Boolean,System.String,``0,``1,``2)">
+            <summary>
+            Logs an assertion if the <paramref name="condition"/> is <see langword="false"/>. For Unity builds, log goes straight to UnityEngine.Debug. Otherwise, log goes to LogError stream.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format"></param>
+        </member>
+        <member name="M:Fusion.Assert.Log``4(System.Boolean,System.String,``0,``1,``2,``3)">
+            <summary>
+            Logs an assertion if the <paramref name="condition"/> is <see langword="false"/>. For Unity builds, log goes straight to UnityEngine.Debug. Otherwise, log goes to LogError stream.
+            </summary>
+            <param name="condition">Value to check</param>
+            <param name="format"></param>
+        </member>
+        <member name="T:Fusion.FilteringLogStream">
+            <summary>
+            A proxy log streams that allows for filtering messages. Note that filtering is applied after the message is formatted,
+            so it is really mostly suitable for Unit tests.
+            </summary>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.#ctor(System.String,Fusion.LogStream)">
+            <param name="filter">If a message contains this, it will not be logged</param>
+            <param name="actualLogStream">The actual log stream that will consume filtered messages</param>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.Log(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.Log(System.String,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.Log(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.Log(Fusion.ILogSource,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Fusion.FilteringLogStream.Log(Fusion.ILogSource,System.String,System.Exception)">
+            <inheritdoc/>
+        </member>
         <member name="T:Fusion.FusionEditorLog">
             <summary>
             A logger that writes logs to the Unity console with the purpose of being used in the Unity Editor.
@@ -57,11 +331,29 @@
             </summary>
             <param name="msg">A message</param>
         </member>
-        <member name="M:Fusion.FusionEditorLog.SetPrefixColor(UnityEngine.Color)">
+        <member name="M:Fusion.FusionEditorLog.TracePlugin(System.String)">
             <summary>
-            Sets the color of the prefix.
+            Logs a message to the Unity console if FUSION_EDITOR_TRACE is defined. Use in the Plugin context.
             </summary>
-            <param name="color"></param>
+            <param name="msg">A message</param>
+        </member>
+        <member name="M:Fusion.FusionEditorLog.WarnPlugin(System.String)">
+            <summary>
+            Logs a warning to the Unity console if UNITY_EDITOR is defined. Use in the Plugin context.
+            </summary>
+            <param name="msg">A message</param>
+        </member>
+        <member name="M:Fusion.FusionEditorLog.LogPlugin(System.String)">
+            <summary>
+            Logs a message to the Unity console if UNITY_EDITOR is defined. Use in the Plugin context.
+            </summary>
+            <param name="msg">A message</param>
+        </member>
+        <member name="M:Fusion.FusionEditorLog.ErrorPlugin(System.String)">
+            <summary>
+            Logs an errpr to the Unity console if UNITY_EDITOR is defined. Use in the Plugin context.
+            </summary>
+            <param name="msg">A message</param>
         </member>
         <member name="M:Fusion.FusionEditorLog.SetPrefixColor(UnityEngine.Color32)">
             <summary>
@@ -177,6 +469,21 @@
             </summary>
             <param name="ex">The exception to log</param>
         </member>
+        <member name="M:Fusion.FusionEditorLog.Exception(System.Exception,UnityEngine.Object)">
+            <summary>
+            Logs an exception to the Unity console if UNITY_EDITOR is defined.
+            </summary>
+            <param name="ex">The exception to log</param>
+            <param name="obj">The source of the message</param>
+        </member>
+        <member name="M:Fusion.FusionEditorLog.Exception(System.String,System.Exception,UnityEngine.Object)">
+            <summary>
+            Logs an exception to the Unity console if UNITY_EDITOR is defined.
+            </summary>
+            <param name="message">A message to log before the exception.</param>
+            <param name="ex">The exception to log</param>
+            <param name="obj">The source of the message</param>
+        </member>
         <member name="M:Fusion.FusionEditorLog.Trace(System.String)">
             <summary>
             Logs a message to the Unity console if FUSION_EDITOR_TRACE is defined.
@@ -203,7 +510,7 @@
         </member>
         <member name="M:Fusion.FusionEditorLog.TraceImport(System.String)">
             <summary>
-            Logs a message to the Unity console if FUSION_EDITOR_TRACE is defined. Use in the Import context.
+            Logs a message to the Unity console if FUSION_EDITOR_TRACE_IMPORT is defined. Use in the Import context.
             </summary>
             <param name="msg">A message</param>
         </member>
@@ -227,7 +534,7 @@
         </member>
         <member name="M:Fusion.FusionEditorLog.TraceInspector(System.String)">
             <summary>
-            Logs a message to the Unity console if FUSION_EDITOR_INSPECTOR_TRACE is defined. Use in the Inspector context.
+            Logs a message to the Unity console if FUSION_EDITOR_TRACE_INSPECTOR is defined. Use in the Inspector context.
             </summary>
             <param name="msg">A message</param>
         </member>
@@ -251,13 +558,13 @@
         </member>
         <member name="M:Fusion.FusionEditorLog.TraceTest(System.String)">
             <summary>
-            Logs a message to the Unity console if FUSION_EDITOR_TRACE is defined. Use in the Test context.
+            Logs a message to the Unity console if FUSION_EDITOR_TRACE_TEST is defined. Use in the Test context.
             </summary>
             <param name="msg">A message</param>
         </member>
         <member name="M:Fusion.FusionEditorLog.TraceMppm(System.String)">
             <summary>
-            Logs a message to the Unity console if FUSION_EDITOR_TRACE is defined. Use in the Mppm context.
+            Logs a message to the Unity console if FUSION_EDITOR_TRACE_MPPM is defined. Use in the Mppm context.
             </summary>
             <param name="msg">A message</param>
         </member>
@@ -276,230 +583,6 @@
             Creates a new instance of the exception with a message.
             </summary>
             <param name="msg">A message</param>
-        </member>
-        <member name="T:Fusion.Assert">
-            <summary>
-            Provides methods for asserting conditions. Throws an AssertException when a condition is not met. Methods are only invoked in DEBUG builds unless otherwise specified.
-            </summary>
-        </member>
-        <member name="M:Fusion.Assert.Fail">
-            <summary>
-            Always throws an AssertException.
-            </summary>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Fail(System.String)">
-            <summary>
-            Always throws an AssertException with a message.
-            </summary>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Fail(System.String,System.Object[])">
-            <summary>
-            Always throws an AssertException with a message.
-            </summary>
-            <param name="format">An error message format</param>
-            <param name="args"></param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check(System.Object)">
-            <summary>
-            Throws an AssertException if the <paramref name="condition"/> is <c>null</c>
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check(System.Void*)">
-            <summary>
-            Throws an AssertException if the <paramref name="condition"/> is <c>null</c>
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check(System.Boolean)">
-            <summary>
-            Throws an AssertException if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check(System.Boolean,System.String)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``1(System.Boolean,System.String,``0)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``2(System.Boolean,System.String,``0,``1)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``3(System.Boolean,System.String,``0,``1,``2)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``4(System.Boolean,System.String,``0,``1,``2,``3)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``1(System.Boolean,``0)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
-            </summary>
-            <typeparam name="T0"></typeparam>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``2(System.Boolean,``0,``1)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``3(System.Boolean,``0,``1,``2)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``4(System.Boolean,``0,``1,``2,``3)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Check``5(System.Boolean,``0,``1,``2,``3,``4)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.AlwaysFail">
-            <summary>
-            Throws an AssertException, even in non-DEBUG builds.
-            </summary>
-        </member>
-        <member name="M:Fusion.Assert.AlwaysFail(System.String)">
-            <summary>
-            Throws an AssertException with a message, even in non-DEBUG builds.
-            </summary>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.AlwaysFail(System.Object)">
-            <summary>
-            Throws an AssertException with a message, even in non-DEBUG builds.
-            </summary>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.AlwaysFail``1(``0)">
-            <summary>
-            Throws an AssertException with a message, even in non-DEBUG builds.
-            </summary>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always(System.Boolean)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always(System.Boolean,System.String)">
-            <summary>
-            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="error">An error message</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``1(System.Boolean,System.String,``0)">
-            <summary>
-            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``2(System.Boolean,System.String,``0,``1)">
-            <summary>
-            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``3(System.Boolean,System.String,``0,``1,``2)">
-            <summary>
-            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``4(System.Boolean,System.String,``0,``1,``2,``3)">
-            <summary>
-            Throws an AssertException with a message if <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds.
-            </summary>
-            <param name="condition">Value to check</param>
-            <param name="format">An error message format</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``1(System.Boolean,``0)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``2(System.Boolean,``0,``1)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``3(System.Boolean,``0,``1,``2)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
-        </member>
-        <member name="M:Fusion.Assert.Always``4(System.Boolean,``0,``1,``2,``3)">
-            <summary>
-            Throws an AssertException with a message if the <paramref name="condition"/> is <see langword="false"/>, even in non-DEBUG builds. The message is composed from additional arguments.
-            </summary>
-            <param name="condition">Value to check</param>
-            <exception cref="T:Fusion.AssertException"></exception>
         </member>
         <member name="T:Fusion.ConsoleLogStream">
             <summary>
@@ -580,6 +663,16 @@
         <member name="M:Fusion.DebugLogStream.Warn(System.String)">
             <summary>Logs a warning message to the WarnStream.</summary>
         </member>
+        <member name="M:Fusion.DebugLogStream.If(System.Boolean)">
+            <summary>
+            Returns self if <paramref name="condition"/> is true.
+            </summary>
+        </member>
+        <member name="M:Fusion.DebugLogStream.Once(System.Boolean@)">
+            <summary>
+            Returns self if <paramref name="flag"/> is false and then sets it to true.
+            </summary>
+        </member>
         <member name="M:Fusion.DebugLogStream.Dispose">
             <summary>Disposes the DebugLogStream and its underlying streams.</summary>
         </member>
@@ -654,11 +747,32 @@
         <member name="F:Fusion.InternalLogStreams.LogTraceMemoryTrack">
             <summary>LogTraceMemoryTrack stream</summary>
         </member>
+        <member name="F:Fusion.InternalLogStreams.LogTraceAreaOfInterest">
+            <summary>LogTraceAreaOfInterest stream</summary>
+        </member>
         <member name="F:Fusion.InternalLogStreams.LogTraceSnapshots">
             <summary>LogTraceSnapshots stream</summary>
         </member>
         <member name="F:Fusion.InternalLogStreams.LogTraceTime">
             <summary>LogTraceTime stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTraceSendRecv">
+            <summary>LogTraceSendRecv stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTracePools">
+            <summary>LogTracePools stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTraceParent">
+            <summary>LogTraceParent stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTraceForecast">
+            <summary>LogTraceForecast stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTraceAutomatedRun">
+            <summary>LogTraceAutomatedRun stream</summary>
+        </member>
+        <member name="F:Fusion.InternalLogStreams.LogTracePluginVersion">
+            <summary>LogTracePluginVersion stream</summary>
         </member>
         <member name="T:Fusion.Log">
             <summary>
@@ -713,6 +827,11 @@
             Initializes the logger to log to the console.
             </summary>
             <param name="settings"></param>
+        </member>
+        <member name="M:Fusion.Log.InitializeForConsole(Fusion.LogLevel,Fusion.TraceChannels)">
+            <summary>
+            Initializes the logger to log to the console.
+            </summary>
         </member>
         <member name="M:Fusion.Log.Debug(System.String)">
             <summary>Logs a debug message. At least <c>FUSION_LOGLEVEL_DEBUG</c> needs to be defined and at least <see cref="F:Fusion.LogLevel.Debug"/> must have been used to initialize the logger.</summary>
@@ -872,6 +991,24 @@
         <member name="M:Fusion.Log.TraceSceneManagerError``1(``0,System.String)">
             <summary>Enabled by <c>FUSION_TRACE_SCENEMANAGER</c></summary>
         </member>
+        <member name="M:Fusion.Log.TraceRealtime(System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
+        <member name="M:Fusion.Log.TraceRealtimeWarn(System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
+        <member name="M:Fusion.Log.TraceRealtimeError(System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
+        <member name="M:Fusion.Log.TraceRealtime``1(``0,System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
+        <member name="M:Fusion.Log.TraceRealtimeWarn``1(``0,System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
+        <member name="M:Fusion.Log.TraceRealtimeError``1(``0,System.String)">
+            <summary>Enabled by <c>FUSION_TRACE_REALTIME</c></summary>
+        </member>
         <member name="T:Fusion.LogType">
             <summary>
             Log type.
@@ -947,6 +1084,16 @@
             No messages will be output.
             </summary>
         </member>
+        <member name="T:Fusion.LogLevelExtensions">
+            <summary>
+            Extensions for <see cref="T:Fusion.LogLevel"/> 
+            </summary>
+        </member>
+        <member name="M:Fusion.LogLevelExtensions.GetDefine(Fusion.LogLevel)">
+            <summary>
+            Returns a define used for a given log level.
+            </summary>
+        </member>
         <member name="T:Fusion.LogSettings">
             <summary>
             Settings for the logging system.
@@ -1013,13 +1160,77 @@
             </summary>
             <param name="error">The exception to log.</param>
         </member>
-        <member name="M:Fusion.LogStream.Dispose">
-            <inheritdoc/>
+        <member name="M:Fusion.LogStream.If(System.Boolean)">
+            <summary>
+            Returns self if <paramref name="condition"/> is true.
+            </summary>
         </member>
         <member name="M:Fusion.LogStream.Once(System.Boolean@)">
             <summary>
             Returns self if <paramref name="flag"/> is false and then sets it to true.
             </summary>
+        </member>
+        <member name="M:Fusion.LogStream.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Fusion.LogStream.LogTracker">
+            <summary>
+            Defines a Tracker Type for logs based on an incremental ID and amount of logs
+            </summary>
+        </member>
+        <member name="M:Fusion.LogStream.LogTracker.#ctor(System.UInt64,System.Boolean)">
+            <summary>
+            Defines a Tracker Type for logs based on an incremental ID and amount of logs
+            </summary>
+        </member>
+        <member name="M:Fusion.LogStream.LogTracker.Create(System.UInt64,System.Boolean)">
+            <summary>
+            Sets up a new <see cref="T:Fusion.LogStream.LogTracker"/>.
+            </summary>
+            <param name="threshold">The maximum number of logs allowed (or the frequency if repeating).</param>
+            <param name="repeat">If true, it logs every X times (10th, 20th, etc.). If false, it stops logging after the threshold is hit.</param>
+            <returns>A configured LogTracker instance.</returns>
+        </member>
+        <member name="M:Fusion.LogStream.LogTracker.ResetTracker(System.Int32)">
+            <summary>
+            Reset Log Tracker for a given ID
+            </summary>
+            <param name="dynamicUniqueId">Unique ID to reset Log Tracking</param>
+        </member>
+        <member name="M:Fusion.LogStream.LogTracker.ResetAllTrackers">
+            <summary>
+            Reset all tracked entries
+            </summary>
+        </member>
+        <member name="M:Fusion.LogStream.Limit(Fusion.LogStream.LogTracker,System.Int32,System.UInt64@,System.Boolean@)">
+            <summary>
+            Controls how often logs are written for a specific source to prevent spam.
+            It checks if the source (identified by ID) has reached its limit based on the rules in the LogTracker.
+            </summary>
+            <param name="tracker">The ruleset that decides how many logs are allowed.</param>
+            <param name="dynamicUniqueId">The ID of the item or area sending the log.</param>
+            <param name="logCount">The updated total number of times this source has tried to log.</param>
+            <param name="allowLogging">True if this specific log is allowed to be written; otherwise, false.</param>
+            <returns>Returns the current LogStream if logging is allowed, or null if it should be blocked.</returns>
+        </member>
+        <member name="M:Fusion.LogStream.Limit(Fusion.LogStream.LogTracker,System.Int32,System.UInt64@)">
+            <summary>
+            Controls how often logs are written for a specific source to prevent spam.
+            It checks if the source (identified by ID) has reached its limit based on the rules in the LogTracker.
+            </summary>
+            <param name="tracker">The ruleset that decides how many logs are allowed.</param>
+            <param name="dynamicUniqueId">The ID of the item or area sending the log.</param>
+            <param name="logCount">The updated total number of times this source has tried to log.</param>
+            <returns>Returns the current LogStream if logging is allowed, or null if it should be blocked.</returns>
+        </member>
+        <member name="M:Fusion.LogStream.Limit(Fusion.LogStream.LogTracker,System.Int32)">
+            <summary>
+            Controls how often logs are written for a specific source to prevent spam.
+            It checks if the source (identified by ID) has reached its limit based on the rules in the LogTracker.
+            </summary>
+            <param name="tracker">The ruleset that decides how many logs are allowed.</param>
+            <param name="dynamicUniqueId">The ID of the item or area sending the log.</param>
+            <returns>Returns the current LogStream if logging is allowed, or null if it should be blocked.</returns>
         </member>
         <member name="T:Fusion.FusionUnityLoggerBase">
             <summary>
@@ -1283,6 +1494,16 @@
         <member name="M:Fusion.TraceLogStream.Warn(System.String)">
             <summary>Logs a warning message to the WarnStream.</summary>
         </member>
+        <member name="M:Fusion.TraceLogStream.If(System.Boolean)">
+            <summary>
+            Returns self if <paramref name="condition"/> is true.
+            </summary>
+        </member>
+        <member name="M:Fusion.TraceLogStream.Once(System.Boolean@)">
+            <summary>
+            Returns self if <paramref name="flag"/> is false and then sets it to true.
+            </summary>
+        </member>
         <member name="M:Fusion.TraceLogStream.Dispose">
             <summary>Disposes the TraceLogStream and its underlying streams.</summary>
         </member>
@@ -1393,11 +1614,32 @@
         <member name="F:Fusion.TraceChannels.MemoryTrack">
             <summary>MemoryTrack</summary>
         </member>
+        <member name="F:Fusion.TraceChannels.AreaOfInterest">
+            <summary>AreaOfInterest</summary>
+        </member>
         <member name="F:Fusion.TraceChannels.Snapshots">
             <summary>Snapshots</summary>
         </member>
         <member name="F:Fusion.TraceChannels.Time">
             <summary>Time</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.SendRecv">
+            <summary>SendRecv</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.Pools">
+            <summary>Pools</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.Parent">
+            <summary>Parent</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.Forecast">
+            <summary>Forecast</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.AutomatedRun">
+            <summary>AutomatedRun</summary>
+        </member>
+        <member name="F:Fusion.TraceChannels.PluginVersion">
+            <summary>PluginVersion</summary>
         </member>
         <member name="T:Fusion.LogUtils">
             <summary>
@@ -1410,6 +1652,14 @@
             </summary>
             <typeparam name="T">The type of the unmanaged object.</typeparam>
             <param name="ptr">Pointer to the unmanaged object.</param>
+            <returns>A deferred dump of the pointer.</returns>
+        </member>
+        <member name="M:Fusion.LogUtils.GetDump``1(``0@)">
+            <summary>
+            Gets a deferred dump of a pointer to an unmanaged object.
+            </summary>
+            <typeparam name="T">The type of the unmanaged object.</typeparam>
+            <param name="obj">Pointer to the unmanaged object.</param>
             <returns>A deferred dump of the pointer.</returns>
         </member>
         <member name="M:Fusion.LogUtils.GetDump``1(``0)">
