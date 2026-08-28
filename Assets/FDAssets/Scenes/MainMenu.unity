@@ -10004,7 +10004,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2146588476}
   - component: {fileID: 2146588475}
-  - component: {fileID: 2146588477}
   m_Layer: 0
   m_Name: FusionManager
   m_TagString: Untagged
@@ -10025,7 +10024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crazyManager: {fileID: 1292277125}
-  networkRunnerPrefab: {fileID: 3912109610250543481, guid: 99d4d203daaf2704eb97937115bb9a0f, type: 3}
+  networkRunnerPrefab: {fileID: 3912109610250543481, guid: e9584fff0fe661948a230254bc61f4b8, type: 3}
   mainMenuCanvas: {fileID: 812026325}
   mainMenuCanvasGroup: {fileID: 812026327}
   currentRegion: 
@@ -10046,50 +10045,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2146588477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146588474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NotificationBehavior: 0
-  m_MaxPlayerCount: 1
-  m_AllowJoining: 1
-  m_JoinBehavior: 0
-  m_PlayerJoinedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_PlayerLeftEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_JoinAction:
-    m_UseReference: 0
-    m_Action:
-      m_Name: 
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 73fe7788-41e2-489d-94ce-a607e20a99d2
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 0}
-  m_PlayerPrefab: {fileID: 4600986260170542336, guid: 2b6bc57d7b566a04d87e740388c70a70, type: 3}
-  m_SplitScreen: 0
-  m_MaintainAspectRatioInSplitScreen: 0
-  m_FixedNumberOfSplitScreens: -1
-  m_SplitScreenRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
