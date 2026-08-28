@@ -56,10 +56,12 @@ namespace NonameGame
             _rb.linearVelocity = velocity;
 
             // ===== Поворот модели =====
-            if (moveDir.sqrMagnitude > 0.01f)
+            // ===== Поворот модели =====
+            if (moveDir.sqrMagnitude > 0.05f)
             {
-                Quaternion targetRot = Quaternion.LookRotation(moveDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Runner.DeltaTime * rotationSpeed);
+                Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
+                // Крутим через Rigidbody, а не через transform напрямую
+                _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, targetRot, Runner.DeltaTime * rotationSpeed));
             }
 
             // ===== Прыжок =====
