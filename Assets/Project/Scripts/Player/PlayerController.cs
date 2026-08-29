@@ -123,6 +123,9 @@ namespace NonameGame
             SetFriction(frictionAgainstFloor, true);
             currentLockOnSlope = lockOnSlope;
 
+            if (!HasStateAuthority)
+                return;
+
             var camera = FindAnyObjectByType<CameraManager>();
             if (camera != null)
                 camera.InitForPlayer(cameraTarget);
@@ -130,6 +133,9 @@ namespace NonameGame
 
         public override void FixedUpdateNetwork()
         {
+            if (!HasStateAuthority)
+                return;
+                
             if (GetInput(out NetworkInputData data))
             {
                 if (isGrounded)
