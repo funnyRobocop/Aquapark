@@ -60,6 +60,7 @@ namespace NonameGame
 
             if (Camera.main != null)
             {
+                Debug.Log(Camera.main.transform.eulerAngles.y);
                 data.CameraRotationY = Camera.main.transform.eulerAngles.y;
             }
 
