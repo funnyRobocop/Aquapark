@@ -13,7 +13,8 @@ namespace NonameGame
         [Header("Ground Check")]
         [SerializeField] private float groundCheckRadius = 0.25f;
         [SerializeField] private LayerMask groundMask = ~0;
-        [SerializeField] private Transform groundCheck; // пустой объект у ног
+        [SerializeField] private Transform groundCheck;
+        [SerializeField] private Transform cameraTarget;
 
         private Rigidbody _rb;
         private NetworkTransform _nt;
@@ -26,6 +27,9 @@ namespace NonameGame
             // На всякий случай
             _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             _rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+            var cameraManager = FindAnyObjectByType<CameraManager>();
+            cameraManager.InitForPlayer(cameraTarget);
         }
 
         public override void FixedUpdateNetwork()
@@ -55,7 +59,6 @@ namespace NonameGame
 
             _rb.linearVelocity = velocity;
 
-            // ===== Поворот модели =====
             // ===== Поворот модели =====
             if (moveDir.sqrMagnitude > 0.05f)
             {
