@@ -10,9 +10,6 @@ using UnityEngine.InputSystem;
 public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
 {
 
-    private bool _wasSpacePressedLastFrame = false;
-    private bool _wasDashPressedLastFrame = false;
-
     [Tooltip("The Spawned on the Network when a player joins the room.")]
     public NetworkObject playerPrefab;
 
