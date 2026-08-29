@@ -9,6 +9,10 @@ using UnityEngine.InputSystem;
 [Tooltip("Implements INetworkRunnerCallbacks so various events such as playings joining and leaving will trigger different actions.")]
 public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
 {
+
+    private bool _wasSpacePressedLastFrame = false;
+    private bool _wasDashPressedLastFrame = false;
+
     [Tooltip("The Spawned on the Network when a player joins the room.")]
     public NetworkObject playerPrefab;
 
@@ -83,49 +87,7 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        var data = new NetworkInputData();
-
-        // ===== Движение =====
-        Vector2 move = Vector2.zero;
-
-        // Вариант на New Input System:
-        var keyboard = Keyboard.current;
-        if (keyboard != null)
-        {
-            if (keyboard.wKey.isPressed) move.y += 1f;
-            if (keyboard.sKey.isPressed) move.y -= 1f;
-            if (keyboard.aKey.isPressed) move.x -= 1f;
-            if (keyboard.dKey.isPressed) move.x += 1f;
-        }
-
-        // Вариант на старом Input (раскомментируй, если нужно):
-        // move.x = Input.GetAxisRaw("Horizontal");
-        // move.y = Input.GetAxisRaw("Vertical");
-
-        data.Move = move.normalized;
-
-        // ===== Камера (мышь) =====
-        var mouse = Mouse.current;
-        if (mouse != null)
-        {
-            data.Look = mouse.delta.ReadValue() * 0.1f; // чувствительность потом настроишь
-        }
-        // Старый Input:
-        // data.Look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-
-        // ===== Кнопки =====
-        NetworkButtons buttons = default;
-
-        if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
-            buttons.Set(NetworkInputData.BUTTON_JUMP, true);
-
-        // На будущее — толчок
-        if (mouse != null && mouse.leftButton.wasPressedThisFrame)
-            buttons.Set(NetworkInputData.BUTTON_PUSH, true);
-
-        data.Buttons = buttons;
-
-        input.Set(data);
+        
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
