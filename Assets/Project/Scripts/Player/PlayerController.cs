@@ -7,8 +7,8 @@ namespace NonameGame
     {
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 10f;
+        [SerializeField] private float airControl = 0.6f;
         [SerializeField] private float rotationSpeed = 720f; // градусов в секунду
-        [SerializeField] private float jumpForce = 9f;
         [SerializeField] private float movementThreshold = 0.01f;
         [SerializeField] private float acceleration = 0.12f; // для SmoothDamp
         [SerializeField] private float deceleration = 0.08f;
@@ -25,8 +25,10 @@ namespace NonameGame
         [SerializeField] private float slopeLimit = 55f;
         [SerializeField] private float slopeCheckDistance = 1.2f;
 
-        [Header("Extra Gravity")]
-        [SerializeField] private float fallMultiplier = 1.7f;
+        [Header("Gravity")]
+        [SerializeField] private float gravityMultiplier = 2.0f;   // общая сила тяжести
+        [SerializeField] private float fallMultiplier = 2.5f;      // ещё сильнее при падении
+        [SerializeField] private float jumpForce = 8f;
 
         [Header("References")]
         [SerializeField] private Transform cameraTarget; // визуал / точка для камеры
@@ -109,24 +111,31 @@ namespace NonameGame
 
         private void Move(NetworkInputData data)
         {
-            Vector3 targetVel;
+            Vector3 targetVel = Vector3.zero;
 
             if (_moveDir.sqrMagnitude > 0.001f)
             {
-                targetVel = _moveDir * moveSpeed;
+                float speed = moveSpeed;
 
-                // Проекция на склон, чтобы не влипать
-                if (!_isGrounded || Vector3.Angle(Vector3.up, _groundNormal) > 1f)
+                // В воздухе слабее контролируем
+                if (!_isGrounded)
+                    speed *= airControl;
+
+                targetVel = _moveDir * speed;
+
+                // Проекция только на земле и на пологих склонах
+                if (_isGrounded)
                 {
-                    targetVel = Vector3.ProjectOnPlane(targetVel, _groundNormal).normalized * moveSpeed;
+                    float slopeAngle = Vector3.Angle(Vector3.up, _groundNormal);
+                    if (slopeAngle > 5f && slopeAngle <= slopeLimit)
+                    {
+                        Vector3 projected = Vector3.ProjectOnPlane(targetVel, _groundNormal);
+                        if (projected.sqrMagnitude > 0.01f)
+                            targetVel = projected.normalized * speed;
+                    }
                 }
             }
-            else
-            {
-                targetVel = Vector3.zero;
-            }
 
-            // Сохраняем текущую вертикальную скорость
             targetVel.y = _rb.linearVelocity.y;
 
             float smoothTime = _moveDir.sqrMagnitude > 0.001f ? acceleration : deceleration;
@@ -135,18 +144,21 @@ namespace NonameGame
 
         private void Rotate()
         {
-            if (_moveDir.sqrMagnitude < 0.001f)
+            if (_moveDir.sqrMagnitude < 0.1f)
+                return;
+
+            // Почти нет горизонтальной скорости — тоже не крутим (мы на препятствии)
+            Vector3 horizontalVel = _rb.linearVelocity;
+            horizontalVel.y = 0f;
+            if (horizontalVel.sqrMagnitude < 0.5f)
                 return;
 
             Quaternion targetRot = Quaternion.Euler(0f, _targetAngle, 0f);
+
             _rb.MoveRotation(Quaternion.RotateTowards(
                 _rb.rotation,
                 targetRot,
                 rotationSpeed * Runner.DeltaTime));
-
-            // Визуал (если отдельный)
-            if (cameraTarget != null)
-                cameraTarget.rotation = Quaternion.Euler(0f, _targetAngle, 0f);
         }
 
         private void TryJumpAndDash(NetworkInputData data)
@@ -198,10 +210,8 @@ namespace NonameGame
 
         private void ApplyExtraGravity()
         {
-            if (_rb.linearVelocity.y < 0f && !_isGrounded)
-            {
-                _rb.AddForce(Physics.gravity * (fallMultiplier - 1f), ForceMode.Acceleration);
-            }
+            float multiplier = _rb.linearVelocity.y < 0f ? fallMultiplier : gravityMultiplier;
+            _rb.AddForce(Physics.gravity * (multiplier - 1f), ForceMode.Acceleration);
         }
 
         private void OnDrawGizmosSelecЪted()

@@ -992,7 +992,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 8
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -1073,57 +1073,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87bab0acc94ca4f4a96a227a9d02e410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 8
+  airControl: 0.65
+  rotationSpeed: 540
+  movementThreshold: 0.15
+  acceleration: 0.08
+  deceleration: 0.06
+  dashForce: 8
+  dashDuration: 0.22
+  dashUpBoost: 0.2
+  groundCheck: {fileID: 2458623582212189551}
+  groundCheckRadius: 0.28
   groundMask:
     serializedVersion: 2
     m_Bits: 1
-  groundCheck: {fileID: 2458623582212189551}
-  groundCheckRadius: 0.25
-  movementSpeed: 6
-  movementThrashold: 0.01
-  dampSpeedUp: 0
-  dampSpeedDown: 0
-  jumpVelocity: 18
-  fallMultiplier: 1
-  frictionAgainstFloor: 0.2
-  dashForce: 15
-  dashStunDuration: 0.25
-  slopeCheckerThrashold: 0.51
-  stepCheckerThrashold: 0.6
-  maxClimbableSlopeAngle: 53.6
-  maxStepHeight: 0.74
-  speedMultiplierOnAngle:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  canSlideMultiplierCurve: 0.061
-  cantSlideMultiplierCurve: 0.039
-  climbingStairsMultiplierCurve: 0.637
-  gravityMultiplier: 6
-  gravityMultiplyerOnSlideChange: 3
-  gravityMultiplierIfUnclimbableSlope: 30
-  lockOnSlope: 1
+  slopeLimit: 55
+  slopeCheckDistance: 1.2
+  gravityMultiplier: 2.5
+  fallMultiplier: 3.6
+  jumpForce: 6
   cameraTarget: {fileID: 8687073919806671688}
-  characterModelRotationSmooth: 0.1
 --- !u!1001 &2605593642008152727
 PrefabInstance:
   m_ObjectHideFlags: 0
