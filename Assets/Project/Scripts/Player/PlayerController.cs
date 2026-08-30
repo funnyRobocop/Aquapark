@@ -5,381 +5,210 @@ namespace NonameGame
 {
     public class PlayerController : NetworkBehaviour
     {
-        [Header("Movement specifics")]
-        [Tooltip("Layers where the player can stand on")]
-        [SerializeField] private LayerMask groundMask;
-        [SerializeField] private Transform groundCheck;
-        [SerializeField] private float groundCheckRadius = 0.25f;
-        [Tooltip("Base player speed")]
-        public float movementSpeed = 14f;
-        [Range(0.01f, 0.99f)]
-        [Tooltip("Minimum input value to trigger movement")]
-        public float movementThrashold = 0.01f;
-        [Space(10)]
+        [Header("Movement")]
+        [SerializeField] private float moveSpeed = 10f;
+        [SerializeField] private float rotationSpeed = 720f; // градусов в секунду
+        [SerializeField] private float jumpForce = 9f;
+        [SerializeField] private float movementThreshold = 0.01f;
+        [SerializeField] private float acceleration = 0.12f; // для SmoothDamp
+        [SerializeField] private float deceleration = 0.08f;
 
-        [Tooltip("Speed up multiplier")]
-        public float dampSpeedUp = 0.2f;
-        [Tooltip("Speed down multiplier")]
-        public float dampSpeedDown = 0.1f;
-
-
-        [Header("Jump and gravity specifics")]
-        [Tooltip("Jump velocity")]
-        public float jumpVelocity = 20f;
-        [Tooltip("Multiplier applied to gravity when the player is falling")]
-        public float fallMultiplier = 1.7f;
-        [Range(0f, 1f)]
-        [Tooltip("Player friction against floor")]
-        public float frictionAgainstFloor = 0.3f;
+        [Header("Dash")]
         [SerializeField] private float dashForce = 15f;
-        [SerializeField] private float dashStunDuration = 0.25f;
-        [Space(10)]
+        [SerializeField] private float dashDuration = 0.22f;
+        [SerializeField] private float dashUpBoost = 0.2f;
 
-        [Header("Slope and step specifics")]
-        [Tooltip("Distance from the player feet used to check if the player is touching a slope")]
-        public float slopeCheckerThrashold = 0.51f;
-        [Tooltip("Distance from the player center used to check if the player is touching a step")]
-        public float stepCheckerThrashold = 0.6f;
-        [Space(10)]
+        [Header("Ground & Slope")]
+        [SerializeField] private Transform groundCheck;
+        [SerializeField] private float groundCheckRadius = 0.28f;
+        [SerializeField] private LayerMask groundMask = ~0;
+        [SerializeField] private float slopeLimit = 55f;
+        [SerializeField] private float slopeCheckDistance = 1.2f;
 
-        [Range(1f, 89f)]
-        [Tooltip("Max climbable slope angle")]
-        public float maxClimbableSlopeAngle = 53.6f;
-        [Tooltip("Max climbable step height")]
-        public float maxStepHeight = 0.74f;
-        [Space(10)]
+        [Header("Extra Gravity")]
+        [SerializeField] private float fallMultiplier = 1.7f;
 
-        [Tooltip("Speed multiplier based on slope angle")]
-        public AnimationCurve speedMultiplierOnAngle = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        [Range(0.01f, 1f)]
-        [Tooltip("Multipler factor on climbable slope")]
-        public float canSlideMultiplierCurve = 0.061f;
-        [Range(0.01f, 1f)]
-        [Tooltip("Multipler factor on non climbable slope")]
-        public float cantSlideMultiplierCurve = 0.039f;
-        [Range(0.01f, 1f)]
-        [Tooltip("Multipler factor on step")]
-        public float climbingStairsMultiplierCurve = 0.637f;
-        [Space(10)]
+        [Header("References")]
+        [SerializeField] private Transform cameraTarget; // визуал / точка для камеры
 
-        [Tooltip("Multipler factor for gravity")]
-        public float gravityMultiplier = 6f;
-        [Tooltip("Multipler factor for gravity used on change of normal")]
-        public float gravityMultiplyerOnSlideChange = 3f;
-        [Tooltip("Multipler factor for gravity used on non climbable slope")]
-        public float gravityMultiplierIfUnclimbableSlope = 30f;
-        [Space(10)]
-
-        public bool lockOnSlope = false;
-
-        [Tooltip("Character model")]
-        public Transform cameraTarget;
-        [Tooltip("Character rotation speed when the forward direction is changed")]
-        public float characterModelRotationSmooth = 0.1f;
-        [Space(10)]
-
-        private Vector3 forward;
-        private Vector3 globalForward;
-        private Vector3 reactionForward;
-        private Vector3 down;
-        private Vector3 globalDown;
-        private Vector3 reactionGlobalDown;
-        private float currentSurfaceAngle;
-        private bool currentLockOnSlope;
-        private Vector3 groundNormal;
-        private Vector3 prevGroundNormal;
-        private float coyoteJumpMultiplier = 1f;
-        private bool isGrounded = false;
-        private bool isTouchingSlope = false;
-        private bool isTouchingStep = false;
-        private bool isJumping = false;
-        private float targetAngle;
-        private Rigidbody rigidbody;
-        private CapsuleCollider collider;
-        private float originalColliderHeight;
-        private Vector3 currVelocity;
-        private float turnSmoothVelocity;
-        private Vector3 _networkCameraDirection;
-        private bool netDashAnimationFlag;
-
+        private Rigidbody _rb;
+        private CapsuleCollider _col;
+        private Vector3 _smoothVel;
+        private Vector3 _moveDir;
+        private float _targetAngle;
+        private bool _isGrounded;
+        private Vector3 _groundNormal = Vector3.up;
 
         [Networked] private NetworkBool _hasDashedInAir { get; set; }
         [Networked] private TickTimer _dashTimer { get; set; }
-        [Networked] private Vector3 _dashStoredDirection { get; set; }
-        [Networked] public TickTimer stunTimer { get; set; }
 
-
-        public bool GetGrounded() { return isGrounded; }
-        public bool GetTouchingSlope() { return isTouchingSlope; }
-        public bool GetTouchingStep() { return isTouchingStep; }
-        public bool GetJumping() { return isJumping; }
+        public bool IsGrounded => _isGrounded;
 
         public override void Spawned()
         {
-            rigidbody = this.GetComponent<Rigidbody>();
-            collider = this.GetComponent<CapsuleCollider>();
-            originalColliderHeight = collider.height;
+            _rb = GetComponent<Rigidbody>();
+            _col = GetComponent<CapsuleCollider>();
 
-            SetFriction(frictionAgainstFloor, true);
-            currentLockOnSlope = lockOnSlope;
+            _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            _rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-            if (!HasStateAuthority)
-                return;
-
-            var camera = FindAnyObjectByType<CameraManager>();
-            if (camera != null)
-                camera.InitForPlayer(cameraTarget);
+            if (HasStateAuthority && cameraTarget != null)
+            {
+                var cam = FindAnyObjectByType<CameraManager>();
+                if (cam != null)
+                    cam.InitForPlayer(cameraTarget);
+            }
         }
 
         public override void FixedUpdateNetwork()
         {
             if (!HasStateAuthority)
                 return;
-                
-            if (GetInput(out NetworkInputData data))
+
+            if (!GetInput(out NetworkInputData data))
+                return;
+
+            CheckGround();
+
+            if (_isGrounded)
+                _hasDashedInAir = false;
+
+            // Направление от камеры
+            if (data.Move.magnitude > movementThreshold)
             {
-                if (isGrounded)
-                {
-                    _hasDashedInAir = false;
-                }
+                Quaternion camRot = Quaternion.Euler(0f, data.CameraRotationY, 0f);
+                Vector3 camForward = camRot * Vector3.forward;
+                Vector3 camRight = camRot * Vector3.right;
+                camForward.y = 0f;
+                camRight.y = 0f;
 
-                if (data.Move.magnitude > movementThrashold)
-                {
-                    Quaternion cameraYRotation = Quaternion.Euler(0f, data.CameraRotationY, 0f);
-                    Vector3 camForward = cameraYRotation * Vector3.forward;
-                    Vector3 camRight = cameraYRotation * Vector3.right;
-
-                    _networkCameraDirection = (camForward * data.Move.y + camRight * data.Move.x).normalized;
-                    targetAngle = Mathf.Atan2(data.Move.x, data.Move.y) * Mathf.Rad2Deg + data.CameraRotationY;
-                }
-                else
-                {
-                    _networkCameraDirection = Vector3.zero;
-                }
-
-                CheckGrounded();
-                CheckStep();
-                CheckSlopeAndDirections();
-
-                if (!stunTimer.ExpiredOrNotRunning(Runner))
-                {
-                    netDashAnimationFlag = true;
-                }
-                else if (!_dashTimer.ExpiredOrNotRunning(Runner))
-                {
-                    Vector3 currentVel = rigidbody.linearVelocity;
-                    rigidbody.linearVelocity = new Vector3(_dashStoredDirection.x * dashForce, currentVel.y, _dashStoredDirection.z * dashForce);
-                }
-                else
-                {
-                    if (data.Move.magnitude > movementThrashold)
-                    {
-                        Vector3 targetVelocity = _networkCameraDirection * movementSpeed;
-                        targetVelocity.y = rigidbody.linearVelocity.y;
-                        rigidbody.linearVelocity = Vector3.SmoothDamp(rigidbody.linearVelocity, targetVelocity, ref currVelocity, dampSpeedUp);
-                    }
-                    else
-                    {
-                        Vector3 targetVelocity = Vector3.zero;
-                        targetVelocity.y = rigidbody.linearVelocity.y;
-                        rigidbody.linearVelocity = Vector3.SmoothDamp(rigidbody.linearVelocity, targetVelocity, ref currVelocity, dampSpeedDown);
-                    }
-
-                    float angle = Mathf.SmoothDampAngle(cameraTarget.eulerAngles.y, targetAngle, ref turnSmoothVelocity, characterModelRotationSmooth);
-                    transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-                    cameraTarget.rotation = Quaternion.Euler(0f, angle, 0f);
-
-                    if (data.SpacePressed && isGrounded && ((isTouchingSlope && currentSurfaceAngle <= maxClimbableSlopeAngle) || !isTouchingSlope))
-                    {
-                        rigidbody.linearVelocity += Vector3.up * jumpVelocity;
-                        isJumping = true;
-                    }
-
-                    if (rigidbody.linearVelocity.y < 0 && !isGrounded) coyoteJumpMultiplier = fallMultiplier;
-                    else
-                    {
-                        isJumping = false;
-                        coyoteJumpMultiplier = 1f;
-                    }
-
-                    if (data.SpacePressed && !isGrounded && !_hasDashedInAir)
-                    {
-                        _hasDashedInAir = true;
-                        _dashTimer = TickTimer.CreateFromSeconds(Runner, dashStunDuration);
-                        _dashStoredDirection = (_networkCameraDirection != Vector3.zero) ? _networkCameraDirection : cameraTarget.forward;
-                        rigidbody.linearVelocity = Vector3.zero;
-                        Vector3 impulseVector = _dashStoredDirection;
-                        impulseVector.y = 0.2f;
-                        rigidbody.AddForce(impulseVector.normalized * dashForce, ForceMode.Impulse);
-
-                        netDashAnimationFlag = true;
-                    }
-                }
-
-                ApplyGravity();
-            }
-        }
-
-        private void CheckGrounded()
-        {
-            isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
-        }
-
-        private void CheckStep()
-        {
-            bool tmpStep = false;
-            Vector3 bottomStepPos = transform.position - new Vector3(0f, originalColliderHeight / 2f, 0f) + new Vector3(0f, 0.05f, 0f);
-
-            RaycastHit stepLowerHit;
-            if (Physics.Raycast(bottomStepPos, globalForward, out stepLowerHit, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHit;
-                if (RoundValue(stepLowerHit.normal.y) == 0 &&
-                !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), globalForward, out stepUpperHit, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            RaycastHit stepLowerHit45;
-            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(45, transform.up) * globalForward, out stepLowerHit45, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHit45;
-                if (RoundValue(stepLowerHit45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(45, Vector3.up) * globalForward, out stepUpperHit45, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            RaycastHit stepLowerHitMinus45;
-            if (Physics.Raycast(bottomStepPos, Quaternion.AngleAxis(-45, transform.up) * globalForward, out stepLowerHitMinus45, stepCheckerThrashold, groundMask))
-            {
-                RaycastHit stepUpperHitMinus45;
-                if (RoundValue(stepLowerHitMinus45.normal.y) == 0 && !Physics.Raycast(bottomStepPos + new Vector3(0f, maxStepHeight, 0f), Quaternion.AngleAxis(-45, Vector3.up) * globalForward, out stepUpperHitMinus45, stepCheckerThrashold + 0.05f, groundMask))
-                {
-                    tmpStep = true;
-                }
-            }
-
-            isTouchingStep = tmpStep;
-        }
-
-        private void CheckSlopeAndDirections()
-        {
-            prevGroundNormal = groundNormal;
-
-            RaycastHit slopeHit;
-            if (Physics.SphereCast(transform.position, slopeCheckerThrashold, Vector3.down, out slopeHit, originalColliderHeight / 2f + 0.5f, groundMask))
-            {
-                groundNormal = slopeHit.normal;
-
-                if (slopeHit.normal.y == 1)
-                {
-                    forward = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                    globalForward = forward;
-                    reactionForward = forward;
-
-                    SetFriction(frictionAgainstFloor, true);
-                    currentLockOnSlope = lockOnSlope;
-
-                    currentSurfaceAngle = 0f;
-                    isTouchingSlope = false;
-                }
-                else
-                {
-                    Vector3 tmpGlobalForward = transform.forward.normalized;
-                    Vector3 tmpForward = new Vector3(tmpGlobalForward.x, Vector3.ProjectOnPlane(transform.forward.normalized, slopeHit.normal).normalized.y, tmpGlobalForward.z);
-                    Vector3 tmpReactionForward = new Vector3(tmpForward.x, tmpGlobalForward.y - tmpForward.y, tmpForward.z);
-
-                    if (currentSurfaceAngle <= maxClimbableSlopeAngle && !isTouchingStep)
-                    {
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * canSlideMultiplierCurve) + 1f);
-
-                        SetFriction(frictionAgainstFloor, true);
-                        currentLockOnSlope = lockOnSlope;
-                    }
-                    else if (isTouchingStep)
-                    {
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * climbingStairsMultiplierCurve) + 1f);
-
-                        SetFriction(frictionAgainstFloor, true);
-                        currentLockOnSlope = true;
-                    }
-                    else
-                    {
-                        forward = tmpForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-                        globalForward = tmpGlobalForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-                        reactionForward = tmpReactionForward * ((speedMultiplierOnAngle.Evaluate(currentSurfaceAngle / 90f) * cantSlideMultiplierCurve) + 1f);
-
-                        SetFriction(0f, true);
-                        currentLockOnSlope = lockOnSlope;
-                    }
-
-                    currentSurfaceAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                    isTouchingSlope = true;
-                }
-
-                down = Vector3.Project(Vector3.down, slopeHit.normal);
-                globalDown = Vector3.down.normalized;
-                reactionGlobalDown = Vector3.up.normalized;
+                _moveDir = (camForward * data.Move.y + camRight * data.Move.x).normalized;
+                _targetAngle = Mathf.Atan2(data.Move.x, data.Move.y) * Mathf.Rad2Deg + data.CameraRotationY;
             }
             else
             {
-                groundNormal = Vector3.zero;
-
-                forward = Vector3.ProjectOnPlane(transform.forward, slopeHit.normal).normalized;
-                globalForward = forward;
-                reactionForward = forward;
-
-                down = Vector3.down.normalized;
-                globalDown = Vector3.down.normalized;
-                reactionGlobalDown = Vector3.up.normalized;
-
-                SetFriction(frictionAgainstFloor, true);
-                currentLockOnSlope = lockOnSlope;
+                _moveDir = Vector3.zero;
             }
-        }
 
-        private void ApplyGravity()
-        {
-            Vector3 gravity = Vector3.zero;
-
-            if (currentLockOnSlope || isTouchingStep) gravity = down * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
-            else gravity = globalDown * gravityMultiplier * -Physics.gravity.y * coyoteJumpMultiplier;
-
-            if (groundNormal.y != 1 && groundNormal.y != 0 && isTouchingSlope && prevGroundNormal != groundNormal)
+            // Во время рывка — фиксируем горизонтальную скорость
+            if (!_dashTimer.ExpiredOrNotRunning(Runner))
             {
-                gravity *= gravityMultiplyerOnSlideChange;
+                Vector3 v = _rb.linearVelocity;
+                Vector3 dashDir = _moveDir != Vector3.zero ? _moveDir : transform.forward;
+                _rb.linearVelocity = new Vector3(dashDir.x * dashForce, v.y, dashDir.z * dashForce);
             }
-
-            if (groundNormal.y != 1 && groundNormal.y != 0 && (currentSurfaceAngle > maxClimbableSlopeAngle && !isTouchingStep))
+            else
             {
-                if (currentSurfaceAngle > 0f && currentSurfaceAngle <= 30f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope * -Physics.gravity.y;
-                else if (currentSurfaceAngle > 30f && currentSurfaceAngle <= 89f) gravity = globalDown * gravityMultiplierIfUnclimbableSlope / 2f * -Physics.gravity.y;
+                Move(data);
+                Rotate();
+                TryJumpAndDash(data);
             }
 
-            rigidbody.AddForce(gravity);
+            ApplyExtraGravity();
         }
 
-        private void SetFriction(float _frictionWall, bool _isMinimum)
+        private void Move(NetworkInputData data)
         {
-            if (collider == null || collider.material == null) return;
-            collider.material.dynamicFriction = 0.6f * _frictionWall;
-            collider.material.staticFriction = 0.6f * _frictionWall;
+            Vector3 targetVel;
 
-            if (_isMinimum) collider.material.frictionCombine = PhysicsMaterialCombine.Minimum;
-            else collider.material.frictionCombine = PhysicsMaterialCombine.Maximum;
+            if (_moveDir.sqrMagnitude > 0.001f)
+            {
+                targetVel = _moveDir * moveSpeed;
+
+                // Проекция на склон, чтобы не влипать
+                if (!_isGrounded || Vector3.Angle(Vector3.up, _groundNormal) > 1f)
+                {
+                    targetVel = Vector3.ProjectOnPlane(targetVel, _groundNormal).normalized * moveSpeed;
+                }
+            }
+            else
+            {
+                targetVel = Vector3.zero;
+            }
+
+            // Сохраняем текущую вертикальную скорость
+            targetVel.y = _rb.linearVelocity.y;
+
+            float smoothTime = _moveDir.sqrMagnitude > 0.001f ? acceleration : deceleration;
+            _rb.linearVelocity = Vector3.SmoothDamp(_rb.linearVelocity, targetVel, ref _smoothVel, smoothTime);
         }
 
-        private float RoundValue(float _value)
+        private void Rotate()
         {
-            float unit = (float)Mathf.Round(_value);
-            if (_value - unit < 0.000001f && _value - unit > -0.000001f) return unit;
-            else return _value;
+            if (_moveDir.sqrMagnitude < 0.001f)
+                return;
+
+            Quaternion targetRot = Quaternion.Euler(0f, _targetAngle, 0f);
+            _rb.MoveRotation(Quaternion.RotateTowards(
+                _rb.rotation,
+                targetRot,
+                rotationSpeed * Runner.DeltaTime));
+
+            // Визуал (если отдельный)
+            if (cameraTarget != null)
+                cameraTarget.rotation = Quaternion.Euler(0f, _targetAngle, 0f);
+        }
+
+        private void TryJumpAndDash(NetworkInputData data)
+        {
+            if (!data.SpacePressed)
+                return;
+
+            // Прыжок с земли
+            if (_isGrounded)
+            {
+                Vector3 v = _rb.linearVelocity;
+                v.y = jumpForce;
+                _rb.linearVelocity = v;
+                return;
+            }
+
+            // Рывок в воздухе (один раз)
+            if (!_hasDashedInAir)
+            {
+                _hasDashedInAir = true;
+                _dashTimer = TickTimer.CreateFromSeconds(Runner, dashDuration);
+
+                Vector3 dir = _moveDir != Vector3.zero ? _moveDir : transform.forward;
+                dir.y = dashUpBoost;
+
+                _rb.linearVelocity = Vector3.zero;
+                _rb.AddForce(dir.normalized * dashForce, ForceMode.Impulse);
+            }
+        }
+
+        private void CheckGround()
+        {
+            Vector3 origin = groundCheck != null
+                ? groundCheck.position
+                : transform.position + Vector3.down * (_col.height * 0.5f - 0.05f);
+
+            _isGrounded = Physics.CheckSphere(origin, groundCheckRadius, groundMask);
+
+            // Нормаль поверхности
+            _groundNormal = Vector3.up;
+            if (Physics.SphereCast(transform.position, 0.35f, Vector3.down, out RaycastHit hit,
+                    slopeCheckDistance, groundMask))
+            {
+                float angle = Vector3.Angle(Vector3.up, hit.normal);
+                if (angle <= slopeLimit)
+                    _groundNormal = hit.normal;
+            }
+        }
+
+        private void ApplyExtraGravity()
+        {
+            if (_rb.linearVelocity.y < 0f && !_isGrounded)
+            {
+                _rb.AddForce(Physics.gravity * (fallMultiplier - 1f), ForceMode.Acceleration);
+            }
+        }
+
+        private void OnDrawGizmosSelecЪted()
+        {
+            if (groundCheck == null) return;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
 }
