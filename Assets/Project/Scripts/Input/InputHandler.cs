@@ -10,7 +10,8 @@ namespace NonameGame
     public class InputHandler : NetworkBehaviour, INetworkRunnerCallbacks
     {
 
-        private bool _wasSpacePressedLastFrame = false;
+        private bool _wasSpacePressedLastFrame;
+        private bool _wasPushPressedLastFrame;
 
         public override void Spawned()
         {
@@ -56,6 +57,23 @@ namespace NonameGame
                 }
 
                 _wasSpacePressedLastFrame = isSpaceCurrentlyPressed;
+
+                var mouse = Mouse.current;
+                if (mouse != null)
+                {
+                    bool isPushCurrentlyPressed = mouse.leftButton.isPressed;
+
+                    if (isPushCurrentlyPressed && !_wasPushPressedLastFrame)
+                    {
+                        data.PushPressed = true;
+                    }
+                    else
+                    {
+                        data.PushPressed = false;
+                    }
+
+                    _wasPushPressedLastFrame = isPushCurrentlyPressed;
+                }
             }
 
             if (Camera.main != null)
@@ -90,6 +108,7 @@ namespace NonameGame
         public Vector2 Move;
         public float CameraRotationY;
 
-        public NetworkBool SpacePressed;
+        public NetworkBool SpacePressed; 
+        public NetworkBool PushPressed;
     }
 }

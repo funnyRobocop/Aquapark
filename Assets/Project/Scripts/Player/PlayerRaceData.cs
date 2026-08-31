@@ -132,5 +132,15 @@ namespace NonameGame
                 transform.SetPositionAndRotation(pos, rot);
             }
         }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_ApplyPush(Vector3 force)
+        {
+            var rb = GetComponent<Rigidbody>();
+            if (rb == null)
+                return;
+
+            rb.AddForce(force, ForceMode.Impulse);
+        }
     }
 }
