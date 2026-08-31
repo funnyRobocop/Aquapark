@@ -1,0 +1,37 @@
+﻿using UnityEngine;
+
+
+namespace NonameGame
+{
+    public class TrampolineSensor : MonoBehaviour
+    {
+        private NetworkTrampoline trampolinePlatform;
+
+
+        /**/
+
+
+        private void Awake()
+        {
+            trampolinePlatform = this.transform.parent.GetComponent<NetworkTrampoline>();
+        }
+
+
+        #region Collision detection
+
+        private void OnTriggerEnter(Collider other)
+        {
+            Rigidbody rigidbody = other.GetComponent<Rigidbody>();
+            if (rigidbody != null && rigidbody != trampolinePlatform.GetComponent<Rigidbody>()) trampolinePlatform.Add(rigidbody, rigidbody.linearVelocity.y);
+        }
+
+
+        private void OnTriggerExit(Collider other)
+        {
+            Rigidbody rigidbody = other.GetComponent<Rigidbody>();
+            if (rigidbody != null && rigidbody != trampolinePlatform.GetComponent<Rigidbody>()) trampolinePlatform.Remove(rigidbody);
+        }
+
+        #endregion
+    }
+}

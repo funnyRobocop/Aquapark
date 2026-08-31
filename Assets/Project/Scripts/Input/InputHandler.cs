@@ -11,7 +11,7 @@ namespace NonameGame
     {
 
         private bool _wasSpacePressedLastFrame;
-        private bool _wasPushPressedLastFrame;
+        private bool _wasMousePressedLastFrame;
 
         public override void Spawned()
         {
@@ -29,11 +29,15 @@ namespace NonameGame
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
-            if (!Object.HasInputAuthority) return;
+            if (!Object.HasInputAuthority)
+                return;
 
             var data = new NetworkInputData();
 
             var keyboard = Keyboard.current;
+            var mouse = Mouse.current;
+
+            // ===== Движение =====
             if (keyboard != null)
             {
                 Vector2 move = Vector2.zero;
@@ -45,41 +49,22 @@ namespace NonameGame
 
                 data.Move = move.normalized;
 
-                bool isSpaceCurrentlyPressed = keyboard[Key.Space].isPressed;
-
-                if (isSpaceCurrentlyPressed && !_wasSpacePressedLastFrame)
-                {
-                    data.SpacePressed = true;
-                }
-                else
-                {
-                    data.SpacePressed = false;
-                }
-
-                _wasSpacePressedLastFrame = isSpaceCurrentlyPressed;
-
-                var mouse = Mouse.current;
-                if (mouse != null)
-                {
-                    bool isPushCurrentlyPressed = mouse.leftButton.isPressed;
-
-                    if (isPushCurrentlyPressed && !_wasPushPressedLastFrame)
-                    {
-                        data.PushPressed = true;
-                    }
-                    else
-                    {
-                        data.PushPressed = false;
-                    }
-
-                    _wasPushPressedLastFrame = isPushCurrentlyPressed;
-                }
+                // ===== Прыжок / Dash (фронт пробела) =====
+                bool spaceNow = keyboard[Key.Space].isPressed;
+                data.SpacePressed = spaceNow && !_wasSpacePressedLastFrame;
+                _wasSpacePressedLastFrame = spaceNow;
             }
 
+            // ===== Мышь: GrabHeld + PushPressed =====
+            bool mouseNow = mouse != null && mouse.leftButton.isPressed;
+
+            data.GrabHeld = mouseNow;                                  // держим
+            data.PushPressed = mouseNow && !_wasMousePressedLastFrame; // только момент нажатия
+            _wasMousePressedLastFrame = mouseNow;
+
+            // ===== Камера =====
             if (Camera.main != null)
-            {
                 data.CameraRotationY = Camera.main.transform.eulerAngles.y;
-            }
 
             input.Set(data);
         }
@@ -108,7 +93,8 @@ namespace NonameGame
         public Vector2 Move;
         public float CameraRotationY;
 
-        public NetworkBool SpacePressed; 
-        public NetworkBool PushPressed;
+        public NetworkBool SpacePressed; // фронт нажатия пробела
+        public NetworkBool PushPressed;  // фронт нажатия ЛКМ
+        public NetworkBool GrabHeld;     // ЛКМ зажата
     }
 }

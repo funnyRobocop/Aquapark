@@ -14,6 +14,8 @@ namespace NonameGame
         [SerializeField] private float pushAngle = 90f; // конус перед игроком, градусы
         [SerializeField] private LayerMask playerMask;
 
+        private PlayerGrab playerGrab;
+
         [Header("Optional Feedback")]
         [SerializeField] private AudioSource pushAudio; // можно пустым
         [SerializeField] private ParticleSystem pushVfx; // можно пустым
@@ -36,7 +38,15 @@ namespace NonameGame
             if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
                 return;
 
+            if (playerGrab != null && playerGrab.IsHolding)
+                return;
+
             TryPush();
+        }
+
+        public override void Spawned()
+        {
+            playerGrab = GetComponent<PlayerGrab>();
         }
 
         private void TryPush()
