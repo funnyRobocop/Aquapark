@@ -11,7 +11,6 @@ namespace NonameGame
         [Networked] public int FinishPlace { get; set; }
         [Networked] public NetworkString<_32> PlayerName { get; set; }
 
-        // Чекпоинт
         [Networked] public Vector3 CheckpointPosition { get; set; }
         [Networked] public Quaternion CheckpointRotation { get; set; }
 
@@ -20,12 +19,75 @@ namespace NonameGame
 
         public override void Spawned()
         {
-            // Стартовый чекпоинт = место спавна
-            if (HasStateAuthority)
+            if (!HasStateAuthority)
+                return;
+
+            // Просим у менеджера свободную стартовую точку
+            if (InGameManager.Instance != null)
+                InGameManager.Instance.RPC_PlayerJoined(Id);
+
+            // Временный чекпоинт, пока точка не назначена
+            CheckpointPosition = transform.position;
+            CheckpointRotation = transform.rotation;
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            if (!HasStateAuthority)
+                return;
+
+            UpdateOnStartPoint();
+        }
+
+        private void UpdateOnStartPoint()
+        {
+            if (InGameManager.Instance == null || StartingPointIndex < 0)
             {
-                CheckpointPosition = transform.position;
-                CheckpointRotation = transform.rotation;
+                OnStartPoint = false;
+                return;
             }
+
+            // Готовность только в Waiting
+            if (InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+            {
+                OnStartPoint = false;
+                return;
+            }
+
+            var points = InGameManager.Instance.startingPoints;
+            if (points == null || StartingPointIndex >= points.Length || points[StartingPointIndex] == null)
+            {
+                OnStartPoint = false;
+                return;
+            }
+
+            OnStartPoint = points[StartingPointIndex].IsPlayerInRange(transform.position);
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_AssignStartingPoint(int index)
+        {
+            StartingPointIndex = index;
+            TeleportToStartingPoint();
+        }
+
+        public void TeleportToStartingPoint()
+        {
+            if (!HasStateAuthority)
+                return;
+
+            if (InGameManager.Instance == null || StartingPointIndex < 0)
+                return;
+
+            var points = InGameManager.Instance.startingPoints;
+            if (points == null || StartingPointIndex >= points.Length || points[StartingPointIndex] == null)
+                return;
+
+            var point = points[StartingPointIndex];
+            TeleportTo(point.SpawnPosition, point.SpawnRotation);
+
+            CheckpointPosition = point.SpawnPosition;
+            CheckpointRotation = point.SpawnRotation;
         }
 
         public void SetCheckpoint(Vector3 pos, Quaternion rot)
@@ -42,17 +104,32 @@ namespace NonameGame
             if (!HasStateAuthority)
                 return;
 
+            TeleportTo(CheckpointPosition, CheckpointRotation);
+        }
+
+        private void TeleportTo(Vector3 pos, Quaternion rot)
+        {
             var rb = GetComponent<Rigidbody>();
+            var nt = GetComponent<NetworkTransform>();
+
             if (rb != null)
             {
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-                rb.position = CheckpointPosition;
-                rb.rotation = CheckpointRotation;
+            }
+
+            if (nt != null)
+            {
+                nt.Teleport(pos, rot);
+            }
+            else if (rb != null)
+            {
+                rb.position = pos;
+                rb.rotation = rot;
             }
             else
             {
-                transform.SetPositionAndRotation(CheckpointPosition, CheckpointRotation);
+                transform.SetPositionAndRotation(pos, rot);
             }
         }
     }

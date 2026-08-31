@@ -379,8 +379,7 @@ namespace NonameGame
 
                 if (Runner.TryFindBehaviour(newPlayerID, out PlayerRaceData player))
                 {
-                    player.StartingPointIndex = i;
-                    // если нужна телепортация на старт — сделай это здесь или в Spawned игрока
+                    player.RPC_AssignStartingPoint(i);
                 }
                 return;
             }

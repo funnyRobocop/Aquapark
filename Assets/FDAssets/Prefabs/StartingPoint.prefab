@@ -531,7 +531,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5121883997160322047}
-  - component: {fileID: 6522428411687671603}
+  - component: {fileID: 3029785847190774608}
   m_Layer: 0
   m_Name: StartingPoint
   m_TagString: Untagged
@@ -559,7 +559,7 @@ Transform:
   - {fileID: 5551161991047671347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6522428411687671603
+--- !u!114 &3029785847190774608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -568,14 +568,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5979784957620685989}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa06a98740515dd438207c1cdb8020e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 415c730c1454af547947fcaa60fbcb14, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  materials:
-  - {fileID: 2100000, guid: b1efd269d307df34db7bfe3e02b4413c, type: 2}
-  - {fileID: 2100000, guid: 78a7307904c094841aa1ee905110ae3f, type: 2}
-  scoreDisplay: {fileID: 3867275496935777012}
-  nameDisplay: {fileID: 1078981315090820318}
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.StartingPointBehaviour
+  readyRadius: 1.5
+  readyOffset: {x: 0, y: 0, z: 0}
   arrow: {fileID: 5842307776862092398}
 --- !u!1 &8504894217165381627
 GameObject:
