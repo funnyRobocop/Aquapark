@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: 6701902656928438129}
   - component: {fileID: -7173744380243368626}
   - component: {fileID: 7187583196042404613}
+  - component: {fileID: 7082396205780541595}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -118,13 +119,14 @@ MonoBehaviour:
   SortKey: 1570682795
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6701902656928438129}
   - {fileID: 9114010046680142471}
   - {fileID: -7173744380243368626}
   - {fileID: 7187583196042404613}
+  - {fileID: 7082396205780541595}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &9114010046680142471
 MonoBehaviour:
@@ -278,6 +280,28 @@ MonoBehaviour:
   fallMultiplier: 3.6
   jumpForce: 6
   cameraTarget: {fileID: 8687073919806671688}
+--- !u!114 &7082396205780541595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8337347737783543015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c14cd7e5c9e5030428dece88cf3d2589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerRaceData
+  _StartingPointIndex: -1
+  _OnStartPoint:
+    RawValue: 0
+  _HasFinished:
+    RawValue: 0
+  _FinishPlace: 0
+  _PlayerName:
+    _length: 3
+    _data:
+      Data: 3000000030000000370000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!1001 &7146415568189727670
 PrefabInstance:
   m_ObjectHideFlags: 0
