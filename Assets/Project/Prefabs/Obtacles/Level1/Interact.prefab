@@ -99,6 +99,7 @@ MonoBehaviour:
   bounceStrength: 1.7
   minBounceForce: 30
   maxBounceForce: 30
+  playerTag: Player
 --- !u!1 &25764388683411826
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +248,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 0.5
+  playerTag: Player
 --- !u!1 &67157373088657397
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,6 +350,7 @@ MonoBehaviour:
   bounceStrength: 1.7
   minBounceForce: 30
   maxBounceForce: 30
+  playerTag: Player
 --- !u!1 &263339840585163729
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +360,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3743635303615641658}
-  - component: {fileID: 7489547897577189161}
   - component: {fileID: 1727895115223581604}
   - component: {fileID: 4319724372596196736}
   - component: {fileID: 1844793139760864862}
@@ -384,25 +387,6 @@ Transform:
   - {fileID: 351213741604969970}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7489547897577189161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 263339840585163729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 750532030
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &1727895115223581604
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -489,7 +473,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &435291204884076977
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,7 +485,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3916431017562456666}
-  - component: {fileID: 7088064493747590473}
   - component: {fileID: 1321615485480352196}
   - component: {fileID: 4494411377687887840}
   - component: {fileID: 2033340794143302718}
@@ -527,25 +512,6 @@ Transform:
   - {fileID: 104187739605788562}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7088064493747590473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 435291204884076977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1718913059
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &1321615485480352196
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -632,7 +598,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &487880836725716693
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,11 +610,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8264689410075322262}
-  - component: {fileID: 3036921276357267226}
-  - component: {fileID: 5354761158406384439}
   - component: {fileID: 2839344745458201855}
-  - component: {fileID: 8238582879179902081}
   - component: {fileID: 935848034194455625}
+  - component: {fileID: 3919642945733398553}
   m_Layer: 6
   m_Name: obstacle_7_002
   m_TagString: Untagged
@@ -670,42 +636,6 @@ Transform:
   - {fileID: 2702500935069088301}
   m_Father: {fileID: 4541612245451144822}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3036921276357267226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487880836725716693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5580101d988745f4b9b1ce185670defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkMover
-  moveOffset: {x: 6, y: 0, z: 0}
-  speed: 2
-  timeOffset: 0
---- !u!114 &5354761158406384439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487880836725716693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2994106705
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 8238582879179902081}
-  - {fileID: 3036921276357267226}
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &2839344745458201855
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -729,50 +659,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
-  m_Constraints: 124
+  m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &8238582879179902081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487880836725716693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!65 &935848034194455625
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -794,6 +684,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3919642945733398553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487880836725716693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba75c5430d1a3246a89ae90fbecb5e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Mover
+  moveOffset: {x: 6, y: 0, z: 3}
+  speed: 2
+  timeOffset: 0
 --- !u!1 &492429233416548945
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,8 +708,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1613494238621427259}
-  - component: {fileID: 2267937530418673844}
-  - component: {fileID: 7167054431464017913}
   - component: {fileID: 1895048842135123486}
   - component: {fileID: 6172215557869747080}
   - component: {fileID: 5460172069651378603}
@@ -831,63 +734,6 @@ Transform:
   - {fileID: 8826617962188391570}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2267937530418673844
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 492429233416548945}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7167054431464017913
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 492429233416548945}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &1895048842135123486
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -924,6 +770,7 @@ MonoBehaviour:
   bounceStrength: 1.3
   minBounceForce: 15
   maxBounceForce: 38
+  playerTag: Player
 --- !u!54 &5460172069651378603
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1189,7 +1036,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4212246630882711168}
-  - component: {fileID: 7958088856653922707}
   - component: {fileID: 2196139188444622110}
   - component: {fileID: 3635049114329623354}
   - component: {fileID: 1160506009752482020}
@@ -1217,25 +1063,6 @@ Transform:
   - {fileID: 963546632188539720}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7958088856653922707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731665303302294891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 146566645
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &2196139188444622110
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1322,7 +1149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &779946743380516512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1536,6 +1365,7 @@ MonoBehaviour:
   bounceStrength: 1.7
   minBounceForce: 30
   maxBounceForce: 30
+  playerTag: Player
 --- !u!1 &833634309371632285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,8 +1560,6 @@ GameObject:
   - component: {fileID: 3610401964549139830}
   - component: {fileID: 3564898011415039084}
   - component: {fileID: 3479635018359830980}
-  - component: {fileID: 406791592354685573}
-  - component: {fileID: 1503690384696002781}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -1799,7 +1627,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -1822,67 +1650,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 0
---- !u!114 &406791592354685573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1073263259267329351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1896105695
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 1503690384696002781}
-  - {fileID: 3479635018359830980}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &1503690384696002781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1073263259267329351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &1154617866902104433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1892,7 +1659,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2329914191773872794}
-  - component: {fileID: 8381670339831211401}
   - component: {fileID: 313883728017705220}
   - component: {fileID: 2905712963782184736}
   - component: {fileID: 737342889642398974}
@@ -1920,25 +1686,6 @@ Transform:
   - {fileID: 1692887181897766738}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8381670339831211401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1154617866902104433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4103939951
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &313883728017705220
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2025,7 +1772,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &1242733680289318216
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,7 +1786,7 @@ GameObject:
   - component: {fileID: 1442357077863008954}
   - component: {fileID: 2988656755173064970}
   - component: {fileID: 5810212518036006951}
-  - component: {fileID: 2399514150271688393}
+  - component: {fileID: 8434712079340049810}
   m_Layer: 0
   m_Name: obstacle_16_002
   m_TagString: Untagged
@@ -2119,7 +1868,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2399514150271688393
+--- !u!114 &8434712079340049810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2128,11 +1877,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1242733680289318216}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f213c49f983146048980a8a20c9ec562, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c159ec56bdf6674ba48bd78b1d68c43, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalRotator
-  rotationSpeed: 300
-  clockWise: 1
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Rotator
+  rotationSpeed: 600
+  timeOffset: 0
   rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!1 &1277601118746793330
 GameObject:
@@ -2436,6 +2185,7 @@ MonoBehaviour:
   bounceStrength: 1.7
   minBounceForce: 30
   maxBounceForce: 30
+  playerTag: Player
 --- !u!1 &1520653075188929060
 GameObject:
   m_ObjectHideFlags: 0
@@ -2564,7 +2314,6 @@ GameObject:
   - component: {fileID: 7721925625664643609}
   - component: {fileID: 1646458140142195393}
   - component: {fileID: 3503691369613818127}
-  - component: {fileID: 879536645541493285}
   m_Layer: 0
   m_Name: Area
   m_TagString: Untagged
@@ -2649,26 +2398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkGravityArea
   gravityForce: {x: 0.95, y: 3, z: 0.95}
---- !u!114 &879536645541493285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1522394587485646576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2172053622
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262146
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 3503691369613818127}
-  ForceRemoteRenderTimeframe: 0
+  playerTag: Player
 --- !u!1 &1550878808009369900
 GameObject:
   m_ObjectHideFlags: 0
@@ -3059,7 +2789,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &1668391640565975511
 GameObject:
   m_ObjectHideFlags: 0
@@ -4632,7 +4364,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &2577917900384440647
 GameObject:
   m_ObjectHideFlags: 0
@@ -4645,8 +4379,6 @@ GameObject:
   - component: {fileID: 2249790895324959094}
   - component: {fileID: 2043343721758568556}
   - component: {fileID: 2119014055678739908}
-  - component: {fileID: 2920394551807499909}
-  - component: {fileID: 4178297994240308445}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -4714,7 +4446,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -4737,67 +4469,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 6
---- !u!114 &2920394551807499909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2577917900384440647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 772064681
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 4178297994240308445}
-  - {fileID: 2119014055678739908}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &4178297994240308445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2577917900384440647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &2588913096893379748
 GameObject:
   m_ObjectHideFlags: 0
@@ -4898,7 +4569,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1519437780170019140}
-  - component: {fileID: 4688819802814547543}
   - component: {fileID: 3537726589267634906}
   - component: {fileID: 2094330554747530494}
   - component: {fileID: 4573464190207833888}
@@ -4926,25 +4596,6 @@ Transform:
   - {fileID: 2467396368043422860}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4688819802814547543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685731790999636655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4269553523
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &3537726589267634906
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5031,7 +4682,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &2788797374292485789
 GameObject:
   m_ObjectHideFlags: 0
@@ -5716,7 +5369,7 @@ GameObject:
   - component: {fileID: 3219942713936931202}
   - component: {fileID: 1284114904469692978}
   - component: {fileID: 7496739968216894239}
-  - component: {fileID: 1866471154918456817}
+  - component: {fileID: 1994868738587111449}
   m_Layer: 0
   m_Name: obstacle_16_002
   m_TagString: Untagged
@@ -5798,7 +5451,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1866471154918456817
+--- !u!114 &1994868738587111449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5807,11 +5460,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2996252176807224944}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f213c49f983146048980a8a20c9ec562, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c159ec56bdf6674ba48bd78b1d68c43, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalRotator
-  rotationSpeed: 300
-  clockWise: 1
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Rotator
+  rotationSpeed: 600
+  timeOffset: 0
   rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!1 &3034133051091213420
 GameObject:
@@ -5912,6 +5565,7 @@ MonoBehaviour:
   bounceStrength: 1.7
   minBounceForce: 30
   maxBounceForce: 30
+  playerTag: Player
 --- !u!1 &3069286856711745370
 GameObject:
   m_ObjectHideFlags: 0
@@ -6243,7 +5897,6 @@ GameObject:
   - component: {fileID: 6017383845691703585}
   - component: {fileID: 3346918054060831225}
   - component: {fileID: 591199106734758455}
-  - component: {fileID: 3791887000553560349}
   m_Layer: 0
   m_Name: Area
   m_TagString: Untagged
@@ -6328,26 +5981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkGravityArea
   gravityForce: {x: 0.95, y: 3, z: 0.95}
---- !u!114 &3791887000553560349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3281823440441822664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1171188988
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262146
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 591199106734758455}
-  ForceRemoteRenderTimeframe: 0
+  playerTag: Player
 --- !u!1 &3389369144456684020
 GameObject:
   m_ObjectHideFlags: 0
@@ -6362,9 +5996,7 @@ GameObject:
   - component: {fileID: 3913391745010291449}
   - component: {fileID: 1617012101833747443}
   - component: {fileID: 3694965568151369318}
-  - component: {fileID: 6776732346380041023}
-  - component: {fileID: 4533960227710965934}
-  - component: {fileID: 8828886626342046733}
+  - component: {fileID: 499988825214766879}
   m_Layer: 6
   m_Name: obstacle_2_001
   m_TagString: Untagged
@@ -6510,11 +6142,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &6776732346380041023
+--- !u!114 &499988825214766879
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6523,74 +6155,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3389369144456684020}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4086222748
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 8828886626342046733}
-  - {fileID: 4533960227710965934}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &4533960227710965934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3389369144456684020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 90
   speed: 2
   timeOffset: 1
   rotationAxis: {x: 1, y: 0, z: 0}
---- !u!114 &8828886626342046733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3389369144456684020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &3393311946923917100
 GameObject:
   m_ObjectHideFlags: 0
@@ -6875,8 +6446,6 @@ GameObject:
   - component: {fileID: 904489506343401773}
   - component: {fileID: 1148086703930185783}
   - component: {fileID: 1071285522281835935}
-  - component: {fileID: 4265731079787443934}
-  - component: {fileID: 3047234270994209926}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -6944,7 +6513,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -6967,67 +6536,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 3
---- !u!114 &4265731079787443934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3491171673198246172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3205704699
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 3047234270994209926}
-  - {fileID: 1071285522281835935}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &3047234270994209926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3491171673198246172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &3660340661201392289
 GameObject:
   m_ObjectHideFlags: 0
@@ -7039,11 +6547,9 @@ GameObject:
   - component: {fileID: 3481965685928745491}
   - component: {fileID: 4484416536225421359}
   - component: {fileID: 1254031018782330219}
-  - component: {fileID: 2007613346679350055}
   - component: {fileID: 5958529435848146615}
   - component: {fileID: 6803861631153562176}
-  - component: {fileID: 998063716682766984}
-  - component: {fileID: 579514307079502436}
+  - component: {fileID: 6447233865868189946}
   m_Layer: 6
   m_Name: obstacle_5_002
   m_TagString: Untagged
@@ -7124,27 +6630,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2007613346679350055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3660340661201392289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 750225356
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 579514307079502436}
-  - {fileID: 998063716682766984}
-  ForceRemoteRenderTimeframe: 0
 --- !u!136 &5958529435848146615
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -7191,11 +6676,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &998063716682766984
+--- !u!114 &6447233865868189946
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7204,53 +6689,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3660340661201392289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 80
   speed: 3.5
   timeOffset: 0
   rotationAxis: {x: 0, y: 0, z: 1}
---- !u!114 &579514307079502436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3660340661201392289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &3737095530858212352
 GameObject:
   m_ObjectHideFlags: 0
@@ -8372,12 +7817,10 @@ GameObject:
   - component: {fileID: 8229576572320175712}
   - component: {fileID: 8872905231950736038}
   - component: {fileID: 82248522139918480}
-  - component: {fileID: 4608682341317647414}
-  - component: {fileID: 5878955052814813763}
   - component: {fileID: 7056827007952822581}
   - component: {fileID: 5622879386616830862}
   - component: {fileID: 679907096585871777}
-  - component: {fileID: 7660901512454376126}
+  - component: {fileID: 1557104952660692198}
   m_Layer: 0
   m_Name: obstacle_17_001_Net (2)
   m_TagString: Untagged
@@ -8459,41 +7902,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4608682341317647414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4201362769992393181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6fd08dc473fcb04d8877e71c7bcc232, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkRotator
-  rotationSpeed: 200
-  timeOffset: 0
---- !u!114 &5878955052814813763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4201362769992393181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1700962453
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 7660901512454376126}
-  - {fileID: 4608682341317647414}
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &7056827007952822581
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8517,7 +7925,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -8567,7 +7975,7 @@ CapsuleCollider:
   m_Height: 10.5
   m_Direction: 2
   m_Center: {x: 0.0000019222498, y: 0.5730852, z: 0.00000834465}
---- !u!114 &7660901512454376126
+--- !u!114 &1557104952660692198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8576,37 +7984,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4201362769992393181}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c159ec56bdf6674ba48bd78b1d68c43, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Rotator
+  rotationSpeed: 200
+  timeOffset: 0
+  rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!1 &4213318147986675168
 GameObject:
   m_ObjectHideFlags: 0
@@ -9252,11 +8635,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5368912382551609709}
-  - component: {fileID: 1303063840460536289}
-  - component: {fileID: 8250533495211335116}
   - component: {fileID: 2258352248302060036}
-  - component: {fileID: 5360819702030776954}
   - component: {fileID: 3804673840206826162}
+  - component: {fileID: 3615111187627776056}
   m_Layer: 6
   m_Name: obstacle_7_002
   m_TagString: Untagged
@@ -9280,42 +8661,6 @@ Transform:
   - {fileID: 2139509092524461270}
   m_Father: {fileID: 519930604951324813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1303063840460536289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4536650320097706030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5580101d988745f4b9b1ce185670defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkMover
-  moveOffset: {x: 6, y: 0, z: 0}
-  speed: 2.5
-  timeOffset: 1
---- !u!114 &8250533495211335116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4536650320097706030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 250033964
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 5360819702030776954}
-  - {fileID: 1303063840460536289}
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &2258352248302060036
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9339,50 +8684,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
-  m_Constraints: 124
+  m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &5360819702030776954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4536650320097706030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!65 &3804673840206826162
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9404,6 +8709,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3615111187627776056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4536650320097706030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba75c5430d1a3246a89ae90fbecb5e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Mover
+  moveOffset: {x: 6, y: 0, z: 3}
+  speed: 2.5
+  timeOffset: 1
 --- !u!1 &4571193918380268213
 GameObject:
   m_ObjectHideFlags: 0
@@ -10290,7 +9610,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8502792712593853549}
-  - component: {fileID: 2448784695508097918}
   - component: {fileID: 5904601632552269811}
   - component: {fileID: 9077377763748442583}
   - component: {fileID: 6886541505863281161}
@@ -10318,25 +9637,6 @@ Transform:
   - {fileID: 4815526252870461861}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2448784695508097918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5020526935725938566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2615123717
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &5904601632552269811
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10423,7 +9723,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &5042765082520713674
 GameObject:
   m_ObjectHideFlags: 0
@@ -10845,8 +10147,6 @@ GameObject:
   - component: {fileID: 8897153720494497985}
   - component: {fileID: 8654436911780168155}
   - component: {fileID: 8730675117670315123}
-  - component: {fileID: 5532256056138723122}
-  - component: {fileID: 6754727837836871018}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -10914,7 +10214,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -10937,67 +10237,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 5
---- !u!114 &5532256056138723122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5154172279526465776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3866666451
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 6754727837836871018}
-  - {fileID: 8730675117670315123}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &6754727837836871018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5154172279526465776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &5167381600750138525
 GameObject:
   m_ObjectHideFlags: 0
@@ -11012,9 +10251,7 @@ GameObject:
   - component: {fileID: 6841080507004061584}
   - component: {fileID: 9137672282642431642}
   - component: {fileID: 6627162218346406671}
-  - component: {fileID: 3941922210288692822}
-  - component: {fileID: 6220759410129325511}
-  - component: {fileID: 1313308281825646948}
+  - component: {fileID: 5914313048217692492}
   m_Layer: 6
   m_Name: obstacle_2_001
   m_TagString: Untagged
@@ -11160,11 +10397,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &3941922210288692822
+--- !u!114 &5914313048217692492
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11173,74 +10410,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5167381600750138525}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 508779191
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 1313308281825646948}
-  - {fileID: 6220759410129325511}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &6220759410129325511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5167381600750138525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 90
   speed: 3
   timeOffset: 0.7
   rotationAxis: {x: 1, y: 0, z: 0}
---- !u!114 &1313308281825646948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5167381600750138525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &5168944506160745511
 GameObject:
   m_ObjectHideFlags: 0
@@ -11250,7 +10426,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8640232772217952204}
-  - component: {fileID: 2588564511589843167}
   - component: {fileID: 6045769032297786450}
   - component: {fileID: 9218564950007736950}
   - component: {fileID: 6739161865544561064}
@@ -11278,25 +10453,6 @@ Transform:
   - {fileID: 4666739241831363076}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2588564511589843167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5168944506160745511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3309974924
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &6045769032297786450
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11383,7 +10539,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &5168968731163502337
 GameObject:
   m_ObjectHideFlags: 0
@@ -12581,7 +11739,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9128410873943339354}
-  - component: {fileID: 3074420378705536585}
   - component: {fileID: 6530226442526214852}
   - component: {fileID: 8550100677791714528}
   - component: {fileID: 6107079814968874814}
@@ -12609,25 +11766,6 @@ Transform:
   - {fileID: 5297766033689547922}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3074420378705536585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5691744101274413745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4193182913
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &6530226442526214852
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12714,7 +11852,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &5934451944409823800
 GameObject:
   m_ObjectHideFlags: 0
@@ -13191,7 +12331,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 1
+  playerTag: Player
 --- !u!1 &6223016868426348415
 GameObject:
   m_ObjectHideFlags: 0
@@ -13338,9 +12480,7 @@ GameObject:
   - component: {fileID: 5643632015924337988}
   - component: {fileID: 7957257547402388558}
   - component: {fileID: 5429718269543053787}
-  - component: {fileID: 2744616653954774146}
-  - component: {fileID: 5113486263605778195}
-  - component: {fileID: 187917532188459952}
+  - component: {fileID: 16325462738397695}
   m_Layer: 6
   m_Name: obstacle_2_001
   m_TagString: Untagged
@@ -13486,11 +12626,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &2744616653954774146
+--- !u!114 &16325462738397695
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13499,74 +12639,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6274755781765852745}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4138364716
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 187917532188459952}
-  - {fileID: 5113486263605778195}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &5113486263605778195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6274755781765852745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 90
   speed: 2.5
   timeOffset: 0
   rotationAxis: {x: 1, y: 0, z: 0}
---- !u!114 &187917532188459952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6274755781765852745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &6470551687549795829
 GameObject:
   m_ObjectHideFlags: 0
@@ -13579,8 +12658,6 @@ GameObject:
   - component: {fileID: 7291963520650591684}
   - component: {fileID: 7372943032155184350}
   - component: {fileID: 7449761754050341238}
-  - component: {fileID: 5948636671217267255}
-  - component: {fileID: 4897336069996353647}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -13648,7 +12725,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -13671,67 +12748,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 2
---- !u!114 &5948636671217267255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6470551687549795829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1507137088
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 4897336069996353647}
-  - {fileID: 7449761754050341238}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &4897336069996353647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6470551687549795829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &6692621878388631036
 GameObject:
   m_ObjectHideFlags: 0
@@ -13994,11 +13010,9 @@ GameObject:
   - component: {fileID: 6738296272641098882}
   - component: {fileID: 6046795537689593534}
   - component: {fileID: 8986483377035727866}
-  - component: {fileID: 8506499415532027318}
   - component: {fileID: 4567111157098389542}
   - component: {fileID: 3728274121649044689}
-  - component: {fileID: 6919926220954551321}
-  - component: {fileID: 7339610257838548213}
+  - component: {fileID: 7385455488665005351}
   m_Layer: 6
   m_Name: obstacle_5_002
   m_TagString: Untagged
@@ -14079,27 +13093,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8506499415532027318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6853763837492890672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1564500667
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 7339610257838548213}
-  - {fileID: 6919926220954551321}
-  ForceRemoteRenderTimeframe: 0
 --- !u!136 &4567111157098389542
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -14146,11 +13139,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &6919926220954551321
+--- !u!114 &7385455488665005351
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14159,53 +13152,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6853763837492890672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 80
   speed: 2.5
   timeOffset: 0.7
   rotationAxis: {x: 0, y: 0, z: 1}
---- !u!114 &7339610257838548213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6853763837492890672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &6867829969280550506
 GameObject:
   m_ObjectHideFlags: 0
@@ -14535,8 +13488,6 @@ GameObject:
   - component: {fileID: 6629908491815960802}
   - component: {fileID: 6872946074378068472}
   - component: {fileID: 6796695232772789328}
-  - component: {fileID: 7763542874526912273}
-  - component: {fileID: 8846967016576410953}
   m_Layer: 6
   m_Name: obstacle_8_002
   m_TagString: Untagged
@@ -14604,7 +13555,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -14627,67 +13578,6 @@ MonoBehaviour:
   stayDuration: 0.8
   fallDuration: 0.8
   timeOffset: 4
---- !u!114 &7763542874526912273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6988580498515738835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2397895553
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 8846967016576410953}
-  - {fileID: 6796695232772789328}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &8846967016576410953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6988580498515738835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: -1
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &6989367452567453571
 GameObject:
   m_ObjectHideFlags: 0
@@ -14791,9 +13681,7 @@ GameObject:
   - component: {fileID: 2896347704799525979}
   - component: {fileID: 585428173852622945}
   - component: {fileID: 74506167062840499}
-  - component: {fileID: 8859588319007717821}
-  - component: {fileID: 1615485405567331662}
-  - component: {fileID: 8118482184716952172}
+  - component: {fileID: 4169864889334063389}
   m_Layer: 6
   m_Name: obstacle_4_001
   m_TagString: Untagged
@@ -14897,11 +13785,11 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 2
+  m_IsKinematic: 1
+  m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &8859588319007717821
+--- !u!114 &4169864889334063389
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14910,74 +13798,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7137023752030410986}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ba438dc9b5d23b4d923fc3883bf9d36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalPendulum
   maxAngle: 80
   speed: 3.5
   timeOffset: 0
   rotationAxis: {x: 1, y: 0, z: 0}
---- !u!114 &1615485405567331662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7137023752030410986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1943144373
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 262402
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 8118482184716952172}
-  - {fileID: 8859588319007717821}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &8118482184716952172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7137023752030410986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  ConfigFlags: 0
-  PhysicsSettings:
-    ForecastEnabled: 1
-    DebugPhysics: 0
-    GravityForecast: 2
-    MaxExtrapolationTime: 0.15
-    MinLinearDetectedError: 0.02
-    MinAngularDetectedError: 3
-    MaxLinearError: 0
-    MaxAngularError: 0
-    LowCorrectionProgressThreshold: 0.015
-    HighErrorSimilarityThreshold: 1
-    MaxErrorTotalTime: 0.5
-    MaxRemoteSleepIgnoreTime: 0.5
-    ErrorCorrectionType: 0
-    LinearVelCorrectionMul: 1
-    AngularVelCorrectionMul: 1
-    PositionCorrectionLerp: 0.15
-    RotationCorrectionLerp: 0.15
-    Spring: 75
-    Damper: 2
-    MinImpactfulCollisionAlignment: 0.3
-    ImpactStartCorrectionTime: 0.1
-    ImpactCorrectionTimeComplete: 0.3
 --- !u!1 &7152414359725891987
 GameObject:
   m_ObjectHideFlags: 0
@@ -15284,7 +14111,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6089506282125757149}
-  - component: {fileID: 37838506191363534}
   - component: {fileID: 8110106316188053827}
   - component: {fileID: 6666712440156403559}
   - component: {fileID: 9145773300566502585}
@@ -15312,25 +14138,6 @@ Transform:
   - {fileID: 7181436849101680405}
   m_Father: {fileID: 5266668910160012001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &37838506191363534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7264807554747453750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3165435880
-  SendPriority: 1
-  EnableInterpolation: 1
-  Flags: 65538
-  NestedObjects: []
-  NetworkedBehaviours: []
-  ForceRemoteRenderTimeframe: 0
 --- !u!54 &8110106316188053827
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15417,7 +14224,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &7332495439671199316
 GameObject:
   m_ObjectHideFlags: 0
@@ -16798,7 +15607,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 0.5
+  playerTag: Player
 --- !u!1 &7958390240285344938
 GameObject:
   m_ObjectHideFlags: 0
@@ -17041,7 +15852,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &8057079583984495402
 GameObject:
   m_ObjectHideFlags: 0
@@ -17240,7 +16053,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3930445541
+  SortKey: 731186475
   SendPriority: 1
   EnableInterpolation: 1
   Flags: 786690
@@ -19132,7 +17945,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 0.35
+  playerTag: Player
 --- !u!1 &9125119838008570426
 GameObject:
   m_ObjectHideFlags: 0

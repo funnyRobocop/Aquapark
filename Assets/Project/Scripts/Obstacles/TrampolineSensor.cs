@@ -5,33 +5,45 @@ namespace NonameGame
 {
     public class TrampolineSensor : MonoBehaviour
     {
-        private NetworkTrampoline trampolinePlatform;
-
-
-        /**/
-
+        private Trampoline _trampoline;
 
         private void Awake()
         {
-            trampolinePlatform = this.transform.parent.GetComponent<NetworkTrampoline>();
+            _trampoline = transform.parent.GetComponent<Trampoline>();
         }
-
-
-        #region Collision detection
 
         private void OnTriggerEnter(Collider other)
         {
-            Rigidbody rigidbody = other.GetComponent<Rigidbody>();
-            if (rigidbody != null && rigidbody != trampolinePlatform.GetComponent<Rigidbody>()) trampolinePlatform.Add(rigidbody, rigidbody.linearVelocity.y);
-        }
+            if (_trampoline == null)
+                return;
 
+            var rb = other.attachedRigidbody;
+            if (rb == null)
+                rb = other.GetComponentInParent<Rigidbody>();
+
+            if (rb == null)
+                return;
+
+            // Не регистрируем сам батут
+            if (rb.transform == _trampoline.transform)
+                return;
+
+            _trampoline.Add(rb, rb.linearVelocity.y);
+        }
 
         private void OnTriggerExit(Collider other)
         {
-            Rigidbody rigidbody = other.GetComponent<Rigidbody>();
-            if (rigidbody != null && rigidbody != trampolinePlatform.GetComponent<Rigidbody>()) trampolinePlatform.Remove(rigidbody);
-        }
+            if (_trampoline == null)
+                return;
 
-        #endregion
+            var rb = other.attachedRigidbody;
+            if (rb == null)
+                rb = other.GetComponentInParent<Rigidbody>();
+
+            if (rb == null)
+                return;
+
+            _trampoline.Remove(rb);
+        }
     }
 }

@@ -20,21 +20,15 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
 
         var newPlayer = runner.Spawn(playerPrefab, position: Vector3.up, inputAuthority: player);
 
-        AudioManager.AssignLocalPlayer(newPlayer.transform);
-
         runner.SetPlayerObject(player, newPlayer);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.LocalPlayer == player)
-            AudioManager.AssignLocalPlayer(null);
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        AudioManager.AssignLocalPlayer(null);
-
         // Attempts to unload the gameplay scene.
         var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("GameplayScene");
         LoadingScreenBehaviour.Instance.Show("Runner Shuttong Down");

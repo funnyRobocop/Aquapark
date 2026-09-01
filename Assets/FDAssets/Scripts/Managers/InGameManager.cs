@@ -116,7 +116,6 @@ public class InGameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
     {
         Instance = null;
         Cursor.lockState = CursorLockMode.None;
-        AudioManager.SetGameState(GameState.Waiting);
         base.Despawned(runner, hasState);
     }
 
@@ -309,7 +308,6 @@ public class InGameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
     /// </summary>
     void OnGameStateChanged()
     {
-        AudioManager.SetGameState(gameState);
         switch (gameState)
         {
             case GameState.Game:
@@ -397,7 +395,6 @@ public class InGameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
         // Determines if the local player was a winner.
         lp.IsWinner = lp.Score == highScore;
-        AudioManager.PlayerResultSFX(lp.IsWinner);
 
         if (lp.IsWinner && CrazyGames.CrazySDK.IsInitialized)
             CrazyGames.CrazySDK.Game.HappyTime();
