@@ -303,7 +303,7 @@ MonoBehaviour:
   dampSpeedDown: 0.04
   airControl: 0.6
   jumpForce: 9
-  dashForce: 12.5
+  dashForce: 15
   dashDuration: 0.22
   dashUpBoost: 0.2
   fallMultiplier: 2.8
@@ -312,15 +312,15 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 12480
-  stepCheckerThreshold: 0.6
+  stepCheckerThreshold: 0.65
   maxStepHeight: 0.45
   slopeCheckerThreshold: 0.45
   maxClimbableSlopeAngle: 55
   gravityMultiplier: 2.2
-  gravityMultiplierOnSlideChange: 1.15
+  gravityMultiplierOnSlideChange: 2.5
   gravityMultiplierIfUnclimbableSlope: 20
   lockOnSlope: 1
-  frictionAgainstFloor: 0.3
+  frictionAgainstFloor: 0.95
   cameraTarget: {fileID: 8687073919806671688}
 --- !u!114 &7082396205780541595
 MonoBehaviour:
