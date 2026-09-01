@@ -189,7 +189,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8337347737783543015}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9d5e865226e5c7244b29963c1e0b42ad, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -296,25 +296,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87bab0acc94ca4f4a96a227a9d02e410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
-  airControl: 0.65
+  moveSpeed: 10
   rotationSpeed: 540
   movementThreshold: 0.15
-  acceleration: 0.08
-  deceleration: 0.06
-  dashForce: 8
+  dampSpeedUp: 0.06
+  dampSpeedDown: 0.04
+  airControl: 0.6
+  jumpForce: 9
+  dashForce: 12.5
   dashDuration: 0.22
   dashUpBoost: 0.2
+  fallMultiplier: 2.8
   groundCheck: {fileID: 2458623582212189551}
   groundCheckRadius: 0.28
   groundMask:
     serializedVersion: 2
-    m_Bits: 193
-  slopeLimit: 55
-  slopeCheckDistance: 1.2
-  gravityMultiplier: 2.5
-  fallMultiplier: 3.6
-  jumpForce: 6
+    m_Bits: 12480
+  stepCheckerThreshold: 0.6
+  maxStepHeight: 0.45
+  slopeCheckerThreshold: 0.45
+  maxClimbableSlopeAngle: 55
+  gravityMultiplier: 2.2
+  gravityMultiplierOnSlideChange: 1.15
+  gravityMultiplierIfUnclimbableSlope: 20
+  lockOnSlope: 1
+  frictionAgainstFloor: 0.3
   cameraTarget: {fileID: 8687073919806671688}
 --- !u!114 &7082396205780541595
 MonoBehaviour:
