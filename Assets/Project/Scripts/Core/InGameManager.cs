@@ -252,9 +252,9 @@ namespace NonameGame
                 if (gameStateText != null)
                 {
                     if (ReadyPlayers != TotalPlayers)
-                        gameStateText.text = $"Встаньте на стартовые позиции\nГотово: {ReadyPlayers} / {TotalPlayers}";
+                        gameStateText.text = $"Stand on the starting positions\nReady: {ReadyPlayers} / {TotalPlayers}";
                     else
-                        gameStateText.text = "Все готовы!";
+                        gameStateText.text = "All players are ready!";
                 }
 
                 if (timerText != null)
@@ -319,7 +319,7 @@ namespace NonameGame
 
                 case GameState.EndGame:
                     if (gameStateText != null)
-                        gameStateText.text = "Финиш!";
+                        gameStateText.text = "Finish!";
                     break;
 
                 case GameState.ShowResults:
