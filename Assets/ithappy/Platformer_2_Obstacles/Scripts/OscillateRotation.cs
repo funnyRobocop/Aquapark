@@ -31,11 +31,11 @@ namespace ithappy
             }
         }
 
-        void FixedUpdate()
+        void Update()
         {
             if (timeElapsed < randomDelay)
             {
-                timeElapsed += Time.fixedDeltaTime;
+                timeElapsed += Time.deltaTime;
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace ithappy
                 transform.rotation = currentRotation;
             }
 
-            timeElapsed += Time.fixedDeltaTime;
+            timeElapsed += Time.deltaTime;
 
             if (timeElapsed >= duration / 2f + randomDelay)
             {
