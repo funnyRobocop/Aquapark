@@ -2562,7 +2562,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092608448468679593}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5132,10 +5132,11 @@ MonoBehaviour:
   SortKey: 2703074021
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5776956916157572125}
+  - {fileID: 6346030553028497090}
   ForceRemoteRenderTimeframe: 0
 --- !u!64 &1433224200481471178
 MeshCollider:
@@ -5656,10 +5657,11 @@ MonoBehaviour:
   SortKey: 3902117850
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4242398355792429865}
+  - {fileID: 9223162622575479488}
   ForceRemoteRenderTimeframe: 0
 --- !u!23 &1571879513427050371
 MeshRenderer:
@@ -5936,10 +5938,11 @@ MonoBehaviour:
   SortKey: 251268496
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4063311005110184225}
+  - {fileID: 9042243501633773752}
   ForceRemoteRenderTimeframe: 0
 --- !u!4 &1692887181709321706
 Transform:
@@ -6384,11 +6387,12 @@ GameObject:
   - component: {fileID: 7827637180608380857}
   - component: {fileID: 9042243501633773751}
   - component: {fileID: 326415793132552788}
-  - component: {fileID: 8466868095435564815}
   - component: {fileID: 1672726228941860516}
   - component: {fileID: 4063311005110184225}
+  - component: {fileID: 8466868095435564815}
   - component: {fileID: 2628170871826806970}
-  m_Layer: 0
+  - component: {fileID: 9042243501633773752}
+  m_Layer: 10
   m_Name: banana_001 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6402,7 +6406,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1451819135448766883}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6723,11 +6727,12 @@ GameObject:
   - component: {fileID: 7936076520924108209}
   - component: {fileID: 9223162622575479487}
   - component: {fileID: 433586261254269020}
-  - component: {fileID: 8575868175138475271}
   - component: {fileID: 1564286892155618476}
   - component: {fileID: 4242398355792429865}
+  - component: {fileID: 8575868175138475271}
   - component: {fileID: 2808806343168840370}
-  m_Layer: 0
+  - component: {fileID: 9223162622575479488}
+  m_Layer: 10
   m_Name: banana_001 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6821,10 +6826,11 @@ MonoBehaviour:
   SortKey: 3386015835
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6908386404026279770}
+  - {fileID: 6908386404026279771}
   ForceRemoteRenderTimeframe: 0
 --- !u!136 &2033340793794877062
 CapsuleCollider:
@@ -7526,6 +7532,7 @@ GameObject:
   - component: {fileID: 7298691828150011350}
   - component: {fileID: 735098363336206733}
   - component: {fileID: 3515024112114210837}
+  - component: {fileID: 8733943708319188981}
   m_Layer: 0
   m_Name: apple_002 (1)
   m_TagString: Untagged
@@ -8005,10 +8012,11 @@ MonoBehaviour:
   SortKey: 2001266345
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3281502706353183130}
+  - {fileID: 8991877557766259338}
   ForceRemoteRenderTimeframe: 0
 --- !u!33 &2595318392335219268
 MeshFilter:
@@ -8072,10 +8080,11 @@ MonoBehaviour:
   SortKey: 1901498429
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3208841243603342834}
+  - {fileID: 9064538442704391906}
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &2685731790719383575
 GameObject:
@@ -8361,10 +8370,11 @@ MonoBehaviour:
   SortKey: 3834166361
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 626510202453973698}
+  - {fileID: 6661759439091469403}
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &2884499057772620071
 GameObject:
@@ -8552,11 +8562,12 @@ GameObject:
   - component: {fileID: 6661759439091469402}
   - component: {fileID: 5597561949389673300}
   - component: {fileID: 3771097345170878903}
-  - component: {fileID: 4995147078694606060}
   - component: {fileID: 2874633317488303431}
   - component: {fileID: 626510202453973698}
+  - component: {fileID: 4995147078694606060}
   - component: {fileID: 1489331495241354073}
-  m_Layer: 0
+  - component: {fileID: 6661759439091469403}
+  m_Layer: 10
   m_Name: banana_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8570,7 +8581,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4368755229980863876}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9a30121a519708a4f920e520a7127021, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -8791,7 +8802,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725758411334897651}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -9221,6 +9232,7 @@ GameObject:
   - component: {fileID: 7755462650966819091}
   - component: {fileID: 349382661206338888}
   - component: {fileID: 4480244293377875152}
+  - component: {fileID: 8913053756712956447}
   m_Layer: 0
   m_Name: apple_002
   m_TagString: Untagged
@@ -9614,10 +9626,11 @@ MonoBehaviour:
   SortKey: 1874367812
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7813139375186666426}
+  - {fileID: 8523585762253262739}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &3479635018707651452
 MonoBehaviour:
@@ -10401,10 +10414,11 @@ MonoBehaviour:
   SortKey: 995425396
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3349686614749964078}
+  - {fileID: 9212092167028087168}
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &3819956071398728307
 GameObject:
@@ -10580,7 +10594,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7171164790686718539}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -10705,6 +10719,7 @@ GameObject:
   - component: {fileID: 5989722328783372251}
   - component: {fileID: 3262303989677011241}
   - component: {fileID: 7966000037224441871}
+  - component: {fileID: 7966000037224441872}
   m_Layer: 0
   m_Name: coconut_001 (1)
   m_TagString: Untagged
@@ -11326,10 +11341,11 @@ MonoBehaviour:
   SortKey: 2222533683
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2757013308677476760}
+  - {fileID: 8640569031175024586}
   ForceRemoteRenderTimeframe: 0
 --- !u!4 &4409202897219179561
 Transform:
@@ -11474,6 +11490,7 @@ GameObject:
   - component: {fileID: 2534988533453142733}
   - component: {fileID: 4741792527595491203}
   - component: {fileID: 7095054994964160518}
+  - component: {fileID: 7095054994964160519}
   m_Layer: 0
   m_Name: apple_004
   m_TagString: Untagged
@@ -11537,7 +11554,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6951170782787760818}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -12886,6 +12903,7 @@ GameObject:
   - component: {fileID: 2415697817206909352}
   - component: {fileID: 6908386404026279770}
   - component: {fileID: 2023635967047679612}
+  - component: {fileID: 6908386404026279771}
   m_Layer: 0
   m_Name: coconut_001 (3)
   m_TagString: Untagged
@@ -13245,11 +13263,12 @@ GameObject:
   - component: {fileID: 3650775430552648498}
   - component: {fileID: 2555778412596307004}
   - component: {fileID: 6524830810890258143}
-  - component: {fileID: 3137647531150500740}
   - component: {fileID: 5277591796075194927}
   - component: {fileID: 7379347786889309610}
+  - component: {fileID: 3137647531150500740}
   - component: {fileID: 8823203791552576561}
-  m_Layer: 0
+  - component: {fileID: 8823203791552576562}
+  m_Layer: 10
   m_Name: banana_001 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13479,10 +13498,11 @@ MonoBehaviour:
   SortKey: 3683271995
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7379347786889309610}
+  - {fileID: 8823203791552576562}
   ForceRemoteRenderTimeframe: 0
 --- !u!4 &5297766033912669738
 Transform:
@@ -13571,6 +13591,7 @@ GameObject:
   - component: {fileID: 3346758628187892463}
   - component: {fileID: 5776956916157572125}
   - component: {fileID: 1432493572766416187}
+  - component: {fileID: 6346030553028497090}
   m_Layer: 0
   m_Name: coconut_001 (2)
   m_TagString: Untagged
@@ -14332,7 +14353,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4801901946199024027}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -15220,7 +15241,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5443829287093142417}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -15563,6 +15584,26 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 5.5
   m_Center: {x: 0, y: -0.00000071525574, z: 0.00012207031}
+--- !u!114 &6346030553028497090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336725425378707509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!4 &6407345924672924269
 Transform:
   m_ObjectHideFlags: 0
@@ -15975,6 +16016,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5266668910448660569}
   m_LocalEulerAnglesHint: {x: 15, y: -13.29, z: 0}
+--- !u!114 &6661759439091469403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2982130277186396881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!114 &6664864390074655317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16583,6 +16644,26 @@ MonoBehaviour:
     MinImpactfulCollisionAlignment: 0.3
     ImpactStartCorrectionTime: 0.1
     ImpactCorrectionTimeComplete: 0.3
+--- !u!114 &6908386404026279771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5042765082198494066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!33 &6909222557113644297
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -16621,7 +16702,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3819956071398728307}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -17056,11 +17137,32 @@ MonoBehaviour:
   SortKey: 1293893034
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4741792527595491203}
+  - {fileID: 7095054994964160519}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &7095054994964160519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4437921303976073478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!114 &7095333979114100507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17541,10 +17643,11 @@ MonoBehaviour:
   SortKey: 1631667293
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8019555060887725230}
+  - {fileID: 8733943708319188981}
   ForceRemoteRenderTimeframe: 0
 --- !u!33 &7304501278354298062
 MeshFilter:
@@ -17638,6 +17741,7 @@ GameObject:
   - component: {fileID: 2594219004438634456}
   - component: {fileID: 4274231408923749968}
   - component: {fileID: 7122615890470328653}
+  - component: {fileID: 8991877557766259338}
   m_Layer: 0
   m_Name: apple_003
   m_TagString: Untagged
@@ -17756,6 +17860,7 @@ GameObject:
   - component: {fileID: 2666871225356276656}
   - component: {fileID: 4202768424717525560}
   - component: {fileID: 7195265824322147621}
+  - component: {fileID: 9064538442704391906}
   m_Layer: 0
   m_Name: apple_003 (1)
   m_TagString: Untagged
@@ -18164,7 +18269,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3959131711230020234}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -18202,10 +18307,11 @@ MonoBehaviour:
   SortKey: 2350899771
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7035176128954523755}
+  - {fileID: 8913053756712956447}
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &7790818431909315617
 GameObject:
@@ -18652,11 +18758,32 @@ MonoBehaviour:
   SortKey: 3678266312
   SendPriority: 1
   EnableInterpolation: 1
-  Flags: 262402
+  Flags: 786690
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3262303989677011241}
+  - {fileID: 7966000037224441872}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &7966000037224441872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3990766493510475009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!33 &7987529114219231010
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -19718,6 +19845,7 @@ GameObject:
   - component: {fileID: 1311695746890493256}
   - component: {fileID: 7813139375186666426}
   - component: {fileID: 3433777253540248220}
+  - component: {fileID: 8523585762253262739}
   m_Layer: 0
   m_Name: coconut_001
   m_TagString: Untagged
@@ -19725,6 +19853,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8523585762253262739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8523585762253262738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!23 &8549496925403215106
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20036,13 +20184,34 @@ GameObject:
   - component: {fileID: 1478607428594025026}
   - component: {fileID: 4382564718667088874}
   - component: {fileID: 2757013308677476760}
-  m_Layer: 6
+  - component: {fileID: 8640569031175024586}
+  m_Layer: 10
   m_Name: ball_001 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8640569031175024586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8640569031175024585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!54 &8654436912135877475
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20194,6 +20363,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8733943708319188981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2455245492860029426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!114 &8735503894120277872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20259,6 +20448,26 @@ CapsuleCollider:
   m_Height: 10
   m_Direction: 2
   m_Center: {x: 0.055510283, y: 0.96726906, z: 0.46656394}
+--- !u!114 &8823203791552576562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168968730882250169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!33 &8823370124602257997
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -20378,6 +20587,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5266668910448660569}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8913053756712956447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3240359141537959223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!135 &8923026364878215369
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20451,7 +20680,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4716691090696615883}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 10243a0804a17814eb944413044cefc6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20622,6 +20851,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7374908812258521814}
   m_Mesh: {fileID: 1344024037518612767, guid: 9ecb45a473853b744a20618883ccc61b, type: 3}
+--- !u!114 &8991877557766259338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374908812258521814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!23 &9017116562844943808
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20713,6 +20962,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1851172750363431218}
   m_Mesh: {fileID: -6657874992054359402, guid: b012b7092b8047841aae40ef2c05b278, type: 3}
+--- !u!114 &9042243501633773752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851172750363431218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!136 &9059344390100350085
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -20744,6 +21013,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7447499347784285886}
   m_Mesh: {fileID: 1344024037518612767, guid: 9ecb45a473853b744a20618883ccc61b, type: 3}
+--- !u!114 &9064538442704391906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447499347784285886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!4 &9076358022374332748
 Transform:
   m_ObjectHideFlags: 0
@@ -21045,6 +21334,7 @@ GameObject:
   - component: {fileID: 2070401676567278836}
   - component: {fileID: 3814379155747534172}
   - component: {fileID: 3349686614749964078}
+  - component: {fileID: 9212092167028087168}
   m_Layer: 6
   m_Name: ball_001 (2)
   m_TagString: Untagged
@@ -21052,6 +21342,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9212092167028087168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212092167028087167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!64 &9215719032480177118
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -21059,7 +21369,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7649014404169160124}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9a30121a519708a4f920e520a7127021, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -21122,6 +21432,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1960032074626317114}
   m_Mesh: {fileID: -6657874992054359402, guid: b012b7092b8047841aae40ef2c05b278, type: 3}
+--- !u!114 &9223162622575479488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960032074626317114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b0b6d604db2ea42aa1651ccf9cd605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.ThrowableItem
+  throwForce: 14
+  throwUpForce: 3
+  hitForce: 16
+  hitUpForce: 3
+  _IsHeld:
+    RawValue: 0
+  _IsAirborneThrown:
+    RawValue: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
