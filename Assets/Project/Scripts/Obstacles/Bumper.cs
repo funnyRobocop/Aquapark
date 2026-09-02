@@ -60,6 +60,9 @@ namespace NonameGame
             rb.AddForce(bounceDir * bounceForce, ForceMode.Impulse);
 
             StartCoroutine(ReleaseCooldown(netObj.Id, cooldownTime));
+
+            if (other.TryGetComponent<PlayerController>(out var playerController))
+                        playerController.SetStunTimer(cooldownTime);
         }
 
         private IEnumerator ReleaseCooldown(NetworkId id, float delay)

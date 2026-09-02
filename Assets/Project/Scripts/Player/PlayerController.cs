@@ -67,8 +67,17 @@ namespace NonameGame
 
         [Networked] private NetworkBool _hasDashedInAir { get; set; }
         [Networked] private TickTimer _dashTimer { get; set; }
+        [Networked] public TickTimer _stunTimer { get; set; }
 
         public bool IsGrounded => _isGrounded;
+
+        public void SetStunTimer(float duration)
+        {
+            if (!HasStateAuthority)
+                return;
+
+            _stunTimer = TickTimer.CreateFromSeconds(Runner, duration);
+        }
 
         public override void Spawned()
         {
@@ -122,8 +131,11 @@ namespace NonameGame
             if (_isGrounded)
                 _hasDashedInAir = false;
 
-            // Рывок
-            if (!_dashTimer.ExpiredOrNotRunning(Runner))
+            if (!_stunTimer.ExpiredOrNotRunning(Runner))
+            {
+                //netDashAnimationFlag = true;
+            }
+            else if (!_dashTimer.ExpiredOrNotRunning(Runner))
             {
                 Vector3 v = _rb.linearVelocity;
                 Vector3 dashDir = _moveDir.sqrMagnitude > 0.01f ? _moveDir : transform.forward;

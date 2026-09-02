@@ -4834,7 +4834,7 @@ GameObject:
   - component: {fileID: 1442357077673981954}
   - component: {fileID: 2988656754791101362}
   - component: {fileID: 5810212517655141023}
-  - component: {fileID: 8434712078950737706}
+  - component: {fileID: 5810212517655141024}
   m_Layer: 0
   m_Name: obstacle_16_002
   m_TagString: Untagged
@@ -5575,8 +5575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.7
-  minBounceForce: 30
-  maxBounceForce: 30
+  minBounceForce: 10
+  maxBounceForce: 10
   playerTag: Player
 --- !u!4 &1534316795328515109
 Transform:
@@ -6739,21 +6739,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1994868738943910561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996252177197520072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c159ec56bdf6674ba48bd78b1d68c43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Rotator
-  rotationSpeed: 600
-  timeOffset: 0
-  rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!23 &1996222976519298767
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7533,7 +7518,7 @@ GameObject:
   - component: {fileID: 735098363336206733}
   - component: {fileID: 3515024112114210837}
   - component: {fileID: 8733943708319188981}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: apple_002 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8615,7 +8600,7 @@ GameObject:
   - component: {fileID: 3219942713614785338}
   - component: {fileID: 1284114904223043722}
   - component: {fileID: 7496739967969147303}
-  - component: {fileID: 1994868738943910561}
+  - component: {fileID: 7496739967969147304}
   m_Layer: 0
   m_Name: obstacle_16_002
   m_TagString: Untagged
@@ -8918,8 +8903,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.7
-  minBounceForce: 30
-  maxBounceForce: 30
+  minBounceForce: 10
+  maxBounceForce: 10
   playerTag: Player
 --- !u!54 &3137647531150500740
 Rigidbody:
@@ -9233,7 +9218,7 @@ GameObject:
   - component: {fileID: 349382661206338888}
   - component: {fileID: 4480244293377875152}
   - component: {fileID: 8913053756712956447}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: apple_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10502,8 +10487,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.7
-  minBounceForce: 30
-  maxBounceForce: 30
+  minBounceForce: 10
+  maxBounceForce: 10
   playerTag: Player
 --- !u!114 &3896967226041745855
 MonoBehaviour:
@@ -10720,7 +10705,7 @@ GameObject:
   - component: {fileID: 3262303989677011241}
   - component: {fileID: 7966000037224441871}
   - component: {fileID: 7966000037224441872}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: coconut_001 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11491,7 +11476,7 @@ GameObject:
   - component: {fileID: 4741792527595491203}
   - component: {fileID: 7095054994964160518}
   - component: {fileID: 7095054994964160519}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: apple_004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11899,8 +11884,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.7
-  minBounceForce: 30
-  maxBounceForce: 30
+  minBounceForce: 10
+  maxBounceForce: 10
   playerTag: Player
 --- !u!64 &4591511627666251051
 MeshCollider:
@@ -11953,8 +11938,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.7
-  minBounceForce: 30
-  maxBounceForce: 30
+  minBounceForce: 10
+  maxBounceForce: 10
   playerTag: Player
 --- !u!1 &4618466326669260634
 GameObject:
@@ -12904,7 +12889,7 @@ GameObject:
   - component: {fileID: 6908386404026279770}
   - component: {fileID: 2023635967047679612}
   - component: {fileID: 6908386404026279771}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: coconut_001 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13592,7 +13577,7 @@ GameObject:
   - component: {fileID: 5776956916157572125}
   - component: {fileID: 1432493572766416187}
   - component: {fileID: 6346030553028497090}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: coconut_001 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14642,6 +14627,21 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5810212517655141024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242733680544430064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f213c49f983146048980a8a20c9ec562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalRotator
+  rotationSpeed: 600
+  clockWise: 1
+  rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!33 &5810958544338024520
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -15290,8 +15290,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkTrampoline
   bounceStrength: 1.3
-  minBounceForce: 15
-  maxBounceForce: 38
+  minBounceForce: 5
+  maxBounceForce: 5
   playerTag: Player
 --- !u!4 &6174280493691239876
 Transform:
@@ -17742,7 +17742,7 @@ GameObject:
   - component: {fileID: 4274231408923749968}
   - component: {fileID: 7122615890470328653}
   - component: {fileID: 8991877557766259338}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: apple_003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17861,7 +17861,7 @@ GameObject:
   - component: {fileID: 4202768424717525560}
   - component: {fileID: 7195265824322147621}
   - component: {fileID: 9064538442704391906}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: apple_003 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17989,6 +17989,21 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7496739967969147304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2996252177197520072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f213c49f983146048980a8a20c9ec562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LocalRotator
+  rotationSpeed: 600
+  clockWise: 1
+  rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!23 &7503496734912708951
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19641,21 +19656,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2943951438438199162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8434712078950737706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242733680544430064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c159ec56bdf6674ba48bd78b1d68c43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Rotator
-  rotationSpeed: 600
-  timeOffset: 0
-  rotationAxis: {x: 0, y: 1, z: 0}
 --- !u!1 &8446691783343009011
 GameObject:
   m_ObjectHideFlags: 0
@@ -19846,7 +19846,7 @@ GameObject:
   - component: {fileID: 7813139375186666426}
   - component: {fileID: 3433777253540248220}
   - component: {fileID: 8523585762253262739}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: coconut_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21335,7 +21335,7 @@ GameObject:
   - component: {fileID: 3814379155747534172}
   - component: {fileID: 3349686614749964078}
   - component: {fileID: 9212092167028087168}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: ball_001 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
