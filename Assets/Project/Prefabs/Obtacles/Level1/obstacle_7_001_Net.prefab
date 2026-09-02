@@ -100,7 +100,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6808007345184461338}
-  - component: {fileID: 499260095446219414}
   - component: {fileID: 7387903682938904251}
   - component: {fileID: 842055098114294131}
   - component: {fileID: 6817788876101433613}
@@ -128,21 +127,6 @@ Transform:
   - {fileID: 669281450645032865}
   m_Father: {fileID: 1427634349685951482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &499260095446219414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3030281189844910937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5580101d988745f4b9b1ce185670defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkMover
-  moveOffset: {x: 0, y: 0, z: 0}
-  speed: 0
-  timeOffset: 0
 --- !u!114 &7387903682938904251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +146,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6817788876101433613}
-  - {fileID: 499260095446219414}
+  - {fileID: 0}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &842055098114294131
 Rigidbody:

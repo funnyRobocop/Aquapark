@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5186190150603285526}
   - component: {fileID: 7482505656897673260}
   - component: {fileID: 7980477927116119294}
-  - component: {fileID: 1529953045774262768}
   - component: {fileID: 8765047179412403459}
   - component: {fileID: 2261453638346308129}
   m_Layer: 6
@@ -122,22 +121,6 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &1529953045774262768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919620372776419495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8793c5b2152d03142986a729707205dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkPendulum
-  maxAngle: 80
-  speed: 3.5
-  timeOffset: 0
-  rotationAxis: {x: 1, y: 0, z: 0}
 --- !u!114 &8765047179412403459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +140,6 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2261453638346308129}
-  - {fileID: 1529953045774262768}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2261453638346308129
 MonoBehaviour:
@@ -375,4 +357,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
   bounceForce: 20
+  upwardBoost: 0.45
   cooldownTime: 1
+  playerTag: Player

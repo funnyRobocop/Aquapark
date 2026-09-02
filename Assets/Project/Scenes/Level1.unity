@@ -355,6 +355,98 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27125097}
   m_Mesh: {fileID: -1483643435275680719, guid: d614cecf9de491a43a2ff8c41e121ede, type: 3}
+--- !u!1 &49313711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 49313712}
+  - component: {fileID: 49313715}
+  - component: {fileID: 49313714}
+  - component: {fileID: 49313713}
+  m_Layer: 6
+  m_Name: obstacle_5_011 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &49313712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49313711}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.1420002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6738296272963253818}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &49313713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49313711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab5ff35f9a55ca4d8a1551d421c2149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
+  bounceForce: 20
+  upwardBoost: 0.05
+  cooldownTime: 0.35
+  playerTag: Player
+--- !u!135 &49313714
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49313711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.8232867
+  m_Center: {x: -0.0027920604, y: -0.7, z: 0.000021219254}
+--- !u!135 &49313715
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49313711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.7
+  m_Center: {x: 0, y: -0.65, z: -0}
 --- !u!1 &57558500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1243,9 +1335,6 @@ GameObject:
   - component: {fileID: 347016921}
   - component: {fileID: 347016926}
   - component: {fileID: 347016925}
-  - component: {fileID: 347016924}
-  - component: {fileID: 347016923}
-  - component: {fileID: 347016922}
   m_Layer: 6
   m_Name: obstacle_5_011
   m_TagString: Untagged
@@ -1268,64 +1357,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 75867498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &347016922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 347016920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ab5ff35f9a55ca4d8a1551d421c2149, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
-  bounceForce: 20
-  upwardBoost: 0.45
-  cooldownTime: 0.5
-  playerTag: Player
---- !u!135 &347016923
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 347016920}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.8232867
-  m_Center: {x: -0.0027920604, y: -0.7, z: 0.000021219254}
---- !u!135 &347016924
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 347016920}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.7
-  m_Center: {x: 0, y: -0.65, z: -0}
 --- !u!23 &347016925
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2031,9 +2062,6 @@ GameObject:
   - component: {fileID: 593806738}
   - component: {fileID: 593806743}
   - component: {fileID: 593806742}
-  - component: {fileID: 593806741}
-  - component: {fileID: 593806740}
-  - component: {fileID: 593806739}
   m_Layer: 6
   m_Name: obstacle_5_011
   m_TagString: Untagged
@@ -2056,64 +2084,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1852820502}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &593806739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 593806737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ab5ff35f9a55ca4d8a1551d421c2149, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
-  bounceForce: 20
-  upwardBoost: 0.45
-  cooldownTime: 0.5
-  playerTag: Player
---- !u!135 &593806740
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 593806737}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.8232867
-  m_Center: {x: -0.0027920604, y: -0.7, z: 0.000021219254}
---- !u!135 &593806741
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 593806737}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.7
-  m_Center: {x: 0, y: -0.65, z: -0}
 --- !u!23 &593806742
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2680,6 +2650,98 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898385050}
   m_CullTransparentMesh: 1
+--- !u!1 &900390534
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 900390535}
+  - component: {fileID: 900390538}
+  - component: {fileID: 900390537}
+  - component: {fileID: 900390536}
+  m_Layer: 6
+  m_Name: obstacle_5_011 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &900390535
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900390534}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.1420002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3481965685606541483}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &900390536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900390534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab5ff35f9a55ca4d8a1551d421c2149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.NetworkBumper
+  bounceForce: 20
+  upwardBoost: 0.05
+  cooldownTime: 0.35
+  playerTag: Player
+--- !u!135 &900390537
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900390534}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.8232867
+  m_Center: {x: -0.0027920604, y: -0.7, z: 0.000021219254}
+--- !u!135 &900390538
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900390534}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.7
+  m_Center: {x: 0, y: -0.65, z: -0}
 --- !u!1 &919128276
 GameObject:
   m_ObjectHideFlags: 0
@@ -5513,7 +5575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!23 &326415793132552788
@@ -6028,7 +6090,7 @@ GameObject:
   - component: {fileID: 1895048842415834278}
   - component: {fileID: 6172215557614176560}
   - component: {fileID: 5460172069504860947}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Batut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6425,7 +6487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!1 &679743566091038550
@@ -7030,7 +7092,7 @@ GameObject:
   - component: {fileID: 3610401964898017230}
   - component: {fileID: 3564898011596160724}
   - component: {fileID: 3479635018707651452}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8828,7 +8890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!23 &1865840358714194740
@@ -9302,7 +9364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!1 &2164781158201748147
@@ -9944,7 +10006,7 @@ GameObject:
   - component: {fileID: 2249790894969201614}
   - component: {fileID: 2043343721570566868}
   - component: {fileID: 2119014055321941884}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11590,6 +11652,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 900390535}
   - {fileID: 743716380}
   m_Father: {fileID: 1058818805581870417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11605,7 +11668,7 @@ GameObject:
   - component: {fileID: 904489506196294549}
   - component: {fileID: 1148086703548213903}
   - component: {fileID: 1071285522135785255}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12461,7 +12524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!114 &4063311005110184225
@@ -12898,7 +12961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!1 &4368755229980863876
@@ -13308,7 +13371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!4 &4534056019533209309
@@ -14740,7 +14803,7 @@ GameObject:
   - component: {fileID: 8897153720682418809}
   - component: {fileID: 8654436912135877475}
   - component: {fileID: 8730675117859276491}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16928,7 +16991,7 @@ GameObject:
   - component: {fileID: 7291963520930844540}
   - component: {fileID: 7372943032401899110}
   - component: {fileID: 7449761754331651022}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17257,7 +17320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!136 &6666712439775528415
@@ -17358,6 +17421,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 49313712}
   - {fileID: 1350507419}
   m_Father: {fileID: 7161004391188179904}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17855,7 +17919,7 @@ GameObject:
   - component: {fileID: 6629908492071596634}
   - component: {fileID: 6872946074667242304}
   - component: {fileID: 6796695233029465832}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: obstacle_8_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18991,7 +19055,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!95 &7592957705175078366
@@ -19936,7 +20000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 20
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!1 &8186197405370975383
@@ -20139,7 +20203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!114 &8301088881048376372
@@ -21133,7 +21197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!65 &8897153720682418809
@@ -21812,7 +21876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBumper
   bounceForce: 15
-  upwardBoost: 0.45
+  upwardBoost: 0
   cooldownTime: 0.35
   playerTag: Player
 --- !u!135 &9199552155657816968
