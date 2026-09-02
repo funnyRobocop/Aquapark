@@ -6,18 +6,25 @@ namespace NonameGame
     public class Rotator : MonoBehaviour
     {
         [Header("Настройки вращения")]
-        [SerializeField] private float rotationSpeed = 90f; // градусов в секунду
+        [SerializeField] private float rotationSpeed = 90f;
         [SerializeField] private float timeOffset = 0f;
         [SerializeField] private Vector3 rotationAxis = Vector3.up;
 
+        [Header("Visual (опционально)")]
+        [SerializeField] private Transform visualMesh;
+
         private Quaternion _startRotation;
+        private Quaternion _prevRotation;
+        private Quaternion _currentRotation;
         private Rigidbody _rb;
 
         private void Awake()
         {
             _startRotation = transform.rotation;
-            _rb = GetComponent<Rigidbody>();
+            _prevRotation = _startRotation;
+            _currentRotation = _startRotation;
 
+            _rb = GetComponent<Rigidbody>();
             if (_rb != null)
             {
                 _rb.isKinematic = true;
@@ -31,13 +38,29 @@ namespace NonameGame
                 ? SimulationTimeProvider.Time
                 : Time.time;
 
-            float currentAngle = (t + timeOffset) * rotationSpeed;
-            Quaternion targetRotation = _startRotation * Quaternion.AngleAxis(currentAngle, rotationAxis.normalized);
+            float angle = (t + timeOffset) * rotationSpeed;
+            Quaternion next = _startRotation * Quaternion.AngleAxis(angle, rotationAxis.normalized);
+
+            _prevRotation = _currentRotation;
+            _currentRotation = next;
 
             if (_rb != null)
-                _rb.MoveRotation(targetRotation);
+                _rb.MoveRotation(_currentRotation);
             else
-                transform.rotation = targetRotation;
+                transform.rotation = _currentRotation;
+        }
+
+        private void LateUpdate()
+        {
+            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
+            alpha = Mathf.Clamp01(alpha);
+
+            Quaternion visualRot = Quaternion.Slerp(_prevRotation, _currentRotation, alpha);
+
+            if (visualMesh != null)
+                visualMesh.rotation = visualRot;
+            else
+                transform.rotation = visualRot;
         }
     }
 }

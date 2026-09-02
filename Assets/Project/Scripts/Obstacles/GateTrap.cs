@@ -16,14 +16,21 @@ namespace NonameGame
         [SerializeField] private float fallDuration = 0.8f;
         [SerializeField] private float timeOffset = 0f;
 
+        [Header("Visual (опционально)")]
+        [SerializeField] private Transform visualMesh;
+
         private Quaternion _startLocalRotation;
+        private Quaternion _prevLocalRotation;
+        private Quaternion _currentLocalRotation;
         private Rigidbody _rb;
 
         private void Awake()
         {
             _startLocalRotation = transform.localRotation;
-            _rb = GetComponent<Rigidbody>();
+            _prevLocalRotation = _startLocalRotation;
+            _currentLocalRotation = _startLocalRotation;
 
+            _rb = GetComponent<Rigidbody>();
             if (_rb != null)
             {
                 _rb.isKinematic = true;
@@ -41,19 +48,45 @@ namespace NonameGame
             float progress = EvaluateProgress(timeInCycle);
 
             float currentAngle = targetAngle * progress;
-            Quaternion targetLocal = _startLocalRotation * Quaternion.AngleAxis(currentAngle, rotationAxis.normalized);
+            Quaternion nextLocal = _startLocalRotation * Quaternion.AngleAxis(currentAngle, rotationAxis.normalized);
 
-            if (_rb != null)
+            _prevLocalRotation = _currentLocalRotation;
+            _currentLocalRotation = nextLocal;
+
+            ApplyRotation(_currentLocalRotation);
+        }
+
+        private void LateUpdate()
+        {
+            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
+            alpha = Mathf.Clamp01(alpha);
+
+            Quaternion visualLocal = Quaternion.Slerp(_prevLocalRotation, _currentLocalRotation, alpha);
+
+            if (visualMesh != null)
             {
-                Quaternion targetWorld = transform.parent != null
-                    ? transform.parent.rotation * targetLocal
-                    : targetLocal;
-
-                _rb.MoveRotation(targetWorld);
+                // visual в локальном пространстве родителя
+                visualMesh.localRotation = visualLocal;
             }
             else
             {
-                transform.localRotation = targetLocal;
+                ApplyRotation(visualLocal);
+            }
+        }
+
+        private void ApplyRotation(Quaternion localRot)
+        {
+            if (_rb != null)
+            {
+                Quaternion worldRot = transform.parent != null
+                    ? transform.parent.rotation * localRot
+                    : localRot;
+
+                _rb.MoveRotation(worldRot);
+            }
+            else
+            {
+                transform.localRotation = localRot;
             }
         }
 

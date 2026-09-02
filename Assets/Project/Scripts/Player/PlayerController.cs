@@ -65,9 +65,9 @@ namespace NonameGame
         private Vector3 _smoothVel;
         private float _coyoteJumpMultiplier = 1f;
 
-        [Networked] private NetworkBool _hasDashedInAir { get; set; }
-        [Networked] private TickTimer _dashTimer { get; set; }
-        [Networked] public TickTimer _stunTimer { get; set; }
+        private NetworkBool _hasDashedInAir { get; set; }
+        private TickTimer _dashTimer { get; set; }
+        public TickTimer _stunTimer { get; set; }
 
         public bool IsGrounded => _isGrounded;
 
