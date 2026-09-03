@@ -189,7 +189,8 @@ namespace NonameGame
         {
             if (!Runner.TryFindObject(playerObjectId, out var obj))
                 return;
-
+                
+            Debug.Log($"RPC_RequestFinish: playerObjectId={playerObjectId}, obj={obj}");
             var player = obj.GetBehaviour<PlayerRaceData>();
             RegisterFinish(player);
         }
@@ -349,7 +350,7 @@ namespace NonameGame
                 sb.AppendLine($"{finished[i].FinishPlace}. {finished[i].DisplayName}");
 
             for (int i = 0; i < notFinished.Count; i++)
-                sb.AppendLine($"— {notFinished[i].DisplayName} (не финишировал)");
+                sb.AppendLine($"— {notFinished[i].DisplayName} (Not Finished)");
 
             if (resultsText != null)
                 resultsText.text = sb.ToString();

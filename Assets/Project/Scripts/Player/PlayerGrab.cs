@@ -23,9 +23,16 @@ namespace NonameGame
         [Networked] private NetworkBool _isHolding { get; set; }
 
         private bool _wasGrabHeld;
-        private GameObject _localVisual; // локальная копия только у себя
+
+        // Локальный меш в СВОИХ руках (authority)
+        private GameObject _localVisual;
+
+        // Локальный меш в чужих руках (proxy) — один на этого игрока
+        private GameObject _remoteHeldVisual;
+        private NetworkId _remoteHeldItemId;
 
         public bool IsHolding => _isHolding;
+        public Transform HoldPoint => holdPoint;
 
         public override void FixedUpdateNetwork()
         {
@@ -42,7 +49,6 @@ namespace NonameGame
 
             if (_isHolding)
             {
-                // Реальный предмет держим «в изгнании»
                 KeepItemHidden();
 
                 if (released)
@@ -56,14 +62,61 @@ namespace NonameGame
 
         public override void Render()
         {
-            // Локальный меш в руке — только у владельца
-            if (!HasStateAuthority)
-                return;
-
-            if (_isHolding && _localVisual != null && holdPoint != null)
+            // 1) Свой предмет в руках
+            if (HasStateAuthority && _isHolding && _localVisual != null && holdPoint != null)
             {
                 _localVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
             }
+
+            // 2) Чужие руки — показываем/убираем visual по IsHeld
+            UpdateRemoteHeldVisual();
+        }
+
+        private void UpdateRemoteHeldVisual()
+        {
+            // Свои руки обрабатываем через _localVisual
+            if (HasStateAuthority)
+                return;
+
+            if (holdPoint == null || Runner == null)
+                return;
+
+            // Этот PlayerGrab принадлежит какому-то игроку — ищем, держит ли ОН что-то
+            PlayerRef owner = Object.InputAuthority;
+            if (owner == PlayerRef.None)
+                owner = Object.StateAuthority;
+
+            ThrowableItem heldItem = FindHeldItemByPlayer(owner);
+
+            if (heldItem != null)
+            {
+                // Нужен visual
+                if (_remoteHeldVisual == null || _remoteHeldItemId != heldItem.Object.Id)
+                {
+                    DestroyRemoteHeldVisual();
+                    _remoteHeldVisual = CreateVisualCopy(heldItem.gameObject);
+                    _remoteHeldItemId = heldItem.Object.Id;
+                }
+
+                if (_remoteHeldVisual != null)
+                {
+                    _remoteHeldVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
+                }
+            }
+            else
+            {
+                DestroyRemoteHeldVisual();
+            }
+        }
+
+        private ThrowableItem FindHeldItemByPlayer(PlayerRef player)
+        {
+            foreach (var item in Runner.GetAllBehaviours<ThrowableItem>())
+            {
+                if (item != null && item.IsHeld && item.HeldBy == player)
+                    return item;
+            }
+            return null;
         }
 
         private void TryGrab()
@@ -102,13 +155,12 @@ namespace NonameGame
                 return;
             }
 
-            Vector3 spawnPos = holdPoint != null ? holdPoint.position : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
+            Vector3 spawnPos = holdPoint != null
+                ? holdPoint.position
+                : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
             Quaternion spawnRot = holdPoint != null ? holdPoint.rotation : transform.rotation;
 
-            // Убираем локальный меш
             DestroyLocalVisual();
-
-            // Возвращаем реальный предмет в руку и бросаем
             RestoreItemForThrow(item, spawnPos, spawnRot);
 
             Vector3 dir = transform.forward;
@@ -148,7 +200,6 @@ namespace NonameGame
                 item.transform.position = hidePosition;
             }
 
-            // Опционально выключить рендеры оригинала
             SetRenderersEnabled(item.gameObject, false);
         }
 
@@ -169,6 +220,8 @@ namespace NonameGame
 
                 item.transform.position = hidePosition;
             }
+
+            SetRenderersEnabled(item.gameObject, false);
         }
 
         private void RestoreItemForThrow(ThrowableItem item, Vector3 pos, Quaternion rot)
@@ -202,31 +255,34 @@ namespace NonameGame
         private void SpawnLocalVisual(ThrowableItem item)
         {
             DestroyLocalVisual();
+            _localVisual = CreateVisualCopy(item.gameObject);
+        }
 
-            // Копия только меша — без сетевых компонент
-            _localVisual = Instantiate(item.gameObject, holdPoint != null ? holdPoint : transform);
+        private GameObject CreateVisualCopy(GameObject source)
+        {
+            if (source == null || holdPoint == null)
+                return null;
 
-            // Снять всё сетевое / физику с копии
-            foreach (var nb in _localVisual.GetComponentsInChildren<NetworkBehaviour>(true))
+            var copy = Instantiate(source, holdPoint);
+            copy.name = source.name + "_HeldVisual";
+
+            foreach (var nb in copy.GetComponentsInChildren<NetworkBehaviour>(true))
                 Destroy(nb);
-
-            foreach (var no in _localVisual.GetComponentsInChildren<NetworkObject>(true))
+            foreach (var no in copy.GetComponentsInChildren<NetworkObject>(true))
                 Destroy(no);
-
-            foreach (var nt in _localVisual.GetComponentsInChildren<NetworkTransform>(true))
+            foreach (var nt in copy.GetComponentsInChildren<NetworkTransform>(true))
                 Destroy(nt);
-
-            foreach (var rb in _localVisual.GetComponentsInChildren<Rigidbody>(true))
+            foreach (var rb in copy.GetComponentsInChildren<Rigidbody>(true))
                 Destroy(rb);
-
-            foreach (var col in _localVisual.GetComponentsInChildren<Collider>(true))
+            foreach (var col in copy.GetComponentsInChildren<Collider>(true))
                 Destroy(col);
 
-            _localVisual.transform.SetParent(holdPoint != null ? holdPoint : transform);
-            _localVisual.transform.localPosition = Vector3.zero;
-            _localVisual.transform.localRotation = Quaternion.identity;
+            copy.transform.SetParent(holdPoint);
+            copy.transform.localPosition = Vector3.zero;
+            copy.transform.localRotation = Quaternion.identity;
 
-            SetRenderersEnabled(_localVisual, true);
+            SetRenderersEnabled(copy, true);
+            return copy;
         }
 
         private void DestroyLocalVisual()
@@ -238,8 +294,19 @@ namespace NonameGame
             }
         }
 
+        private void DestroyRemoteHeldVisual()
+        {
+            if (_remoteHeldVisual != null)
+            {
+                Destroy(_remoteHeldVisual);
+                _remoteHeldVisual = null;
+            }
+            _remoteHeldItemId = default;
+        }
+
         private static void SetRenderersEnabled(GameObject go, bool enabled)
         {
+            if (go == null) return;
             foreach (var r in go.GetComponentsInChildren<Renderer>(true))
                 r.enabled = enabled;
         }
@@ -290,6 +357,7 @@ namespace NonameGame
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             DestroyLocalVisual();
+            DestroyRemoteHeldVisual();
         }
     }
 }
