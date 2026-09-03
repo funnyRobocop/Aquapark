@@ -4,25 +4,37 @@ using UnityEngine;
 
 namespace NonameGame
 {
-    public class SimulationTimeProvider : NetworkBehaviour
+    public class SimulationTimeProvider : MonoBehaviour
     {
         public static SimulationTimeProvider Instance { get; private set; }
         public static float Time { get; private set; }
 
-        public override void Spawned()
+        private NetworkRunner _runner;
+
+        private void Awake()
         {
             Instance = this;
         }
 
-        public override void Despawned(NetworkRunner runner, bool hasState)
+        private void OnDestroy()
         {
             if (Instance == this)
                 Instance = null;
         }
 
-        public override void FixedUpdateNetwork()
+        private void FixedUpdate()
         {
-            Time = (float)Runner.SimulationTime;
+            if (_runner == null || !_runner.IsRunning)
+            {
+                _runner = NetworkRunner.GetRunnerForGameObject(gameObject);
+                if (_runner == null)
+                    _runner = FindAnyObjectByType<NetworkRunner>();
+            }
+
+            if (_runner != null && _runner.IsRunning)
+                Time = (float)_runner.SimulationTime;
+            else
+                Time = UnityEngine.Time.time;
         }
     }
 }
