@@ -37,15 +37,73 @@ namespace NonameGame
 
             if (_isHolding)
             {
-                UpdateHeldItemPosition();
+                // Только «логическая» поза на тике
+                SnapHeldItem(false);
 
                 if (released)
                     ThrowHeldItem();
             }
+            else if (pressed)
+            {
+                TryGrab();
+            }
+        }
+
+        public override void Render()
+        {
+            // Гладкое следование за рукой между тиками
+            if (!HasStateAuthority || !_isHolding)
+                return;
+
+            SnapHeldItem(true);
+        }
+
+        private void SnapHeldItem(bool smooth)
+        {
+            if (!Runner.TryFindObject(_heldItemId, out var obj))
+            {
+                ClearHold();
+                return;
+            }
+
+            var item = obj.GetBehaviour<ThrowableItem>();
+            if (item == null || !item.IsHeld)
+            {
+                ClearHold();
+                return;
+            }
+
+            Vector3 targetPos = holdPoint != null
+                ? holdPoint.position
+                : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
+
+            Quaternion targetRot = holdPoint != null
+                ? holdPoint.rotation
+                : transform.rotation;
+
+            if (smooth)
+            {
+                // Без Teleport — меньше конфликта с NetworkTransform
+                item.transform.position = Vector3.Lerp(
+                    item.transform.position,
+                    targetPos,
+                    Time.deltaTime * holdLerp);
+
+                item.transform.rotation = Quaternion.Slerp(
+                    item.transform.rotation,
+                    targetRot,
+                    Time.deltaTime * holdLerp);
+            }
             else
             {
-                if (pressed)
-                    TryGrab();
+                // Сетевой/логический снимок
+                var nt = item.GetComponent<NetworkTransform>();
+                if (nt != null)
+                    nt.Teleport(targetPos, targetRot);
+                else
+                {
+                    item.transform.SetPositionAndRotation(targetPos, targetRot);
+                }
             }
         }
 
