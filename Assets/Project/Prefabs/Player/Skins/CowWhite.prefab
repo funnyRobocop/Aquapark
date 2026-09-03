@@ -670,6 +670,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3361820309957007926}
   - component: {fileID: 421069068543501588}
+  - component: {fileID: 5764582324265026037}
   m_Layer: 0
   m_Name: CowWhite
   m_TagString: Untagged
@@ -717,6 +718,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5764582324265026037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5120536587548973046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
+  Animator: {fileID: 421069068543501588}
+  ApplyTiming: 2
+  SyncSettings: 79
+  StateHashes: 0000000084ca1cc0f9c6230b28a981077af3fe2e48d3833bccf055d42866e9411bd5cc76i
+  TriggerHashes: 0000000028a981073e725c3b5ab908ff336e528ei
+  TotalWords: 2
 --- !u!1 &5653785999866204906
 GameObject:
   m_ObjectHideFlags: 0

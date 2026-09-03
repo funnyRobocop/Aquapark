@@ -16,6 +16,9 @@ namespace NonameGame
 
         private PlayerGrab playerGrab;
 
+        [Header("References")]
+        [SerializeField] private PlayerView _view;
+
         [Header("Optional Feedback")]
         [SerializeField] private AudioSource pushAudio; // можно пустым
         [SerializeField] private ParticleSystem pushVfx; // можно пустым
@@ -96,6 +99,7 @@ namespace NonameGame
             if (pushedAnyone)
             {
                 RPC_PlayPushFeedback();
+                _view.PlayPush();
             }
         }
 

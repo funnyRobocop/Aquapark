@@ -103,7 +103,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1961054772260347575}
   - component: {fileID: 4529568527393995943}
-  - component: {fileID: 9114010046680142471}
   - component: {fileID: 7429013140986272679}
   - component: {fileID: 7541582282611638532}
   - component: {fileID: 6701902656928438129}
@@ -112,6 +111,7 @@ GameObject:
   - component: {fileID: 7082396205780541595}
   - component: {fileID: 3448233462420341247}
   - component: {fileID: 6363781521094476151}
+  - component: {fileID: 2137247441811218386}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -157,31 +157,14 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6701902656928438129}
-  - {fileID: 9114010046680142471}
   - {fileID: -7173744380243368626}
   - {fileID: 7187583196042404613}
   - {fileID: 7082396205780541595}
   - {fileID: 3448233462420341247}
   - {fileID: 6363781521094476151}
+  - {fileID: 2137247441811218386}
+  - {fileID: 3229857241638445635}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &9114010046680142471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8337347737783543015}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Animator: {fileID: 7420484192698730146}
-  ApplyTiming: 2
-  SyncSettings: 79
-  StateHashes: 0000000084ca1cc0f9c6230b1c6a54339e2518b628a981077af3fe2ei
-  TriggerHashes: 00000000i
-  TotalWords: 3
 --- !u!136 &7429013140986272679
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -386,7 +369,29 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   holdPoint: {fileID: 4011118905859521299}
-  holdLerp: 25
+  throwForce: 14
+  throwUpForce: 3
+  hidePosition: {x: 0, y: -500, z: 0}
+--- !u!114 &2137247441811218386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8337347737783543015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e163624326880c4786a45936413d102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerView
+  animator: {fileID: 7420484192698730146}
+  networkAnimator: {fileID: 3229857241638445635}
+  controller: {fileID: 7187583196042404613}
+  grab: {fileID: 6363781521094476151}
+  rb: {fileID: 7541582282611638532}
+  speedDamp: 0.1
+  runSpeedThreshold: 0.5
+  fallYThreshold: -1.5
 --- !u!1001 &7146415568189727670
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -444,6 +449,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be5f99466e0e4d048ab320630daf0f15, type: 3}
+--- !u!114 &3229857241638445635 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5764582324265026037, guid: be5f99466e0e4d048ab320630daf0f15, type: 3}
+  m_PrefabInstance: {fileID: 7146415568189727670}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
 --- !u!4 &5587488131536091520 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3361820309957007926, guid: be5f99466e0e4d048ab320630daf0f15, type: 3}

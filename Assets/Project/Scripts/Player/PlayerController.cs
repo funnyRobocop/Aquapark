@@ -41,7 +41,8 @@ namespace NonameGame
         [SerializeField] private float frictionAgainstFloor = 0.3f;
 
         [Header("References")]
-        [SerializeField] private Transform cameraTarget;
+        [SerializeField] private Transform cameraTarget; 
+        [SerializeField] private PlayerView _view;
 
         private Rigidbody _rb;
         private CapsuleCollider _col;
@@ -133,10 +134,10 @@ namespace NonameGame
 
             if (!_stunTimer.ExpiredOrNotRunning(Runner))
             {
-                //netDashAnimationFlag = true;
             }
             else if (!_dashTimer.ExpiredOrNotRunning(Runner))
             {
+                _view.PlayDash();
                 Vector3 v = _rb.linearVelocity;
                 Vector3 dashDir = _moveDir.sqrMagnitude > 0.01f ? _moveDir : transform.forward;
                 _rb.linearVelocity = new Vector3(dashDir.x * dashForce, v.y, dashDir.z * dashForce);

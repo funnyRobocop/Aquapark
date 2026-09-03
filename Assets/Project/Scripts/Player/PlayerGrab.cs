@@ -19,6 +19,9 @@ namespace NonameGame
         [Header("Hide while held")]
         [SerializeField] private Vector3 hidePosition = new Vector3(0f, -500f, 0f);
 
+        [Header("References")]
+        [SerializeField] private PlayerView _view;
+
         [Networked] private NetworkId _heldItemId { get; set; }
         [Networked] private NetworkBool _isHolding { get; set; }
 
@@ -173,6 +176,8 @@ namespace NonameGame
 
             item.Throw(dir * throwForce);
             ClearHold();
+
+            _view.PlayThrow();
         }
 
         private void HideAndHold(ThrowableItem item)
