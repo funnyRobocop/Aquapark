@@ -10,15 +10,20 @@ namespace NonameGame
         [SerializeField] private float grabRadius = 1.8f;
         [SerializeField] private float grabAngle = 90f;
         [SerializeField] private LayerMask itemMask;
-        [SerializeField] private Transform holdPoint; // пустой объект перед персонажем
+        [SerializeField] private Transform holdPoint;
 
-        [Header("Hold")]
-        [SerializeField] private float holdLerp = 25f;
+        [Header("Throw")]
+        [SerializeField] private float throwForce = 14f;
+        [SerializeField] private float throwUpForce = 3f;
+
+        [Header("Hide while held")]
+        [SerializeField] private Vector3 hidePosition = new Vector3(0f, -500f, 0f);
 
         [Networked] private NetworkId _heldItemId { get; set; }
         [Networked] private NetworkBool _isHolding { get; set; }
 
         private bool _wasGrabHeld;
+        private GameObject _localVisual; // локальная копия только у себя
 
         public bool IsHolding => _isHolding;
 
@@ -37,8 +42,8 @@ namespace NonameGame
 
             if (_isHolding)
             {
-                // Только «логическая» поза на тике
-                SnapHeldItem(false);
+                // Реальный предмет держим «в изгнании»
+                KeepItemHidden();
 
                 if (released)
                     ThrowHeldItem();
@@ -51,59 +56,13 @@ namespace NonameGame
 
         public override void Render()
         {
-            // Гладкое следование за рукой между тиками
-            if (!HasStateAuthority || !_isHolding)
+            // Локальный меш в руке — только у владельца
+            if (!HasStateAuthority)
                 return;
 
-            SnapHeldItem(true);
-        }
-
-        private void SnapHeldItem(bool smooth)
-        {
-            if (!Runner.TryFindObject(_heldItemId, out var obj))
+            if (_isHolding && _localVisual != null && holdPoint != null)
             {
-                ClearHold();
-                return;
-            }
-
-            var item = obj.GetBehaviour<ThrowableItem>();
-            if (item == null || !item.IsHeld)
-            {
-                ClearHold();
-                return;
-            }
-
-            Vector3 targetPos = holdPoint != null
-                ? holdPoint.position
-                : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
-
-            Quaternion targetRot = holdPoint != null
-                ? holdPoint.rotation
-                : transform.rotation;
-
-            if (smooth)
-            {
-                // Без Teleport — меньше конфликта с NetworkTransform
-                item.transform.position = Vector3.Lerp(
-                    item.transform.position,
-                    targetPos,
-                    Time.deltaTime * holdLerp);
-
-                item.transform.rotation = Quaternion.Slerp(
-                    item.transform.rotation,
-                    targetRot,
-                    Time.deltaTime * holdLerp);
-            }
-            else
-            {
-                // Сетевой/логический снимок
-                var nt = item.GetComponent<NetworkTransform>();
-                if (nt != null)
-                    nt.Teleport(targetPos, targetRot);
-                else
-                {
-                    item.transform.SetPositionAndRotation(targetPos, targetRot);
-                }
+                _localVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
             }
         }
 
@@ -113,13 +72,16 @@ namespace NonameGame
             if (item == null)
                 return;
 
-            // Берём authority над предметом
             if (!item.Object.HasStateAuthority)
                 item.Object.RequestStateAuthority();
 
+            HideAndHold(item);
             item.PickUp(Object.InputAuthority);
+
             _heldItemId = item.Object.Id;
             _isHolding = true;
+
+            SpawnLocalVisual(item);
         }
 
         private void ThrowHeldItem()
@@ -140,48 +102,146 @@ namespace NonameGame
                 return;
             }
 
+            Vector3 spawnPos = holdPoint != null ? holdPoint.position : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
+            Quaternion spawnRot = holdPoint != null ? holdPoint.rotation : transform.rotation;
+
+            // Убираем локальный меш
+            DestroyLocalVisual();
+
+            // Возвращаем реальный предмет в руку и бросаем
+            RestoreItemForThrow(item, spawnPos, spawnRot);
+
             Vector3 dir = transform.forward;
             dir.y = 0f;
+            if (dir.sqrMagnitude < 0.001f)
+                dir = Vector3.forward;
+            dir.Normalize();
+            dir += Vector3.up * (throwUpForce / Mathf.Max(throwForce, 0.01f));
             dir.Normalize();
 
-            item.Throw(dir);
+            item.Throw(dir * throwForce);
             ClearHold();
         }
 
-        private void UpdateHeldItemPosition()
+        private void HideAndHold(ThrowableItem item)
         {
-            if (!Runner.TryFindObject(_heldItemId, out var obj))
+            var rb = item.GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                ClearHold();
-                return;
+                rb.isKinematic = true;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
 
-            var item = obj.GetBehaviour<ThrowableItem>();
-            if (item == null || !item.IsHeld)
-            {
-                ClearHold();
-                return;
-            }
+            var col = item.GetComponent<Collider>();
+            if (col != null)
+                col.enabled = false;
 
-            Vector3 targetPos = holdPoint != null
-                ? holdPoint.position
-                : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
-
-            Quaternion targetRot = holdPoint != null ? holdPoint.rotation : transform.rotation;
-
-            // Т.к. kinematic — двигаем transform / NetworkTransform
             var nt = item.GetComponent<NetworkTransform>();
             if (nt != null)
             {
-                // Плавное следование
-                Vector3 p = Vector3.Lerp(item.transform.position, targetPos, Runner.DeltaTime * holdLerp);
-                nt.Teleport(p, targetRot);
+                nt.enabled = false;
+                nt.Teleport(hidePosition, Quaternion.identity);
             }
             else
             {
-                item.transform.position = Vector3.Lerp(item.transform.position, targetPos, Runner.DeltaTime * holdLerp);
-                item.transform.rotation = targetRot;
+                item.transform.position = hidePosition;
             }
+
+            // Опционально выключить рендеры оригинала
+            SetRenderersEnabled(item.gameObject, false);
+        }
+
+        private void KeepItemHidden()
+        {
+            if (!Runner.TryFindObject(_heldItemId, out var obj))
+                return;
+
+            var item = obj.GetBehaviour<ThrowableItem>();
+            if (item == null)
+                return;
+
+            if ((item.transform.position - hidePosition).sqrMagnitude > 0.01f)
+            {
+                var nt = item.GetComponent<NetworkTransform>();
+                if (nt != null && nt.enabled)
+                    nt.enabled = false;
+
+                item.transform.position = hidePosition;
+            }
+        }
+
+        private void RestoreItemForThrow(ThrowableItem item, Vector3 pos, Quaternion rot)
+        {
+            SetRenderersEnabled(item.gameObject, true);
+
+            var col = item.GetComponent<Collider>();
+            if (col != null)
+                col.enabled = true;
+
+            var rb = item.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+
+            var nt = item.GetComponent<NetworkTransform>();
+            if (nt != null)
+            {
+                nt.enabled = true;
+                nt.Teleport(pos, rot);
+            }
+            else
+            {
+                item.transform.SetPositionAndRotation(pos, rot);
+            }
+        }
+
+        private void SpawnLocalVisual(ThrowableItem item)
+        {
+            DestroyLocalVisual();
+
+            // Копия только меша — без сетевых компонент
+            _localVisual = Instantiate(item.gameObject, holdPoint != null ? holdPoint : transform);
+
+            // Снять всё сетевое / физику с копии
+            foreach (var nb in _localVisual.GetComponentsInChildren<NetworkBehaviour>(true))
+                Destroy(nb);
+
+            foreach (var no in _localVisual.GetComponentsInChildren<NetworkObject>(true))
+                Destroy(no);
+
+            foreach (var nt in _localVisual.GetComponentsInChildren<NetworkTransform>(true))
+                Destroy(nt);
+
+            foreach (var rb in _localVisual.GetComponentsInChildren<Rigidbody>(true))
+                Destroy(rb);
+
+            foreach (var col in _localVisual.GetComponentsInChildren<Collider>(true))
+                Destroy(col);
+
+            _localVisual.transform.SetParent(holdPoint != null ? holdPoint : transform);
+            _localVisual.transform.localPosition = Vector3.zero;
+            _localVisual.transform.localRotation = Quaternion.identity;
+
+            SetRenderersEnabled(_localVisual, true);
+        }
+
+        private void DestroyLocalVisual()
+        {
+            if (_localVisual != null)
+            {
+                Destroy(_localVisual);
+                _localVisual = null;
+            }
+        }
+
+        private static void SetRenderersEnabled(GameObject go, bool enabled)
+        {
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                r.enabled = enabled;
         }
 
         private ThrowableItem FindItemInCone()
@@ -192,18 +252,13 @@ namespace NonameGame
             forward.Normalize();
 
             Collider[] hits = Physics.OverlapSphere(origin, grabRadius, itemMask);
-
             ThrowableItem best = null;
             float bestDist = float.MaxValue;
 
             foreach (var hit in hits)
             {
                 var item = hit.GetComponentInParent<ThrowableItem>();
-                if (item == null || item.Object == null)
-                    continue;
-
-                // Уже у кого-то в руках
-                if (item.IsHeld)
+                if (item == null || item.Object == null || item.IsHeld)
                     continue;
 
                 Vector3 toItem = item.transform.position - transform.position;
@@ -211,8 +266,7 @@ namespace NonameGame
                 if (toItem.sqrMagnitude < 0.001f)
                     continue;
 
-                float angle = Vector3.Angle(forward, toItem.normalized);
-                if (angle > grabAngle * 0.5f)
+                if (Vector3.Angle(forward, toItem.normalized) > grabAngle * 0.5f)
                     continue;
 
                 float dist = toItem.magnitude;
@@ -230,24 +284,12 @@ namespace NonameGame
         {
             _isHolding = false;
             _heldItemId = default;
+            DestroyLocalVisual();
         }
 
-        private void OnDrawGizmosSelected()
+        public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            Vector3 origin = transform.position + Vector3.up * 0.9f;
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(origin, grabRadius);
-
-            Vector3 forward = transform.forward;
-            forward.y = 0f;
-            forward.Normalize();
-
-            Quaternion left = Quaternion.Euler(0f, -grabAngle * 0.5f, 0f);
-            Quaternion right = Quaternion.Euler(0f, grabAngle * 0.5f, 0f);
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(origin, origin + left * forward * grabRadius);
-            Gizmos.DrawLine(origin, origin + right * forward * grabRadius);
+            DestroyLocalVisual();
         }
     }
 }

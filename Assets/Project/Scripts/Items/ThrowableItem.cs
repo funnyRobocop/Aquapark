@@ -48,48 +48,25 @@ namespace NonameGame
             }
         }
 
-        /// <summary>Вызывает игрок, который поднимает предмет.</summary>
         public void PickUp(PlayerRef player)
         {
-            if (!HasStateAuthority && !Object.HasStateAuthority)
-            {
-                // В Shared Mode лучше запросить authority
-                Object.RequestStateAuthority();
-            }
-
             IsHeld = true;
             IsAirborneThrown = false;
             HeldBy = player;
-
-            if (_rb != null)
-            {
-                _rb.linearVelocity = Vector3.zero;
-                _rb.angularVelocity = Vector3.zero;
-                _rb.isKinematic = true;
-            }
-
-            if (_col != null)
-                _col.enabled = false;
         }
 
-        public void Throw(Vector3 direction)
+        public void Throw(Vector3 force)
         {
             IsHeld = false;
             IsAirborneThrown = true;
             HeldBy = default;
 
-            if (_rb != null)
+            var rb = GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                _rb.isKinematic = false;
-                _rb.linearVelocity = Vector3.zero;
-                _rb.angularVelocity = Vector3.zero;
-
-                Vector3 force = direction.normalized * throwForce + Vector3.up * throwUpForce;
-                _rb.AddForce(force, ForceMode.VelocityChange);
+                rb.isKinematic = false;
+                rb.AddForce(force, ForceMode.VelocityChange);
             }
-
-            if (_col != null)
-                _col.enabled = true;
         }
 
         public void ForceDrop()
