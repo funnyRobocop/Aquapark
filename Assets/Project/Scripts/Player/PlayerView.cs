@@ -50,12 +50,9 @@ namespace NonameGame
 
         public override void Render()
         {
-            // Можно обновлять и на proxies для гладкости Speed по velocity,
-            // но triggers/сеть — лучше с authority через NetworkMecanimAnimator
-            if (animator == null || rb == null)
+            if (!HasStateAuthority || animator == null || rb == null)
                 return;
 
-            // Speed — локально по velocity (на remote тоже ок, меньше лага)
             Vector3 horizontal = rb.linearVelocity;
             horizontal.y = 0f;
             float speedNorm = Mathf.Clamp01(horizontal.magnitude / Mathf.Max(runSpeedThreshold, 0.01f));
@@ -64,24 +61,34 @@ namespace NonameGame
 
         public override void FixedUpdateNetwork()
         {
-            if (!HasStateAuthority || animator == null || controller == null)
+            if (!HasStateAuthority || animator == null)
                 return;
 
-            bool grounded = controller.IsGrounded;
+            bool grounded = controller != null && controller.IsGrounded;
             bool holding = grab != null && grab.IsHolding;
+
             float vy = rb != null ? rb.linearVelocity.y : 0f;
             bool falling = !grounded && vy < fallYThreshold;
 
-            SetBool(IsGroundedHash, grounded);
-            SetBool(IsHoldingHash, holding);
-            SetBool(IsFallingHash, falling);
+            float speedNorm = 0f;
+            if (GetInput(out NetworkInputData data) && data.Move.sqrMagnitude > 0.01f && grounded)
+                speedNorm = 1f;
 
-            // Прыжок: только что оторвался от земли вверх
+            animator.SetFloat(SpeedHash, speedNorm);
+            animator.SetBool(IsGroundedHash, grounded);
+            animator.SetBool(IsHoldingHash, holding);
+            animator.SetBool(IsFallingHash, falling);
+            Debug.Log($"Grounded: {grounded}, Holding: {holding}, Falling: {falling}, SpeedNorm: {speedNorm}");
+
             if (_wasGrounded && !grounded && vy > 0.5f)
-                SetTrigger(JumpHash);
+            {
+                if (networkAnimator != null)
+                    networkAnimator.SetTrigger("Jump");
+                else
+                    animator.SetTrigger(JumpHash);
+            }
 
             _wasGrounded = grounded;
-            _wasHolding = holding;
         }
 
         // ===== Вызывать из геймплейных скриптов =====
