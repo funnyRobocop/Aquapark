@@ -13123,8 +13123,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8535956550274453472}
-  - component: {fileID: 7045643227176818008}
-  - component: {fileID: 5968690756697207083}
+  - component: {fileID: 5833303136824306953}
+  - component: {fileID: 6063120941534945842}
   m_Layer: 0
   m_Name: air_balloon_001
   m_TagString: Untagged
@@ -13147,8 +13147,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 662580650099777796}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &7045643227176818008
-SkinnedMeshRenderer:
+--- !u!33 &5833303136824306953
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3946083435087280143}
+  m_Mesh: {fileID: -6045924146406785566, guid: 6eb021c8c9567ca47b651e806067ddc5, type: 3}
+--- !u!23 &6063120941534945842
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -13162,7 +13170,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
+  m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
@@ -13195,41 +13203,7 @@ SkinnedMeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 1
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -6045924146406785566, guid: 6eb021c8c9567ca47b651e806067ddc5, type: 3}
-  m_Bones: []
-  m_BlendShapeWeights:
-  - 0
-  m_RootBone: {fileID: 0}
-  m_AABB:
-    m_Center: {x: -0.0000030994415, y: 7.498701, z: 0.0000011920929}
-    m_Extent: {x: 4.6689415, y: 6.8535995, z: 4.7330074}
-  m_DirtyAABB: 0
---- !u!95 &5968690756697207083
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3946083435087280143}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b4d0e26e0334da7469e495fd3af4ee0e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3970850717238910270
 GameObject:
   m_ObjectHideFlags: 0
