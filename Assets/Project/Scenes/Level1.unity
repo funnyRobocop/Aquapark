@@ -5162,6 +5162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1956919472281716037}
+  - component: {fileID: 1956919472281716038}
   m_Layer: 0
   m_Name: indicator_003 (9)
   m_TagString: Untagged
@@ -5871,6 +5872,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6359279998804515222}
+  - component: {fileID: 6359279998804515223}
   m_Layer: 0
   m_Name: indicator_003 (7)
   m_TagString: Untagged
@@ -11731,6 +11733,22 @@ Transform:
   - {fileID: 6490769863196794863}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: -48.463, z: 0}
+--- !u!114 &1956919472281716038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179274117630237843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!1 &1960032074626317114
 GameObject:
   m_ObjectHideFlags: 0
@@ -15516,6 +15534,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1627157743372860004}
+  - component: {fileID: 3171897355845462911}
   m_Layer: 0
   m_Name: indicator_003 (2)
   m_TagString: Untagged
@@ -15523,6 +15542,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4
   m_IsActive: 1
+--- !u!114 &3171897355845462911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3171897355845462910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!4 &3178599608865578102
 Transform:
   m_ObjectHideFlags: 0
@@ -15593,6 +15628,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4494571575307754417}
+  - component: {fileID: 4494571575307754418}
   m_Layer: 0
   m_Name: indicator_003 (3)
   m_TagString: Untagged
@@ -17561,6 +17597,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7300868055504200558}
+  - component: {fileID: 7300868055504200559}
   m_Layer: 0
   m_Name: indicator_003 (8)
   m_TagString: Untagged
@@ -18773,6 +18810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5435645400784669329}
+  - component: {fileID: 5435645400784669330}
   m_Layer: 0
   m_Name: indicator_003 (1)
   m_TagString: Untagged
@@ -19522,6 +19560,22 @@ Transform:
   - {fileID: 1662539851490634791}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: 221.533, z: 0}
+--- !u!114 &4494571575307754418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3189735438011345822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!4 &4495093515133617402
 Transform:
   m_ObjectHideFlags: 0
@@ -21922,6 +21976,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6169259656621643979}
+  - component: {fileID: 6169259656621643980}
   m_Layer: 0
   m_Name: indicator_003 (6)
   m_TagString: Untagged
@@ -22623,6 +22678,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3001195928834357407}
+  - component: {fileID: 5428254942643500370}
   m_Layer: 0
   m_Name: indicator_003 (5)
   m_TagString: Untagged
@@ -22630,6 +22686,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4
   m_IsActive: 1
+--- !u!114 &5428254942643500370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5428254942643500369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!54 &5429718269730966371
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -22681,6 +22753,22 @@ Transform:
   - {fileID: 5027089021832310647}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: -48.463, z: 0}
+--- !u!114 &5435645400784669330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365854478647691480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!4 &5440516222960949810
 Transform:
   m_ObjectHideFlags: 0
@@ -25320,6 +25408,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4269662943687844659}
+  - component: {fileID: 6153954877191869616}
   m_Layer: 0
   m_Name: indicator_003 (11)
   m_TagString: Untagged
@@ -25327,6 +25416,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4
   m_IsActive: 1
+--- !u!114 &6153954877191869616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6153954877191869615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!33 &6154743777969389507
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -25478,6 +25583,22 @@ Transform:
   - {fileID: 6772248230348418206}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: -48.463, z: 0}
+--- !u!114 &6169259656621643980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224186679901002635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!114 &6172215557614176560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26146,6 +26267,22 @@ Transform:
   - {fileID: 2030691178015773612}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: 221.533, z: 0}
+--- !u!114 &6359279998804515223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389468497800887678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!33 &6366546286773806042
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -26366,6 +26503,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5571124071470959990}
+  - component: {fileID: 6457269323545897474}
   m_Layer: 0
   m_Name: indicator_003
   m_TagString: Untagged
@@ -26373,6 +26511,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4
   m_IsActive: 1
+--- !u!114 &6457269323545897474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457269323545897473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!1 &6466145051104476526
 GameObject:
   m_ObjectHideFlags: 0
@@ -29216,6 +29370,22 @@ Transform:
   - {fileID: 8856102338758629582}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: 221.533, z: 0}
+--- !u!114 &7300868055504200559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3892789232386075779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!33 &7304501278354298062
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -32389,6 +32559,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9052588705871159736}
+  - component: {fileID: 9052588705871159737}
   m_Layer: 0
   m_Name: indicator_003 (10)
   m_TagString: Untagged
@@ -33051,6 +33222,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5901763445147793739}
+  - component: {fileID: 8605349257011512875}
   m_Layer: 0
   m_Name: indicator_003 (4)
   m_TagString: Untagged
@@ -33058,6 +33230,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4
   m_IsActive: 1
+--- !u!114 &8605349257011512875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8605349257011512874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!4 &8606131603706202496
 Transform:
   m_ObjectHideFlags: 0
@@ -34832,6 +35020,22 @@ Transform:
   - {fileID: 554932180956968967}
   m_Father: {fileID: 662580649418834185}
   m_LocalEulerAnglesHint: {x: 0, y: -48.463, z: 0}
+--- !u!114 &9052588705871159737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8346539994054296021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538b1ca7712fc5d46a5f52311064cf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.DroneHover
+  positionAmount: {x: 0.2, y: 0.15, z: 0.2}
+  positionSpeed: 1.5
+  rotationAmount: {x: 5, y: 3, z: 5}
+  rotationSpeed: 2
 --- !u!136 &9059344390100350085
 CapsuleCollider:
   m_ObjectHideFlags: 0
