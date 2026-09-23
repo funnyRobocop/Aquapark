@@ -63,12 +63,12 @@ namespace NonameGame
 
             Quaternion visualLocal = Quaternion.Slerp(_prevLocalRotation, _currentLocalRotation, alpha);
 
-            if (visualMesh != null)
+            //if (visualMesh != null)
             {
                 // visual в локальном пространстве родителя
-                visualMesh.localRotation = visualLocal;
+                //visualMesh.rotation = visualLocal;
             }
-            else
+            //else
             {
                 ApplyRotation(visualLocal);
             }
