@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer.Unity;
 
 [Tooltip("Implements INetworkRunnerCallbacks so various events such as playings joining and leaving will trigger different actions.")]
 public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
@@ -21,6 +22,18 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
         var newPlayer = runner.Spawn(playerPrefab, position: Vector3.up, inputAuthority: player);
 
         runner.SetPlayerObject(player, newPlayer);
+
+        if (newPlayer.TryGetComponent<PlayerController>(out var playerController))
+        {
+            var resolver = LifetimeScope.Find<RootScope>().Container;
+
+            var view = playerController.GetComponentInChildren<PlayerView>();            
+            resolver.Inject(view);
+            view.InitSkin();
+
+            var playerRaceData = playerController.GetComponent<PlayerRaceData>();
+            //resolver.Inject(playerRaceData);
+        }
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

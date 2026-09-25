@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using VContainer;
 
 namespace NonameGame
 {
@@ -13,6 +14,8 @@ namespace NonameGame
 
         [Networked] public Vector3 CheckpointPosition { get; set; }
         [Networked] public Quaternion CheckpointRotation { get; set; }
+
+        [Inject] private CameraManager _cameraManager;
 
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
@@ -85,6 +88,8 @@ namespace NonameGame
 
             var point = points[StartingPointIndex];
             TeleportTo(point.SpawnPosition, point.SpawnRotation);
+            Debug.Log($"Player {Id} teleported to starting point {StartingPointIndex}" +
+                $" at position {point.SpawnPosition} and rotation {point.SpawnRotation}");
 
             CheckpointPosition = point.SpawnPosition;
             CheckpointRotation = point.SpawnRotation;
@@ -131,6 +136,8 @@ namespace NonameGame
             {
                 transform.SetPositionAndRotation(pos, rot);
             }
+            
+            _cameraManager?.ResetPlayerCameraPos();
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]

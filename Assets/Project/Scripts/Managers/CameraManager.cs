@@ -6,7 +6,14 @@ namespace NonameGame
     public class CameraManager : MonoBehaviour
     {
         [SerializeField] private CinemachineCamera _playerCamera;
+        [SerializeField] private CinemachineOrbitalFollow _playerCameraFollow;
         [SerializeField] private CinemachineCamera[] _allRagdollCameras;
+
+        public void ResetPlayerCameraPos()
+        {
+            Debug.Log("ResetPlayerCameraPos");
+            _playerCameraFollow.HorizontalAxis.Value = 0f;
+        }
 
         public void InitForPlayer(Transform playerTransform)
         {

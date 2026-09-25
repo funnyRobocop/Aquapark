@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using VContainer;
 
 
 namespace NonameGame
@@ -24,6 +25,8 @@ namespace NonameGame
         private bool _dashTriggered;
         private bool _pushTriggered;
 
+        [Inject] private IPlayerSkinLoader _playerSkinLoader;
+
         // Хеши — быстрее строк
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
         private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -34,18 +37,25 @@ namespace NonameGame
         private static readonly int PushHash = Animator.StringToHash("Push");
         private static readonly int ThrowHash = Animator.StringToHash("Throw");
 
+        [Networked] public int SelectedSkinId { get; set; }
+
         public override void Spawned()
         {
-            if (animator == null)
-                animator = GetComponentInChildren<Animator>();
-            if (networkAnimator == null)
-                networkAnimator = GetComponentInChildren<NetworkMecanimAnimator>();
             if (controller == null)
-                controller = GetComponentInParent<PlayerController>();
+                controller = GetComponent<PlayerController>();
             if (grab == null)
-                grab = GetComponentInParent<PlayerGrab>();
+                grab = GetComponent<PlayerGrab>();
             if (rb == null)
-                rb = GetComponentInParent<Rigidbody>();
+                rb = GetComponent<Rigidbody>();
+        }
+
+        public void InitSkin()
+        {
+            var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab(PlayerSkinType.Banana);
+            var skin = Instantiate(skinPrefab, animator.transform);
+            var skinAnimator = skin.GetComponent<Animator>();
+            animator.avatar = skinAnimator.avatar;
+            skinAnimator.enabled = false;
         }
 
         public override void Render()

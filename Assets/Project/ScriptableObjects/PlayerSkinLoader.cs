@@ -4,8 +4,13 @@ using UnityEngine;
 
 namespace NonameGame
 {
+    public interface IPlayerSkinLoader
+    {
+        GameObject GetPlayerSkinPrefab(PlayerSkinType skinType);
+    }
+
     [CreateAssetMenu(fileName = "PlayerSkinLoader", menuName = "Scriptable Objects/PlayerSkinLoader")]
-    public class PlayerSkinLoader : ScriptableObject
+    public class PlayerSkinLoader : ScriptableObject, IPlayerSkinLoader
     {
         [SerializeField] private Dictionary<PlayerSkinType, PlayerSkinData> playerSkinAll;
 
