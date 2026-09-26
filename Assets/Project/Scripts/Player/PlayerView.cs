@@ -51,7 +51,7 @@ namespace NonameGame
 
         public void InitSkin()
         {
-            var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab(PlayerSkinType.Banana);
+            var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab(PlayerSkinType.Broccoli);
             var skin = Instantiate(skinPrefab, animator.transform);
             var skinAnimator = skin.GetComponent<Animator>();
             animator.avatar = skinAnimator.avatar;

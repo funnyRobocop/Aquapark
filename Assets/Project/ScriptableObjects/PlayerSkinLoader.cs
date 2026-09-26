@@ -37,6 +37,20 @@ namespace NonameGame
 
     public enum PlayerSkinType
     {
-        Banana
+        Banana,
+        BigSausage,
+        Broccoli,
+        Carrot,
+        Cola,
+        Corn,
+        Cucumber,
+        Duck,
+        Cactus,
+        Pineapple,
+        Pizza,
+        Rooster,
+        Strawberry,
+        Terminator,
+        Tomato
     }
 }

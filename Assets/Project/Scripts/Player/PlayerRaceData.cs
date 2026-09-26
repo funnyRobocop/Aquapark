@@ -93,6 +93,8 @@ namespace NonameGame
 
             CheckpointPosition = point.SpawnPosition;
             CheckpointRotation = point.SpawnRotation;
+
+            Invoke(nameof(RespawnAtCheckpoint), 2f); //for testing, remove later TODO
         }
 
         public void SetCheckpoint(Vector3 pos, Quaternion rot)
