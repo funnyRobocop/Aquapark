@@ -101,10 +101,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
   Animator: {fileID: 7420484192698730146}
   ApplyTiming: 0
-  SyncSettings: 14
-  StateHashes: 0000000084ca1cc0f9c6230b28a981077af3fe2e48d3833bccf055d4f57f984db6d1ab4e2866e9411bd5cc76i
-  TriggerHashes: 0000000028a98107927973205ab908ff336e528ei
-  TotalWords: 2
+  SyncSettings: 0
+  StateHashes: 0000000049cda535535c9fdf28a981077af3fe2e5ab908ff08e377d63e725c3b6c28231248d3833bccf055d47f6e1699a1c557fa9ac5a14a74a7693fbad385b1389cc934i
+  TriggerHashes: 0000000028a981073e725c3b5ab908ff336e528ebad385b1i
+  TotalWords: 0
 --- !u!1 &3458330681808181714
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,13 +129,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3458330681808181714}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0.5}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1961054772260347575}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &4283209103891623559
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,6 +162,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1961054772260347575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6323240742990706968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6937466065769926189}
+  m_Layer: 0
+  m_Name: MuzzlePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6937466065769926189
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323240742990706968}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -217,6 +248,7 @@ GameObject:
   - component: {fileID: 3448233462420341247}
   - component: {fileID: 6363781521094476151}
   - component: {fileID: 2137247441811218386}
+  - component: {fileID: 2485695873283258591}
   m_Layer: 8
   m_Name: Player_old
   m_TagString: Player
@@ -241,6 +273,7 @@ Transform:
   - {fileID: 2458623582212189551}
   - {fileID: 8687073919806671688}
   - {fileID: 4011118905859521299}
+  - {fileID: 6937466065769926189}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4529568527393995943
@@ -268,6 +301,7 @@ MonoBehaviour:
   - {fileID: 3448233462420341247}
   - {fileID: 6363781521094476151}
   - {fileID: 2137247441811218386}
+  - {fileID: 2485695873283258591}
   - {fileID: 3229857241638445635}
   ForceRemoteRenderTimeframe: 0
 --- !u!136 &7429013140986272679
@@ -483,6 +517,7 @@ MonoBehaviour:
   throwUpForce: 3
   hidePosition: {x: 0, y: -500, z: 0}
   _view: {fileID: 2137247441811218386}
+  playerWeapon: {fileID: 2485695873283258591}
 --- !u!114 &2137247441811218386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,8 +534,36 @@ MonoBehaviour:
   networkAnimator: {fileID: 3229857241638445635}
   controller: {fileID: 7187583196042404613}
   grab: {fileID: 6363781521094476151}
+  weapon: {fileID: 2485695873283258591}
   rb: {fileID: 7541582282611638532}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
   fallYThreshold: -10
   _SelectedSkinId: 0
+--- !u!114 &2485695873283258591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8337347737783543015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d113623a13ee534e8d8fac4575953d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerWeapon
+  grabRadius: 1.8
+  grabAngle: 90
+  weaponMask:
+    serializedVersion: 2
+    m_Bits: 16384
+  holdPoint: {fileID: 4011118905859521299}
+  muzzlePoint: {fileID: 6937466065769926189}
+  hidePosition: {x: 0, y: -500, z: 0}
+  shootCooldown: 0.35
+  bulletSpeed: 28
+  bulletUpBoost: 0.05
+  bulletPrefab: {fileID: 6587193208258394598, guid: 7b8b287f6ccdd644eb8c72929b46f9db, type: 3}
+  poolSize: 12
+  _view: {fileID: 2137247441811218386}
+  playerGrab: {fileID: 6363781521094476151}

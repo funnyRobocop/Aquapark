@@ -1,7 +1,6 @@
 using Fusion;
 using UnityEngine;
 
-
 namespace NonameGame
 {
     public class PlayerPush : NetworkBehaviour
@@ -11,18 +10,19 @@ namespace NonameGame
         [SerializeField] private float pushForce = 18f;
         [SerializeField] private float pushUpForce = 3f;
         [SerializeField] private float cooldown = 0.5f;
-        [SerializeField] private float pushAngle = 90f; // конус перед игроком, градусы
+        [SerializeField] private float pushAngle = 90f;
         [SerializeField] private LayerMask playerMask;
         [SerializeField] private LayerMask itemMask;
 
         private PlayerGrab playerGrab;
+        private PlayerWeapon playerWeapon;
 
         [Header("References")]
         [SerializeField] private PlayerView _view;
 
         [Header("Optional Feedback")]
-        [SerializeField] private AudioSource pushAudio; // можно пустым
-        [SerializeField] private ParticleSystem pushVfx; // можно пустым
+        [SerializeField] private AudioSource pushAudio;
+        [SerializeField] private ParticleSystem pushVfx;
 
         [Networked] private TickTimer _cooldownTimer { get; set; }
 
@@ -45,12 +45,16 @@ namespace NonameGame
             if (playerGrab != null && playerGrab.IsHolding)
                 return;
 
+            if (playerWeapon != null && playerWeapon.IsArmed)
+                return;
+
             TryPush();
         }
 
         public override void Spawned()
         {
             playerGrab = GetComponent<PlayerGrab>();
+            playerWeapon = GetComponent<PlayerWeapon>();
         }
 
         private void TryPush()
@@ -62,14 +66,13 @@ namespace NonameGame
 
             bool pushedAnyone = false;
 
-            // --- Игроки ---
             Collider[] playerHits = Physics.OverlapSphere(origin, pushRadius, playerMask);
             foreach (var hit in playerHits)
             {
                 if (hit.attachedRigidbody != null && hit.attachedRigidbody.gameObject == gameObject)
                     continue;
 
-                var target = hit.GetComponent<PlayerRaceData>();
+                var target = hit.GetComponentInParent<PlayerRaceData>();
                 if (target == null || target.Object == null)
                     continue;
 
@@ -83,15 +86,11 @@ namespace NonameGame
                 pushedAnyone = true;
             }
 
-            // --- Предметы ---
             Collider[] itemHits = Physics.OverlapSphere(origin, pushRadius, itemMask);
             foreach (var hit in itemHits)
             {
-                var item = hit.GetComponent<ThrowableItem>();
-                if (item == null || item.Object == null)
-                    continue;
-
-                if (item.IsHeld)
+                var item = hit.GetComponentInParent<ThrowableItem>();
+                if (item == null || item.Object == null || item.IsHeld)
                     continue;
 
                 if (!IsInPushCone(forward, item.transform.position, out Vector3 dir))
@@ -150,7 +149,6 @@ namespace NonameGame
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(origin, pushRadius);
 
-            // Визуализация конуса
             Vector3 forward = transform.forward;
             forward.y = 0f;
             forward.Normalize();

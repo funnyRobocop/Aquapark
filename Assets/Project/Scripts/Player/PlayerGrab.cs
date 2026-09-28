@@ -1,7 +1,6 @@
 using Fusion;
 using UnityEngine;
 
-
 namespace NonameGame
 {
     public class PlayerGrab : NetworkBehaviour
@@ -21,16 +20,14 @@ namespace NonameGame
 
         [Header("References")]
         [SerializeField] private PlayerView _view;
+        [SerializeField] private PlayerWeapon playerWeapon;
 
         [Networked] private NetworkId _heldItemId { get; set; }
         [Networked] private NetworkBool _isHolding { get; set; }
 
         private bool _wasGrabHeld;
 
-        // Локальный меш в СВОИХ руках (authority)
         private GameObject _localVisual;
-
-        // Локальный меш в чужих руках (proxy) — один на этого игрока
         private GameObject _remoteHeldVisual;
         private NetworkId _remoteHeldItemId;
 
@@ -40,6 +37,9 @@ namespace NonameGame
         public override void FixedUpdateNetwork()
         {
             if (!HasStateAuthority)
+                return;
+
+            if (playerWeapon != null && playerWeapon.IsArmed)
                 return;
 
             if (!GetInput(out NetworkInputData data))
@@ -54,10 +54,8 @@ namespace NonameGame
             {
                 KeepItemHidden();
 
-                // Отпускание ПКМ — просто дроп (без силы)
                 if (released)
                     DropHeldItem();
-                // Нажатие ЛКМ — бросок
                 else if (data.PushPressed)
                     ThrowHeldItem();
             }
@@ -69,26 +67,22 @@ namespace NonameGame
 
         public override void Render()
         {
-            // 1) Свой предмет в руках
             if (HasStateAuthority && _isHolding && _localVisual != null && holdPoint != null)
             {
                 _localVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
             }
 
-            // 2) Чужие руки — показываем/убираем visual по IsHeld
             UpdateRemoteHeldVisual();
         }
 
         private void UpdateRemoteHeldVisual()
         {
-            // Свои руки обрабатываем через _localVisual
             if (HasStateAuthority)
                 return;
 
             if (holdPoint == null || Runner == null)
                 return;
 
-            // Этот PlayerGrab принадлежит какому-то игроку — ищем, держит ли ОН что-то
             PlayerRef owner = Object.InputAuthority;
             if (owner == PlayerRef.None)
                 owner = Object.StateAuthority;
@@ -97,7 +91,6 @@ namespace NonameGame
 
             if (heldItem != null)
             {
-                // Нужен visual
                 if (_remoteHeldVisual == null || _remoteHeldItemId != heldItem.Object.Id)
                 {
                     DestroyRemoteHeldVisual();
@@ -210,8 +203,6 @@ namespace NonameGame
 
             DestroyLocalVisual();
             RestoreItemForThrow(item, spawnPos, spawnRot);
-
-            // Без силы — просто отпускаем
             item.ForceDrop();
             ClearHold();
         }

@@ -2,7 +2,6 @@ using Fusion;
 using UnityEngine;
 using VContainer;
 
-
 namespace NonameGame
 {
     public class PlayerView : NetworkBehaviour
@@ -12,6 +11,7 @@ namespace NonameGame
         [SerializeField] private NetworkMecanimAnimator networkAnimator;
         [SerializeField] private PlayerController controller;
         [SerializeField] private PlayerGrab grab;
+        [SerializeField] private PlayerWeapon weapon;
         [SerializeField] private Rigidbody rb;
 
         [Header("Tuning")]
@@ -19,7 +19,6 @@ namespace NonameGame
         [SerializeField] private float runSpeedThreshold = 0.5f;
         [SerializeField] private float fallYThreshold = -1.5f;
 
-        // Чтобы не спамить trigger каждый тик
         private bool _wasGrounded = true;
         private bool _wasHolding;
         private bool _dashTriggered;
@@ -27,15 +26,16 @@ namespace NonameGame
 
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
 
-        // Хеши — быстрее строк
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
         private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
         private static readonly int IsHoldingHash = Animator.StringToHash("IsHolding");
+        private static readonly int IsArmedHash = Animator.StringToHash("IsArmed");
         private static readonly int IsFallingHash = Animator.StringToHash("IsFalling");
         private static readonly int JumpHash = Animator.StringToHash("Jump");
         private static readonly int DashHash = Animator.StringToHash("Dash");
         private static readonly int PushHash = Animator.StringToHash("Push");
         private static readonly int ThrowHash = Animator.StringToHash("Throw");
+        private static readonly int ShootHash = Animator.StringToHash("Shoot");
 
         [Networked] public int SelectedSkinId { get; set; }
 
@@ -45,6 +45,8 @@ namespace NonameGame
                 controller = GetComponent<PlayerController>();
             if (grab == null)
                 grab = GetComponent<PlayerGrab>();
+            if (weapon == null)
+                weapon = GetComponent<PlayerWeapon>();
             if (rb == null)
                 rb = GetComponent<Rigidbody>();
         }
@@ -76,6 +78,7 @@ namespace NonameGame
 
             bool grounded = controller != null && controller.IsGrounded;
             bool holding = grab != null && grab.IsHolding;
+            bool armed = weapon != null && weapon.IsArmed;
 
             float vy = rb != null ? rb.linearVelocity.y : 0f;
             bool falling = !grounded && vy < fallYThreshold;
@@ -87,10 +90,10 @@ namespace NonameGame
             animator.SetFloat(SpeedHash, speedNorm);
             animator.SetBool(IsGroundedHash, grounded);
             animator.SetBool(IsHoldingHash, holding);
+            animator.SetBool(IsArmedHash, armed);
             animator.SetBool(IsFallingHash, falling);
-            //Debug.Log($"Grounded: {grounded}, Holding: {holding}, Falling: {falling}, SpeedNorm: {speedNorm}");
 
-            if (_wasGrounded && !grounded && vy > 0.5f && !holding)
+            if (_wasGrounded && !grounded && vy > 0.5f)
             {
                 if (networkAnimator != null)
                     networkAnimator.SetTrigger("Jump");
@@ -101,14 +104,10 @@ namespace NonameGame
             _wasGrounded = grounded;
         }
 
-        // ===== Вызывать из геймплейных скриптов =====
-
         public void PlayDash()
         {
             if (!HasStateAuthority) return;
-            
-            if (grab == null || !grab.IsHolding)
-                SetTrigger(DashHash);
+            SetTrigger(DashHash);
         }
 
         public void PlayPush()
@@ -123,6 +122,12 @@ namespace NonameGame
             SetTrigger(ThrowHash);
         }
 
+        public void PlayShoot()
+        {
+            if (!HasStateAuthority) return;
+            SetTrigger(ShootHash);
+        }
+
         private void SetBool(int hash, bool value)
         {
             if (networkAnimator != null)
@@ -133,7 +138,6 @@ namespace NonameGame
 
         private void SetTrigger(int hash)
         {
-            // NetworkMecanimAnimator.SetTrigger — правильный сетевой путь
             if (networkAnimator != null)
                 networkAnimator.SetTrigger(hash);
             else
