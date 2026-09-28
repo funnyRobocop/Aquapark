@@ -69,6 +69,7 @@ namespace NonameGame
         private NetworkBool _hasDashedInAir { get; set; }
         private TickTimer _dashTimer { get; set; }
         public TickTimer _stunTimer { get; set; }
+        private Vector3 _dashDir { get; set; }
 
         public bool IsGrounded => _isGrounded;
 
@@ -138,8 +139,7 @@ namespace NonameGame
             else if (!_dashTimer.ExpiredOrNotRunning(Runner))
             {
                 Vector3 v = _rb.linearVelocity;
-                Vector3 dashDir = _moveDir.sqrMagnitude > 0.01f ? _moveDir : transform.forward;
-                _rb.linearVelocity = new Vector3(dashDir.x * dashForce, v.y, dashDir.z * dashForce);
+                _rb.linearVelocity = new Vector3(_dashDir.x * dashForce, v.y, _dashDir.z * dashForce);
             }
             else
             {
@@ -235,8 +235,6 @@ namespace NonameGame
             // Dash в воздухе
             if (!_isGrounded && !_hasDashedInAir)
             {
-                Debug.Log("Dash in air");
-                _view.PlayDash();
                 _hasDashedInAir = true;
                 _dashTimer = TickTimer.CreateFromSeconds(Runner, dashDuration);
 
@@ -245,9 +243,10 @@ namespace NonameGame
 
                 _rb.linearVelocity = Vector3.zero;
                 _rb.AddForce(dir.normalized * dashForce, ForceMode.Impulse);
+                _view.PlayDash();
+                _dashDir = dir;
             }
         }
-
         // ================== NAPPIN-STYLE CHECKS ==================
 
         private void CheckGrounded()

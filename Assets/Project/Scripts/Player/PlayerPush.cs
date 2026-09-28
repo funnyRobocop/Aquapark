@@ -33,19 +33,15 @@ namespace NonameGame
             if (!HasStateAuthority)
                 return;
 
-            Debug.Log($"Pushing item1");
             if (!GetInput(out NetworkInputData data))
                 return;
 
-            Debug.Log($"Pushing item2");
             if (!data.PushPressed)
                 return;
 
-            Debug.Log($"Pushing item 3");
             if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
                 return;
 
-            Debug.Log($"Pushing item 4");
             if (playerGrab != null && playerGrab.IsHolding)
                 return;
 
@@ -91,7 +87,6 @@ namespace NonameGame
             Collider[] itemHits = Physics.OverlapSphere(origin, pushRadius, itemMask);
             foreach (var hit in itemHits)
             {
-                Debug.Log($"Pushing item {hit.name}");
                 var item = hit.GetComponent<ThrowableItem>();
                 if (item == null || item.Object == null)
                     continue;
@@ -102,7 +97,6 @@ namespace NonameGame
                 if (!IsInPushCone(forward, item.transform.position, out Vector3 dir))
                     continue;
 
-Debug.Log($"Pushing item {item.name} with dir {dir} and force {pushForce}");
                 item.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
             }
