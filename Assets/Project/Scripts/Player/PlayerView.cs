@@ -90,7 +90,7 @@ namespace NonameGame
             animator.SetBool(IsFallingHash, falling);
             //Debug.Log($"Grounded: {grounded}, Holding: {holding}, Falling: {falling}, SpeedNorm: {speedNorm}");
 
-            if (_wasGrounded && !grounded && vy > 0.5f)
+            if (_wasGrounded && !grounded && vy > 0.5f && !holding)
             {
                 if (networkAnimator != null)
                     networkAnimator.SetTrigger("Jump");
@@ -106,7 +106,9 @@ namespace NonameGame
         public void PlayDash()
         {
             if (!HasStateAuthority) return;
-            SetTrigger(DashHash);
+            
+            if (grab == null || !grab.IsHolding)
+                SetTrigger(DashHash);
         }
 
         public void PlayPush()

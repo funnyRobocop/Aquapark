@@ -304,7 +304,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hook Punch
+  m_Name: Push
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -335,7 +335,7 @@ AnimatorController:
   m_AnimatorParameters:
   - m_Name: Speed
     m_Type: 1
-    m_DefaultFloat: 0
+    m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
@@ -582,7 +582,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle Walk Run Blend
+  m_Name: Idle Run Blend
   m_Speed: 4
   m_CycleOffset: 0
   m_Transitions:
@@ -711,16 +711,8 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: e9f175c2411d52f419407d9f2138aa87, type: 3}
+    m_Motion: {fileID: 7400000, guid: 47ba3abee080a7b43899e6d9537564ab, type: 2}
     m_Threshold: 0
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: Speed
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: b80a0698d7b42324e8a3dd17fed2d574, type: 2}
-    m_Threshold: 0.15
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -730,7 +722,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: ab2468f8bccaa954aa7ebdaf26550ca4, type: 2}
     m_Threshold: 0.75
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1.5
+    m_TimeScale: 0.5
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
     m_Mirror: 0
