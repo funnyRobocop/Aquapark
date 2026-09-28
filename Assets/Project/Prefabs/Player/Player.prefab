@@ -77,8 +77,8 @@ GameObject:
   - component: {fileID: 3231150828664104733}
   - component: {fileID: 8140629022525987069}
   - component: {fileID: 1833168099000510416}
-  - component: {fileID: 5788373045749294618}
   - component: {fileID: 8069418110193471820}
+  - component: {fileID: 5788373045749294618}
   - component: {fileID: 8177453984534211281}
   m_Layer: 0
   m_Name: Player
@@ -126,8 +126,8 @@ MonoBehaviour:
   - {fileID: 3231150828664104733}
   - {fileID: 8140629022525987069}
   - {fileID: 1833168099000510416}
-  - {fileID: 5788373045749294618}
   - {fileID: 8069418110193471820}
+  - {fileID: 5788373045749294618}
   - {fileID: 8177453984534211281}
   ForceRemoteRenderTimeframe: 0
 --- !u!136 &3481950130093876766
@@ -271,6 +271,28 @@ MonoBehaviour:
   frictionAgainstFloor: 0.95
   cameraTarget: {fileID: 7769276943027032355}
   _view: {fileID: 8177453984534211281}
+--- !u!114 &8069418110193471820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5544299751155897710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e3ab898a1e96584199f3b872dc3a345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerGrab
+  grabRadius: 1.8
+  grabAngle: 90
+  itemMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  holdPoint: {fileID: 5574017823163676780}
+  throwForce: 14
+  throwUpForce: 3
+  hidePosition: {x: 0, y: -500, z: 0}
+  _view: {fileID: 8177453984534211281}
 --- !u!114 &5788373045749294618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,28 +316,6 @@ MonoBehaviour:
   _view: {fileID: 8177453984534211281}
   pushAudio: {fileID: 0}
   pushVfx: {fileID: 0}
---- !u!114 &8069418110193471820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5544299751155897710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e3ab898a1e96584199f3b872dc3a345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerGrab
-  grabRadius: 1.8
-  grabAngle: 90
-  itemMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  holdPoint: {fileID: 5574017823163676780}
-  throwForce: 14
-  throwUpForce: 3
-  hidePosition: {x: 0, y: -500, z: 0}
-  _view: {fileID: 8177453984534211281}
 --- !u!114 &8177453984534211281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +336,7 @@ MonoBehaviour:
   speedDamp: 0.1
   runSpeedThreshold: 0.5
   fallYThreshold: -1.5
+  _SelectedSkinId: 0
 --- !u!1 &7227487236232751852
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,10 +361,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7227487236232751852}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2987879268824365731}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}

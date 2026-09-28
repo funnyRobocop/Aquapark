@@ -95,11 +95,11 @@ namespace NonameGame
             }
 
             _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cooldown);
-            
+
+            _view.PlayPush();
             if (pushedAnyone)
             {
                 RPC_PlayPushFeedback();
-                _view.PlayPush();
             }
         }
 

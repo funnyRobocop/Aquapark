@@ -177,7 +177,7 @@ namespace NonameGame
             item.Throw(dir * throwForce);
             ClearHold();
 
-            _view.PlayThrow();
+            _view.PlayPush();
         }
 
         private void HideAndHold(ThrowableItem item)

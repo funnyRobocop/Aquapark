@@ -137,7 +137,6 @@ namespace NonameGame
             }
             else if (!_dashTimer.ExpiredOrNotRunning(Runner))
             {
-                _view.PlayDash();
                 Vector3 v = _rb.linearVelocity;
                 Vector3 dashDir = _moveDir.sqrMagnitude > 0.01f ? _moveDir : transform.forward;
                 _rb.linearVelocity = new Vector3(dashDir.x * dashForce, v.y, dashDir.z * dashForce);
@@ -236,6 +235,8 @@ namespace NonameGame
             // Dash в воздухе
             if (!_isGrounded && !_hasDashedInAir)
             {
+                Debug.Log("Dash in air");
+                _view.PlayDash();
                 _hasDashedInAir = true;
                 _dashTimer = TickTimer.CreateFromSeconds(Runner, dashDuration);
 
