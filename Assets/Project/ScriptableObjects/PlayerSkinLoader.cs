@@ -14,6 +14,8 @@ namespace NonameGame
     {
         [SerializeField] private Dictionary<PlayerSkinType, PlayerSkinData> playerSkinAll;
 
+        public PlayerSkinType TestSkinType = PlayerSkinType.Banana;
+
         public GameObject GetPlayerSkinPrefab(PlayerSkinType skinType)
         {
             if (playerSkinAll.TryGetValue(skinType, out PlayerSkinData skinData))
