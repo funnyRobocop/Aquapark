@@ -88,7 +88,7 @@ namespace NonameGame
             animator.SetBool(IsGroundedHash, grounded);
             animator.SetBool(IsHoldingHash, holding);
             animator.SetBool(IsFallingHash, falling);
-            Debug.Log($"Grounded: {grounded}, Holding: {holding}, Falling: {falling}, SpeedNorm: {speedNorm}");
+            //Debug.Log($"Grounded: {grounded}, Holding: {holding}, Falling: {falling}, SpeedNorm: {speedNorm}");
 
             if (_wasGrounded && !grounded && vy > 0.5f)
             {

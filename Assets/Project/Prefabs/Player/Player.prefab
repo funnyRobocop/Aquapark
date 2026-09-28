@@ -312,7 +312,10 @@ MonoBehaviour:
   pushAngle: 90
   playerMask:
     serializedVersion: 2
-    m_Bits: 1280
+    m_Bits: 256
+  itemMask:
+    serializedVersion: 2
+    m_Bits: 1024
   _view: {fileID: 8177453984534211281}
   pushAudio: {fileID: 0}
   pushVfx: {fileID: 0}
@@ -335,7 +338,7 @@ MonoBehaviour:
   rb: {fileID: 3296182210014361522}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
-  fallYThreshold: -1.5
+  fallYThreshold: -3
   _SelectedSkinId: 0
 --- !u!1 &7227487236232751852
 GameObject:

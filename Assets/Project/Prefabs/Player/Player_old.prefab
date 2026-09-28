@@ -455,6 +455,9 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 256
+  itemMask:
+    serializedVersion: 2
+    m_Bits: 1024
   _view: {fileID: 2137247441811218386}
   pushAudio: {fileID: 0}
   pushVfx: {fileID: 0}
@@ -499,5 +502,5 @@ MonoBehaviour:
   rb: {fileID: 7541582282611638532}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
-  fallYThreshold: -1.5
+  fallYThreshold: -10
   _SelectedSkinId: 0

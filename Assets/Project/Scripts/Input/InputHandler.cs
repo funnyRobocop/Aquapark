@@ -11,7 +11,7 @@ namespace NonameGame
     {
 
         private bool _wasSpacePressedLastFrame;
-        private bool _wasMousePressedLastFrame;
+        private bool _wasLeftMousePressedLastFrame;
 
         public override void Spawned()
         {
@@ -55,12 +55,15 @@ namespace NonameGame
                 _wasSpacePressedLastFrame = spaceNow;
             }
 
-            // ===== Мышь: GrabHeld + PushPressed =====
-            bool mouseNow = mouse != null && mouse.leftButton.isPressed;
+            // ===== Мышь =====
+            // ПКМ: захват / удержание (GrabHeld). Отпускание ПКМ = дроп без броска.
+            // ЛКМ: фронт нажатия = PushPressed (пуш, если ничего не держим) или бросок (если держим).
+            bool leftNow = mouse != null && mouse.leftButton.isPressed;
+            bool rightNow = mouse != null && mouse.rightButton.isPressed;
 
-            data.GrabHeld = mouseNow;                                  // держим
-            data.PushPressed = mouseNow && !_wasMousePressedLastFrame; // только момент нажатия
-            _wasMousePressedLastFrame = mouseNow;
+            data.GrabHeld = rightNow;
+            data.PushPressed = leftNow && !_wasLeftMousePressedLastFrame;
+            _wasLeftMousePressedLastFrame = leftNow;
 
             // ===== Камера =====
             if (Camera.main != null)
@@ -94,7 +97,7 @@ namespace NonameGame
         public float CameraRotationY;
 
         public NetworkBool SpacePressed; // фронт нажатия пробела
-        public NetworkBool PushPressed;  // фронт нажатия ЛКМ
-        public NetworkBool GrabHeld;     // ЛКМ зажата
+        public NetworkBool PushPressed;  // фронт нажатия ЛКМ (пуш / бросок)
+        public NetworkBool GrabHeld;     // ПКМ зажата (захват / удержание)
     }
 }

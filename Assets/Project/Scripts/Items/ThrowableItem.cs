@@ -130,5 +130,23 @@ namespace NonameGame
             // При желании замени на LayerMask
             return !c.GetComponentInParent<PlayerRaceData>() && !c.GetComponentInParent<ThrowableItem>();
         }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_ApplyPush(Vector3 force)
+        {
+            if (IsHeld)
+                return;
+
+            if (_rb == null)
+                _rb = GetComponent<Rigidbody>();
+
+            if (_rb == null)
+                return;
+
+            if (_rb.isKinematic)
+                _rb.isKinematic = false;
+
+            _rb.AddForce(force, ForceMode.Impulse);
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace NonameGame
         [SerializeField] private float cooldown = 0.5f;
         [SerializeField] private float pushAngle = 90f; // конус перед игроком, градусы
         [SerializeField] private LayerMask playerMask;
+        [SerializeField] private LayerMask itemMask;
 
         private PlayerGrab playerGrab;
 
@@ -32,15 +33,19 @@ namespace NonameGame
             if (!HasStateAuthority)
                 return;
 
+            Debug.Log($"Pushing item1");
             if (!GetInput(out NetworkInputData data))
                 return;
 
+            Debug.Log($"Pushing item2");
             if (!data.PushPressed)
                 return;
 
+            Debug.Log($"Pushing item 3");
             if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
                 return;
 
+            Debug.Log($"Pushing item 4");
             if (playerGrab != null && playerGrab.IsHolding)
                 return;
 
@@ -59,48 +64,80 @@ namespace NonameGame
             forward.y = 0f;
             forward.Normalize();
 
-            Collider[] hits = Physics.OverlapSphere(origin, pushRadius, playerMask);
             bool pushedAnyone = false;
 
-            foreach (var hit in hits)
+            // --- Игроки ---
+            Collider[] playerHits = Physics.OverlapSphere(origin, pushRadius, playerMask);
+            foreach (var hit in playerHits)
             {
                 if (hit.attachedRigidbody != null && hit.attachedRigidbody.gameObject == gameObject)
                     continue;
 
-                var target = hit.GetComponentInParent<PlayerRaceData>();
+                var target = hit.GetComponent<PlayerRaceData>();
                 if (target == null || target.Object == null)
                     continue;
 
                 if (target.Object == Object)
                     continue;
 
-                // Вектор к цели
-                Vector3 toTarget = target.transform.position - transform.position;
-                toTarget.y = 0f;
-
-                if (toTarget.sqrMagnitude < 0.001f)
+                if (!IsInPushCone(forward, target.transform.position, out Vector3 dir))
                     continue;
-
-                // Проверка конуса перед игроком
-                float angle = Vector3.Angle(forward, toTarget.normalized);
-                if (angle > pushAngle * 0.5f)
-                    continue;
-
-                Vector3 dir = toTarget.normalized;
-                dir += Vector3.up * (pushUpForce / Mathf.Max(pushForce, 0.01f));
-                dir.Normalize();
 
                 target.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
             }
 
+            // --- Предметы ---
+            Collider[] itemHits = Physics.OverlapSphere(origin, pushRadius, itemMask);
+            foreach (var hit in itemHits)
+            {
+                Debug.Log($"Pushing item {hit.name}");
+                var item = hit.GetComponent<ThrowableItem>();
+                if (item == null || item.Object == null)
+                    continue;
+
+                if (item.IsHeld)
+                    continue;
+
+                if (!IsInPushCone(forward, item.transform.position, out Vector3 dir))
+                    continue;
+
+Debug.Log($"Pushing item {item.name} with dir {dir} and force {pushForce}");
+                item.RPC_ApplyPush(dir * pushForce);
+                pushedAnyone = true;
+            }
+
             _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cooldown);
 
-            _view.PlayPush();
+            if (_view != null)
+                _view.PlayPush();
+
             if (pushedAnyone)
-            {
                 RPC_PlayPushFeedback();
+        }
+
+        private bool IsInPushCone(Vector3 forward, Vector3 targetPos, out Vector3 dir)
+        {
+            Vector3 toTarget = targetPos - transform.position;
+            toTarget.y = 0f;
+
+            if (toTarget.sqrMagnitude < 0.001f)
+            {
+                dir = forward;
+                return false;
             }
+
+            float angle = Vector3.Angle(forward, toTarget.normalized);
+            if (angle > pushAngle * 0.5f)
+            {
+                dir = default;
+                return false;
+            }
+
+            dir = toTarget.normalized;
+            dir += Vector3.up * (pushUpForce / Mathf.Max(pushForce, 0.01f));
+            dir.Normalize();
+            return true;
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

@@ -54,7 +54,11 @@ namespace NonameGame
             {
                 KeepItemHidden();
 
+                // Отпускание ПКМ — просто дроп (без силы)
                 if (released)
+                    DropHeldItem();
+                // Нажатие ЛКМ — бросок
+                else if (data.PushPressed)
                     ThrowHeldItem();
             }
             else if (pressed)
@@ -177,7 +181,39 @@ namespace NonameGame
             item.Throw(dir * throwForce);
             ClearHold();
 
-            _view.PlayPush();
+            if (_view != null)
+                _view.PlayThrow();
+        }
+
+        private void DropHeldItem()
+        {
+            if (!_isHolding)
+                return;
+
+            if (!Runner.TryFindObject(_heldItemId, out var obj))
+            {
+                ClearHold();
+                return;
+            }
+
+            var item = obj.GetBehaviour<ThrowableItem>();
+            if (item == null)
+            {
+                ClearHold();
+                return;
+            }
+
+            Vector3 spawnPos = holdPoint != null
+                ? holdPoint.position
+                : transform.position + transform.forward * 1.1f + Vector3.up * 1.1f;
+            Quaternion spawnRot = holdPoint != null ? holdPoint.rotation : transform.rotation;
+
+            DestroyLocalVisual();
+            RestoreItemForThrow(item, spawnPos, spawnRot);
+
+            // Без силы — просто отпускаем
+            item.ForceDrop();
+            ClearHold();
         }
 
         private void HideAndHold(ThrowableItem item)
