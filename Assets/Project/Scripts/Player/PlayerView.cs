@@ -54,7 +54,7 @@ namespace NonameGame
         public void InitSkin()
         {
             var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab((_playerSkinLoader as PlayerSkinLoader).TestSkinType);
-            var skin = Instantiate(skinPrefab, animator.transform);
+            var skin = Instantiate(skinPrefab, transform.GetChild(0));
             var skinAnimator = skin.GetComponent<Animator>();
             animator.avatar = skinAnimator.avatar;
             skinAnimator.enabled = false;

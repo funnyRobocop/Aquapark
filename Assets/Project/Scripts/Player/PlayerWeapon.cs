@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
@@ -17,11 +16,9 @@ namespace NonameGame
         [SerializeField] private Vector3 hidePosition = new Vector3(0f, -500f, 0f);
 
         [Header("Shoot")]
-        [SerializeField] private float shootCooldown = 0.35f;
-        [SerializeField] private float bulletSpeed = 28f;
-        [SerializeField] private float bulletUpBoost = 0.05f;
-        [SerializeField] private Bullet bulletPrefab;
-        [SerializeField] private int poolSize = 12;
+        [SerializeField] private float shootCooldown = 1.2f;
+        [SerializeField] private float bulletSpeed = 8f;
+        [SerializeField] private float bulletUpBoost = 0.15f;
 
         [Header("References")]
         [SerializeField] private PlayerView _view;
@@ -36,31 +33,12 @@ namespace NonameGame
         private GameObject _remoteHeldVisual;
         private NetworkId _remoteHeldWeaponId;
 
-        private readonly Queue<Bullet> _pool = new Queue<Bullet>();
-        private readonly List<Bullet> _allBullets = new List<Bullet>();
-
         public bool IsArmed => _isArmed;
 
         public override void Spawned()
         {
             if (playerGrab == null)
                 playerGrab = GetComponent<PlayerGrab>();
-
-            if (HasStateAuthority && bulletPrefab != null)
-                BuildPool();
-        }
-
-        private void BuildPool()
-        {
-            for (int i = 0; i < poolSize; i++)
-            {
-                var go = Instantiate(bulletPrefab.gameObject, transform);
-                go.name = $"Bullet_{i}";
-                var bullet = go.GetComponent<Bullet>();
-                bullet.Init(this);
-                _pool.Enqueue(bullet);
-                _allBullets.Add(bullet);
-            }
         }
 
         public override void FixedUpdateNetwork()
@@ -83,7 +61,10 @@ namespace NonameGame
             {
                 KeepWeaponHidden();
 
-                if (released)
+                // Патроны кончились — принудительно бросаем
+                if (IsHeldWeaponEmpty())
+                    DropWeapon();
+                else if (released)
                     DropWeapon();
                 else if (data.PushPressed)
                     TryShoot();
@@ -104,10 +85,63 @@ namespace NonameGame
             UpdateRemoteHeldVisual();
         }
 
+        private void TryShoot()
+        {
+            if (!_shootCooldownTimer.ExpiredOrNotRunning(Runner))
+                return;
+
+            if (!Runner.TryFindObject(_heldWeaponId, out var obj))
+                return;
+
+            var weapon = obj.GetBehaviour<WeaponItem>();
+            if (weapon == null || weapon.Ammo <= 0)
+                return;
+
+            Bullet projectile = weapon.GetAvailableProjectile();
+            if (projectile == null)
+                return;
+
+            Vector3 origin = muzzlePoint != null
+                ? muzzlePoint.position
+                : (holdPoint != null
+                    ? holdPoint.position
+                    : transform.position + Vector3.up * 1.2f + transform.forward * 0.6f);
+
+            Vector3 dir = transform.forward;
+            dir.y = 0f;
+            if (dir.sqrMagnitude < 0.001f)
+                dir = Vector3.forward;
+            dir.Normalize();
+            dir += Vector3.up * bulletUpBoost;
+            dir.Normalize();
+
+            Vector3 velocity = dir * bulletSpeed;
+            Quaternion rot = Quaternion.LookRotation(dir);
+
+            projectile.RPC_Fire(origin, rot, velocity, Object.InputAuthority);
+
+            _shootCooldownTimer = TickTimer.CreateFromSeconds(Runner, shootCooldown);
+
+            if (_view != null)
+                _view.PlayShoot();
+        }
+
+        private bool IsHeldWeaponEmpty()
+        {
+            if (!Runner.TryFindObject(_heldWeaponId, out var obj))
+                return true;
+
+            var weapon = obj.GetBehaviour<WeaponItem>();
+            return weapon == null || weapon.Ammo <= 0;
+        }
+
         private void TryGrabWeapon()
         {
             WeaponItem weapon = FindWeaponInCone();
             if (weapon == null)
+                return;
+
+            if (weapon.Ammo <= 0)
                 return;
 
             if (!weapon.Object.HasStateAuthority)
@@ -149,47 +183,6 @@ namespace NonameGame
             RestoreWeapon(weapon, spawnPos, spawnRot);
             weapon.ForceDrop();
             ClearHold();
-        }
-
-        private void TryShoot()
-        {
-            if (!_shootCooldownTimer.ExpiredOrNotRunning(Runner))
-                return;
-
-            if (_pool.Count == 0)
-                return;
-
-            Vector3 origin = muzzlePoint != null
-                ? muzzlePoint.position
-                : (holdPoint != null
-                    ? holdPoint.position
-                    : transform.position + Vector3.up * 1.2f + transform.forward * 0.6f);
-
-            Vector3 dir = transform.forward;
-            dir.y = 0f;
-            if (dir.sqrMagnitude < 0.001f)
-                dir = Vector3.forward;
-            dir.Normalize();
-            dir += Vector3.up * bulletUpBoost;
-            dir.Normalize();
-
-            Quaternion rot = Quaternion.LookRotation(dir);
-
-            Bullet bullet = _pool.Dequeue();
-            bullet.Fire(origin, rot, dir * bulletSpeed, Object.InputAuthority);
-
-            _shootCooldownTimer = TickTimer.CreateFromSeconds(Runner, shootCooldown);
-
-            if (_view != null)
-                _view.PlayShoot();
-        }
-
-        public void ReturnBullet(Bullet bullet)
-        {
-            if (bullet == null)
-                return;
-            if (!_pool.Contains(bullet))
-                _pool.Enqueue(bullet);
         }
 
         private void HideAndHold(WeaponItem weapon)
@@ -382,7 +375,8 @@ namespace NonameGame
             foreach (var hit in hits)
             {
                 var weapon = hit.GetComponentInParent<WeaponItem>();
-                if (weapon == null || weapon.Object == null || weapon.IsHeld)
+                // Пустой пистолет нельзя подобрать
+                if (weapon == null || weapon.Object == null || weapon.IsHeld || weapon.Ammo <= 0)
                     continue;
 
                 Vector3 to = weapon.transform.position - transform.position;
@@ -415,14 +409,6 @@ namespace NonameGame
         {
             DestroyLocalVisual();
             DestroyRemoteHeldVisual();
-
-            foreach (var b in _allBullets)
-            {
-                if (b != null)
-                    Destroy(b.gameObject);
-            }
-            _allBullets.Clear();
-            _pool.Clear();
         }
     }
 }
