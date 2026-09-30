@@ -38,6 +38,20 @@ namespace NonameGame
 
             if (HasStateAuthority)
                 ReturnToPoolImmediate();
+            else
+                ApplyVisualState(); // сразу спрятать на proxy
+        }
+
+        public override void Render()
+        {
+            ApplyVisualState();
+        }
+
+        private void ApplyVisualState()
+        {
+            bool visible = !IsInPool;
+            foreach (var r in GetComponentsInChildren<Renderer>(true))
+                r.enabled = visible;
         }
 
         public override void FixedUpdateNetwork()
@@ -61,6 +75,7 @@ namespace NonameGame
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_Fire(Vector3 position, Quaternion rotation, Vector3 velocity, PlayerRef shooter)
         {
+            Debug.Log($"Fire {name} auth={HasStateAuthority} pool={IsInPool} pos={position}");
             if (!IsInPool)
                 return;
 
@@ -89,7 +104,7 @@ namespace NonameGame
                 transform.SetPositionAndRotation(position, rotation);
             }
 
-            SetRenderersEnabled(true);
+            ApplyVisualState();
 
             if (_rb != null)
                 _rb.linearVelocity = velocity;
@@ -108,7 +123,7 @@ namespace NonameGame
             {
                 if (player.Object != null && player.Object.InputAuthority == FiredBy)
                     return;
-
+                    
                 Vector3 dir = player.transform.position - transform.position;
                 dir.y = 0f;
                 if (dir.sqrMagnitude < 0.001f)
@@ -151,16 +166,10 @@ namespace NonameGame
             else
                 transform.position = poolPosition;
 
-            SetRenderersEnabled(false);
+            ApplyVisualState();
 
             if (_ownerWeapon != null)
                 _ownerWeapon.OnProjectileReturned(this);
-        }
-
-        private void SetRenderersEnabled(bool enabled)
-        {
-            foreach (var r in GetComponentsInChildren<Renderer>(true))
-                r.enabled = enabled;
         }
     }
 }
