@@ -54,6 +54,7 @@ namespace NonameGame
 
             rb.linearVelocity = Vector3.zero;
             rb.AddForce(transform.up * finalForce, ForceMode.Impulse);
+            Debug.Log($"Bounce applied to {rb.name}: Force = {finalForce}, Falling Velocity Y = {fallingVelocityY}");
         }
 
         public void Add(Rigidbody rb, float velocityY)
