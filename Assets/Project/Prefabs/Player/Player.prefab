@@ -280,6 +280,7 @@ GameObject:
   - component: {fileID: 6363781521094476151}
   - component: {fileID: 2137247441811218386}
   - component: {fileID: 2485695873283258591}
+  - component: {fileID: 9023704135855332127}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -334,6 +335,7 @@ MonoBehaviour:
   - {fileID: 6363781521094476151}
   - {fileID: 2137247441811218386}
   - {fileID: 2485695873283258591}
+  - {fileID: 9023704135855332127}
   - {fileID: 3229857241638445635}
   ForceRemoteRenderTimeframe: 0
 --- !u!136 &7429013140986272679
@@ -597,3 +599,16 @@ MonoBehaviour:
   bulletUpBoost: 0.05
   _view: {fileID: 2137247441811218386}
   playerGrab: {fileID: 6363781521094476151}
+--- !u!114 &9023704135855332127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8337347737783543015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5f6e25ff176c340854f5deac51224b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerPipeSlide
+  controller: {fileID: 7187583196042404613}
