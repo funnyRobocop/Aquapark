@@ -107,12 +107,18 @@ namespace NonameGame
 
         public void PlayJump()
         {
+            if (animator.GetBool(IsHoldingHash))
+                return;
+
             if (!HasStateAuthority) return;
             SetTrigger(JumpHash);
         }
 
         public void PlayDash()
         {
+            if (animator.GetBool(IsHoldingHash))
+                return;
+                
             if (!HasStateAuthority) return;
             SetTrigger(DashHash);
         }

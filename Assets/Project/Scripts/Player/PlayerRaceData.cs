@@ -15,6 +15,8 @@ namespace NonameGame
         [Networked] public Vector3 CheckpointPosition { get; set; }
         [Networked] public Quaternion CheckpointRotation { get; set; }
 
+        [SerializeField] private PlayerGrab _playerGrab;
+
         [Inject] private CameraManager _cameraManager;
 
         public string DisplayName =>
@@ -111,6 +113,7 @@ namespace NonameGame
             if (!HasStateAuthority)
                 return;
 
+            _playerGrab?.DropHeldItem();
             TeleportTo(CheckpointPosition, CheckpointRotation);
         }
 

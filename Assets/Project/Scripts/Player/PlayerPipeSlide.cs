@@ -7,6 +7,7 @@ namespace NonameGame
     public class PlayerPipeSlide : NetworkBehaviour
     {
         [SerializeField] private PlayerController controller;
+        [SerializeField] private PlayerGrab _playerGrab;
 
         private Rigidbody _rb;
         private NetworkTransform _nt;
@@ -34,6 +35,7 @@ namespace NonameGame
 
             duration = Mathf.Clamp(duration, 0.15f, 1f);
             RPC_StartSlide(path, duration);
+            _playerGrab?.DropHeldItem();
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

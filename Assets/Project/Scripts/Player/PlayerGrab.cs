@@ -179,11 +179,11 @@ namespace NonameGame
             item.Throw(dir * throwForce);
             ClearHold();
 
-            if (_view != null)
-                _view.PlayThrow();
+            /*if (_view != null)
+                _view.PlayPush();*/
         }
 
-        private void DropHeldItem()
+        public void DropHeldItem()
         {
             if (!_isHolding)
                 return;
