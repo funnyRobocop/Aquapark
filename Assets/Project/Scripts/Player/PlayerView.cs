@@ -12,6 +12,7 @@ namespace NonameGame
         [SerializeField] private PlayerController controller;
         [SerializeField] private PlayerGrab grab;
         [SerializeField] private PlayerWeapon weapon;
+        [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
 
         [Header("Tuning")]
@@ -31,6 +32,7 @@ namespace NonameGame
         private static readonly int IsHoldingHash = Animator.StringToHash("IsHolding");
         private static readonly int IsArmedHash = Animator.StringToHash("IsArmed");
         private static readonly int IsFallingHash = Animator.StringToHash("IsFalling");
+        private static readonly int IsFlyingHash = Animator.StringToHash("IsFlying");
         private static readonly int JumpHash = Animator.StringToHash("Jump");
         private static readonly int DashHash = Animator.StringToHash("Dash");
         private static readonly int PushHash = Animator.StringToHash("Push");
@@ -47,6 +49,8 @@ namespace NonameGame
                 grab = GetComponent<PlayerGrab>();
             if (weapon == null)
                 weapon = GetComponent<PlayerWeapon>();
+            if (pipeSlide == null)
+                pipeSlide = GetComponent<PlayerPipeSlide>();
             if (rb == null)
                 rb = GetComponent<Rigidbody>();
         }
@@ -76,15 +80,16 @@ namespace NonameGame
             if (!HasStateAuthority || animator == null)
                 return;
 
-            bool grounded = controller != null && controller.IsGrounded;
+            bool flying = pipeSlide != null && pipeSlide.IsSliding;
+            bool grounded = !flying && controller != null && controller.IsGrounded;
             bool holding = grab != null && grab.IsHolding;
             bool armed = weapon != null && weapon.IsArmed;
 
             float vy = rb != null ? rb.linearVelocity.y : 0f;
-            bool falling = !grounded && vy < fallYThreshold;
+            bool falling = !flying && !grounded && vy < fallYThreshold;
 
             float speedNorm = 0f;
-            if (GetInput(out NetworkInputData data) && data.Move.sqrMagnitude > 0.01f && grounded)
+            if (!flying && GetInput(out NetworkInputData data) && data.Move.sqrMagnitude > 0.01f && grounded)
                 speedNorm = 1f;
 
             animator.SetFloat(SpeedHash, speedNorm);
@@ -92,8 +97,9 @@ namespace NonameGame
             animator.SetBool(IsHoldingHash, holding);
             animator.SetBool(IsArmedHash, armed);
             animator.SetBool(IsFallingHash, falling);
+            animator.SetBool(IsFlyingHash, flying);
 
-            if (_wasGrounded && !grounded && vy > 0.5f)
+            if (!flying && _wasGrounded && !grounded && vy > 0.5f)
             {
                 if (networkAnimator != null)
                     networkAnimator.SetTrigger("Jump");
@@ -126,6 +132,19 @@ namespace NonameGame
         {
             if (!HasStateAuthority) return;
             SetTrigger(ShootHash);
+        }
+
+        /// <summary>
+        /// Полёт в трубе. Вызывается на всех клиентах из PlayerPipeSlide (после RPC).
+        /// </summary>
+        public void SetFlying(bool value)
+        {
+            SetBool(IsFlyingHash, value);
+            if (value)
+            {
+                SetBool(IsFallingHash, false);
+                SetBool(IsGroundedHash, false);
+            }
         }
 
         private void SetBool(int hash, bool value)
