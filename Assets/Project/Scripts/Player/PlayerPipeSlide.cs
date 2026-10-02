@@ -120,6 +120,7 @@ namespace NonameGame
                     _nt.Teleport(end, endRot);
             }
 
+            yield return new WaitForSeconds(0.15f); // чтобы не запускался аниматор падения сразу
             _isSliding = false;
             _slideRoutine = null;
         }
