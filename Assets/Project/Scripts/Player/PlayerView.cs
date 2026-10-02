@@ -64,7 +64,7 @@ namespace NonameGame
             skinAnimator.enabled = false;
         }
 
-        public override void Render()
+        /*public override void Render()
         {
             if (!HasStateAuthority || animator == null || rb == null)
                 return;
@@ -73,7 +73,7 @@ namespace NonameGame
             horizontal.y = 0f;
             float speedNorm = Mathf.Clamp01(horizontal.magnitude / Mathf.Max(runSpeedThreshold, 0.01f));
             animator.SetFloat(SpeedHash, speedNorm, speedDamp, Time.deltaTime);
-        }
+        }*/
 
         public override void FixedUpdateNetwork()
         {
