@@ -20,7 +20,6 @@ namespace NonameGame
         [SerializeField] private float runSpeedThreshold = 0.5f;
         [SerializeField] private float fallYThreshold = -1.5f;
 
-        private bool _wasGrounded = true;
         private bool _wasHolding;
         private bool _dashTriggered;
         private bool _pushTriggered;
@@ -98,16 +97,12 @@ namespace NonameGame
             animator.SetBool(IsArmedHash, armed);
             animator.SetBool(IsFallingHash, falling);
             animator.SetBool(IsFlyingHash, flying);
+        }
 
-            if (!flying && _wasGrounded && !grounded && vy > 0.5f)
-            {
-                if (networkAnimator != null)
-                    networkAnimator.SetTrigger("Jump");
-                else
-                    animator.SetTrigger(JumpHash);
-            }
-
-            _wasGrounded = grounded;
+        public void PlayJump()
+        {
+            if (!HasStateAuthority) return;
+            SetTrigger(JumpHash);
         }
 
         public void PlayDash()

@@ -229,6 +229,10 @@ namespace NonameGame
                 Vector3 v = _rb.linearVelocity;
                 v.y = jumpForce;
                 _rb.linearVelocity = v;
+
+                if (_view != null)
+                    _view.PlayJump();
+                    
                 return;
             }
 
