@@ -75,6 +75,11 @@ namespace NonameGame
             UpdateRemoteHeldVisual();
         }
 
+        public void SetHoldPoint(Transform point)
+        {
+            holdPoint = point;
+        }
+
         private void UpdateRemoteHeldVisual()
         {
             if (HasStateAuthority)

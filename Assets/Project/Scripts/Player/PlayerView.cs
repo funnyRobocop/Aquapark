@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 using VContainer;
@@ -14,6 +15,7 @@ namespace NonameGame
         [SerializeField] private PlayerWeapon weapon;
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
+        [SerializeField] private Dictionary<PlayerSkinType, Transform> holdPointsDict;
 
         [Header("Tuning")]
         [SerializeField] private float speedDamp = 0.1f;
@@ -38,7 +40,7 @@ namespace NonameGame
         private static readonly int ThrowHash = Animator.StringToHash("Throw");
         private static readonly int ShootHash = Animator.StringToHash("Shoot");
 
-        [Networked] public int SelectedSkinId { get; set; }
+        public PlayerSkinType SkinType { get; set; }
 
         public override void Spawned()
         {
@@ -56,11 +58,15 @@ namespace NonameGame
 
         public void InitSkin()
         {
+            SkinType = (_playerSkinLoader as PlayerSkinLoader).TestSkinType;
             var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab((_playerSkinLoader as PlayerSkinLoader).TestSkinType);
             var skin = Instantiate(skinPrefab, transform.GetChild(0));
             var skinAnimator = skin.GetComponent<Animator>();
             animator.avatar = skinAnimator.avatar;
             skinAnimator.enabled = false;
+
+            if (holdPointsDict.ContainsKey(SkinType))
+                grab.SetHoldPoint(holdPointsDict[SkinType]);
         }
 
         /*public override void Render()
