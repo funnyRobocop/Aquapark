@@ -10,6 +10,7 @@ namespace NonameGame
         [SerializeField] private float pushForce = 18f;
         [SerializeField] private float pushUpForce = 3f;
         [SerializeField] private float cooldown = 0.5f;
+        [SerializeField] private float stunTime = 0.35f;
         [SerializeField] private float pushAngle = 90f;
         [SerializeField] private LayerMask playerMask;
         [SerializeField] private LayerMask itemMask;
@@ -84,6 +85,9 @@ namespace NonameGame
 
                 target.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
+
+                if (hit.TryGetComponent<PlayerController>(out var playerController))
+                    playerController.SetStunTimer(stunTime);
             }
 
             Collider[] itemHits = Physics.OverlapSphere(origin, pushRadius, itemMask);

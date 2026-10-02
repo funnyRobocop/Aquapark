@@ -57,12 +57,16 @@ namespace NonameGame
             bounceDir.Normalize();
 
             rb.linearVelocity = Vector3.zero;
-            rb.AddForce(bounceDir * bounceForce, ForceMode.Impulse);
 
-            StartCoroutine(ReleaseCooldown(netObj.Id, cooldownTime));
+            //rb.AddForce(bounceDir * bounceForce, ForceMode.Impulse);
+            var target = other.GetComponentInParent<PlayerRaceData>();
+            if (target != null && target.Object != null)
+                target.RPC_ApplyPush(bounceDir * bounceForce);
+
+            StartCoroutine(ReleaseCooldown(netObj.Id, cooldownTime));            
 
             if (other.TryGetComponent<PlayerController>(out var playerController))
-                        playerController.SetStunTimer(cooldownTime);
+                playerController.SetStunTimer(cooldownTime);
         }
 
         private IEnumerator ReleaseCooldown(NetworkId id, float delay)

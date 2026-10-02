@@ -568,6 +568,7 @@ MonoBehaviour:
   _CheckpointPosition: {x: 0, y: 0, z: 0}
   _CheckpointRotation: {x: 0, y: 0, z: 0, w: 0}
   _playerGrab: {fileID: 6363781521094476151}
+  _playerView: {fileID: 2137247441811218386}
 --- !u!114 &3448233462420341247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,6 +585,7 @@ MonoBehaviour:
   pushForce: 18
   pushUpForce: 3
   cooldown: 0.45
+  stunTime: 0.35
   pushAngle: 90
   playerMask:
     serializedVersion: 2
@@ -641,6 +643,7 @@ MonoBehaviour:
     value: {fileID: 1325722257665676130}
   - key: 4
     value: {fileID: 5233954255309509437}
+  stunVfx: {fileID: 0}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
   fallYThreshold: -10

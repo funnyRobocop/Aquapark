@@ -16,6 +16,7 @@ namespace NonameGame
         [Networked] public Quaternion CheckpointRotation { get; set; }
 
         [SerializeField] private PlayerGrab _playerGrab;
+        [SerializeField] private PlayerView _playerView;
 
         [Inject] private CameraManager _cameraManager;
 
@@ -153,6 +154,10 @@ namespace NonameGame
                 return;
 
             rb.AddForce(force, ForceMode.Impulse);
+
+            Debug.Log($"Player {Id} received push force {force} at position {transform.position}");
+
+            _playerView.PlayStunVFX();
         }
     }
 }

@@ -16,6 +16,7 @@ namespace NonameGame
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
         [SerializeField] private Dictionary<PlayerSkinType, Transform> holdPointsDict;
+        [SerializeField] private ParticleSystem stunVfx;
 
         [Header("Tuning")]
         [SerializeField] private float speedDamp = 0.1f;
@@ -139,6 +140,12 @@ namespace NonameGame
         {
             if (!HasStateAuthority) return;
             SetTrigger(ShootHash);
+        }
+
+        public void PlayStunVFX()
+        {
+            if (stunVfx != null)
+                stunVfx.Play();
         }
 
         /// <summary>

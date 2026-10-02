@@ -12,6 +12,7 @@ namespace NonameGame
         [Header("Hit Player")]
         [SerializeField] private float hitForce = 16f;
         [SerializeField] private float hitUpForce = 3f;
+        [SerializeField] private float stunTime = 0.35f;
 
         [Networked] public NetworkBool IsHeld { get; set; }
         [Networked] public NetworkBool IsAirborneThrown { get; set; }
@@ -116,6 +117,9 @@ namespace NonameGame
                     dir += Vector3.up * (hitUpForce / Mathf.Max(hitForce, 0.01f));
 
                     player.RPC_ApplyPush(dir.normalized * hitForce);
+
+                    if (collision.collider.TryGetComponent<PlayerController>(out var playerController))
+                        playerController.SetStunTimer(stunTime);
                 }
             }
 

@@ -11,6 +11,7 @@ namespace NonameGame
         [Header("Hit")]
         [SerializeField] private float hitForce = 12f;
         [SerializeField] private float hitUpForce = 2.5f;
+        [SerializeField] private float stunTime = 0.35f;
 
         [Header("Return to pool")]
         [SerializeField] private float maxFlightTime = 6f;
@@ -134,6 +135,10 @@ namespace NonameGame
 
                 player.RPC_ApplyPush(dir * hitForce);
                 ReturnToPoolImmediate();
+
+                if (collision.collider.TryGetComponent<PlayerController>(out var playerController))
+                    playerController.SetStunTimer(stunTime);
+
                 return;
             }
 
