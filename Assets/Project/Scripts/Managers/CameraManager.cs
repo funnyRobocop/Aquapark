@@ -11,9 +11,8 @@ namespace NonameGame
 
         public void ResetPlayerCameraPos()
         {
-            Debug.Log("ResetPlayerCameraPos");
             if (_playerCameraFollow != null)
-                _playerCameraFollow.HorizontalAxis.Value = 0f;
+                _playerCameraFollow.HorizontalAxis.Value = 180f;
         }
 
         public void InitForPlayer(Transform playerTransform)

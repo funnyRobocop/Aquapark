@@ -103,7 +103,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854843060950070728}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0373915, y: 0.017836127, z: -0.00066749257, w: 0.99914134}
+  m_LocalRotation: {x: 0.018547058, y: 0.017845513, z: -0.0003310915, w: 0.99966866}
   m_LocalPosition: {x: -10, y: 20, z: -280}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -224,7 +224,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -272,7 +272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2643292993051064579}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.037391484, y: 0.017836122, z: -0.00066749216, w: 0.99914134}
+  m_LocalRotation: {x: 0.03561788, y: 0.017837284, z: -0.000635831, w: 0.9992061}
   m_LocalPosition: {x: -10, y: 20, z: -280}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -299,8 +299,8 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 0}
-    LookAtTarget: {fileID: 0}
+    TrackingTarget: {fileID: 5577133624487761599}
+    LookAtTarget: {fileID: 5577133624487761599}
     CustomLookAtTarget: 1
   Lens:
     FieldOfView: 60
@@ -569,6 +569,37 @@ Transform:
   - {fileID: 771177214086873071}
   m_Father: {fileID: 5082508637736417670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6909346130347551560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5577133624487761599}
+  m_Layer: 0
+  m_Name: FlyingCameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5577133624487761599
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909346130347551560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5082508637736417670}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8182803767408604819
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,8 +630,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8182803767408604819}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1720049, y: -0.024064006, z: 0.004203042, w: 0.9847932}
-  m_LocalPosition: {x: 0, y: 1.0921001, z: -4.008862}
+  m_LocalRotation: {x: 0.23818304, y: -1.0979345e-10, z: -1.3951966e-10, w: 0.9712203}
+  m_LocalPosition: {x: 0, y: 2.0921001, z: -4.008862}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -626,7 +657,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 0}
+    TrackingTarget: {fileID: 304777070142769926}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -781,8 +812,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
         Gain: 1
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -794,8 +823,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
         Gain: 1
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -807,8 +834,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: 0}
         Gain: 1
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -888,6 +913,7 @@ Transform:
   - {fileID: 3164197801367624897}
   - {fileID: 1832811494623967217}
   - {fileID: 2855896894734524940}
+  - {fileID: 5577133624487761599}
   - {fileID: 6195722153363161276}
   - {fileID: 7706101406159433331}
   - {fileID: 304777070142769926}
@@ -907,6 +933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraSwitcher
   _playerCamera: {fileID: 4397877537483285965}
+  _playerCameraFollow: {fileID: 8480357613602082409}
   _allRagdollCameras:
   - {fileID: 1460429088398575634}
   - {fileID: 1070412175154529421}

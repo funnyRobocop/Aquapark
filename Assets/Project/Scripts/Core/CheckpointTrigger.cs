@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 using VContainer;
 
@@ -9,6 +10,8 @@ namespace NonameGame
         [SerializeField] private Transform spawnPoint; // куда ставить игрока (может быть этот же объект)
 
         [Inject] private VFXManager _vfxManager;
+
+        private List<NetworkBehaviourId> _triggeredPlayers = new List<NetworkBehaviourId>();
         
         private void OnTriggerEnter(Collider other)
         {
@@ -21,6 +24,9 @@ namespace NonameGame
 
             if (!player.HasStateAuthority)
                 return;
+                
+            if (_triggeredPlayers.Contains(player.Id))
+                return;
 
             Vector3 pos = spawnPoint != null ? spawnPoint.position : transform.position;
             Quaternion rot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
@@ -30,6 +36,8 @@ namespace NonameGame
             _vfxManager.PlaySalutVFX(new Vector3(player.transform.position.x,
                 player.transform.position.y + 1f,
                 player.transform.position.z));
+
+            _triggeredPlayers.Add(player.Id);
         }
     }
 }

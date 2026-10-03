@@ -19,6 +19,7 @@ namespace NonameGame
         [SerializeField] private PlayerView _playerView;
 
         [Inject] private CameraManager _cameraManager;
+        [Inject] private VFXManager _vfxManager;
 
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
@@ -144,6 +145,9 @@ namespace NonameGame
             }
             
             _cameraManager?.ResetPlayerCameraPos();
+            _vfxManager.PlaySalutVFX(new Vector3(transform.position.x,
+                transform.position.y + 1f,
+                transform.position.z));
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
