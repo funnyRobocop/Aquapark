@@ -145,7 +145,10 @@ namespace NonameGame
         public void PlayStunVFX()
         {
             if (stunVfx != null)
-                stunVfx.Play();
+            {
+                Instantiate(stunVfx, transform.position + Vector3.up * 1.5f, Quaternion.identity);
+                //stunVfx.Play();
+            }
         }
 
         /// <summary>
