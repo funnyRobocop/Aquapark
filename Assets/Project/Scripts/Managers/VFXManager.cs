@@ -6,21 +6,18 @@ namespace NonameGame
 {
     public class VFXManager : MonoBehaviour
     {
-        [SerializeField] private List<ParticleSystem> stunVfxList;
-        [SerializeField] private List<ParticleSystem> salutVfxList;
+        [SerializeField] private ParticleSystem stunVfx;
+        [SerializeField] private ParticleSystem salutVfx;
 
-        public void PlayStunVFX(Vector3 position, bool isBig = false)
+        public void PlayStunVFX(Vector3 position)
         {
-            var stunVfx = isBig ? stunVfxList[1] : stunVfxList[0];
-
             stunVfx.gameObject.SetActive(true);
             stunVfx.transform.position = position;
             stunVfx.Play();
         }
-        public void PlaySalutVFX(Vector3 position, bool isBig = false)
+        
+        public void PlaySalutVFX(Vector3 position)
         {
-            var salutVfx = isBig ? salutVfxList[1] : salutVfxList[0];
-
             salutVfx.gameObject.SetActive(true);
             salutVfx.transform.position = position;
             salutVfx.Play();

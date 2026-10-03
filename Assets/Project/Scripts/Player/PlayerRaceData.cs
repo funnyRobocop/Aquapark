@@ -147,7 +147,7 @@ namespace NonameGame
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-        public void RPC_ApplyPush(Vector3 force, bool isBig = false)
+        public void RPC_ApplyPush(Vector3 force)
         {
             var rb = GetComponent<Rigidbody>();
             if (rb == null)
@@ -157,7 +157,7 @@ namespace NonameGame
 
             Debug.Log($"Player {Id} received push force {force} at position {transform.position}");
 
-            _playerView.PlayStunVFX(isBig);
+            _playerView.PlayStunVFX();
         }
     }
 }

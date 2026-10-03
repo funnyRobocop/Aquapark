@@ -61,7 +61,7 @@ namespace NonameGame
             //rb.AddForce(bounceDir * bounceForce, ForceMode.Impulse);
             var target = other.GetComponentInParent<PlayerRaceData>();
             if (target != null && target.Object != null)
-                target.RPC_ApplyPush(bounceDir * bounceForce, true);
+                target.RPC_ApplyPush(bounceDir * bounceForce);
 
             StartCoroutine(ReleaseCooldown(netObj.Id, cooldownTime));            
 

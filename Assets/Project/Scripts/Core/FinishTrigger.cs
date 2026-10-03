@@ -30,7 +30,7 @@ namespace NonameGame
 
             _vfxManager.PlaySalutVFX(new Vector3(player.transform.position.x,
                 player.transform.position.y + 1f,
-                player.transform.position.z), true);
+                player.transform.position.z));
         }
     }
 }

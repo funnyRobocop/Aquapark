@@ -145,9 +145,9 @@ namespace NonameGame
             SetTrigger(ShootHash);
         }
 
-        public void PlayStunVFX(bool isBig = false)
+        public void PlayStunVFX()
         {
-            _vfxManager.PlayStunVFX(stunVFXPoint.position, isBig);
+            _vfxManager.PlayStunVFX(stunVFXPoint.position);
         }
 
         /// <summary>
