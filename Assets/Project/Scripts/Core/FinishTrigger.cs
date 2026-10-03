@@ -1,10 +1,13 @@
 using Fusion;
 using UnityEngine;
+using VContainer;
 
 namespace NonameGame
 {
     public class FinishTrigger : MonoBehaviour
     {
+        [Inject] private VFXManager _vfxManager;
+        
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player"))
@@ -24,6 +27,10 @@ namespace NonameGame
 
             // Просим менеджера засчитать финиш
             InGameManager.Instance.RPC_RequestFinish(player.Object.Id);
+
+            _vfxManager.PlaySalutVFX(new Vector3(player.transform.position.x,
+                player.transform.position.y + 1f,
+                player.transform.position.z), true);
         }
     }
 }

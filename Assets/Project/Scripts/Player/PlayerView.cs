@@ -16,6 +16,7 @@ namespace NonameGame
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
         [SerializeField] private Dictionary<PlayerSkinType, Transform> holdPointsDict;
+        [SerializeField] private Transform stunVFXPoint;
 
         [Header("Tuning")]
         [SerializeField] private float speedDamp = 0.1f;
@@ -144,9 +145,9 @@ namespace NonameGame
             SetTrigger(ShootHash);
         }
 
-        public void PlayStunVFX()
+        public void PlayStunVFX(bool isBig = false)
         {
-            _vfxManager.PlayStunVFX(transform.position);
+            _vfxManager.PlayStunVFX(stunVFXPoint.position, isBig);
         }
 
         /// <summary>

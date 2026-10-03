@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
 namespace NonameGame
 {
@@ -7,6 +8,8 @@ namespace NonameGame
     {
         [SerializeField] private Transform spawnPoint; // куда ставить игрока (может быть этот же объект)
 
+        [Inject] private VFXManager _vfxManager;
+        
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player"))
@@ -23,6 +26,10 @@ namespace NonameGame
             Quaternion rot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
             player.SetCheckpoint(pos, rot);
+
+            _vfxManager.PlaySalutVFX(new Vector3(player.transform.position.x,
+                player.transform.position.y + 1f,
+                player.transform.position.z));
         }
     }
 }

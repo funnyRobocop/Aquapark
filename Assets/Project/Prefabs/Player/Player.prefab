@@ -198,6 +198,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1961054772260347575}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &4105840640743127456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8290326148455065921}
+  m_Layer: 8
+  m_Name: StunVFXPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8290326148455065921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4105840640743127456}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1961054772260347575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4283209103891623559
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,6 +402,7 @@ Transform:
   - {fileID: 5233954255309509437}
   - {fileID: 5130651466803922903}
   - {fileID: 6937466065769926189}
+  - {fileID: 8290326148455065921}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4529568527393995943
@@ -643,7 +675,7 @@ MonoBehaviour:
     value: {fileID: 1325722257665676130}
   - key: 4
     value: {fileID: 5233954255309509437}
-  stunVfx: {fileID: 198218238499264890, guid: 0194293c87e985d4194a657e1b744227, type: 3}
+  stunVFXPoint: {fileID: 8290326148455065921}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
   fallYThreshold: -10
