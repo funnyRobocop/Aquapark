@@ -16,7 +16,6 @@ namespace NonameGame
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
         [SerializeField] private Dictionary<PlayerSkinType, Transform> holdPointsDict;
-        [SerializeField] private ParticleSystem stunVfx;
 
         [Header("Tuning")]
         [SerializeField] private float speedDamp = 0.1f;
@@ -28,6 +27,7 @@ namespace NonameGame
         private bool _pushTriggered;
 
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
+        [Inject] private VFXManager _vfxManager;
 
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
         private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -55,6 +55,8 @@ namespace NonameGame
                 pipeSlide = GetComponent<PlayerPipeSlide>();
             if (rb == null)
                 rb = GetComponent<Rigidbody>();
+
+            InitSkin();
         }
 
         public void InitSkin()
@@ -144,11 +146,7 @@ namespace NonameGame
 
         public void PlayStunVFX()
         {
-            if (stunVfx != null)
-            {
-                Instantiate(stunVfx, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-                //stunVfx.Play();
-            }
+            _vfxManager.PlayStunVFX(transform.position);
         }
 
         /// <summary>

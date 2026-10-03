@@ -1,10 +1,12 @@
 using Fusion;
 using Fusion.Photon.Realtime;
+using NonameGame;
 using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using VContainer.Unity;
 
 /// <summary>
 /// Manager that handles connecting to Photon Fusion
@@ -74,12 +76,14 @@ public class FusionNetworkManager : MonoBehaviour
     /// <param name="arg0"></param>
     private void SceneManager_sceneUnloaded(Scene arg0)
     {
-        // Enables the main menu features.
-        mainMenuCanvas.enabled = true;
-        mainMenuCanvasGroup.alpha = 1f;
-        mainMenuCanvasGroup.interactable = true;
+        if (mainMenuCanvas != null)
+        {
+            mainMenuCanvas.enabled = true;
+            mainMenuCanvasGroup.alpha = 1f;
+            mainMenuCanvasGroup.interactable = true;
+        }
 
-        LoadingScreenBehaviour.Instance.Hide("Returning To Main Menu");
+        LoadingScreenBehaviour.Instance?.Hide("Returning To Main Menu");
 
         Cursor.lockState = CursorLockMode.None;
     }
@@ -145,7 +149,6 @@ public class FusionNetworkManager : MonoBehaviour
         Runner = Instantiate(networkRunnerPrefab);
 
         // App settings for region and version are set.
-        // Settings region to null will cause the NetworkRunner to fail; however, setting it to an empty string will tell Fusion to try and connect to the best region.
         if (region == null)
             region = string.Empty;
         PhotonAppSettings.Global.AppSettings.FixedRegion = region;
@@ -155,13 +158,24 @@ public class FusionNetworkManager : MonoBehaviour
         NetworkSceneInfo sceneInfo = new NetworkSceneInfo();
         sceneInfo.AddSceneRef(SceneRef.FromIndex(1), LoadSceneMode.Additive, activeOnLoad: true);
 
-        // The start game arguments setup the game.
+        var objectProvider = new VContainerFusionObjectProvider(() =>
+        {
+            var gameScope = LifetimeScope.Find<GameScope>();
+            if (gameScope == null)
+            {
+                Debug.LogError("GameScope не был найден на загруженной сцене!");
+                return null;
+            }
+            return gameScope.Container;
+        });
+
         StartGameArgs startGameArgs = new StartGameArgs()
         {
             SessionName = session,
             GameMode = GameMode.Shared,
             PlayerCount = 8,
-            Scene = sceneInfo
+            Scene = sceneInfo,
+            ObjectProvider = objectProvider
         };
 
         // We wait for the runner to start the game
@@ -179,6 +193,45 @@ public class FusionNetworkManager : MonoBehaviour
             ShowShutdown(results.ShutdownReason);
         }
 
-        LoadingScreenBehaviour.Instance.Hide("Entering Gameplay");
+        LoadingScreenBehaviour.Instance?.Hide("Entering Gameplay");
+    }
+}
+
+/// <summary>
+/// Кастомный провайдер объектов для интеграции Photon Fusion 2 и VContainer.
+/// Наследуется от стандартного провайдера Fusion 2.
+/// </summary>
+public class VContainerFusionObjectProvider : Fusion.NetworkObjectProviderDefault
+{
+    private readonly Func<VContainer.IObjectResolver> _containerResolver;
+
+    public VContainerFusionObjectProvider(Func<VContainer.IObjectResolver> containerResolver)
+    {
+        _containerResolver = containerResolver;
+    }
+
+    // Перехватываем стандартный спавн префаба во Fusion 2
+    protected override NetworkObject InstantiatePrefab(NetworkRunner runner, NetworkObject prefab)
+    {
+        // 1. Позволяем Fusion 2 штатно инстанцировать префаб
+        var instance = base.InstantiatePrefab(runner, prefab);
+
+        if (instance != null)
+        {
+            // 2. Вызываем нашу ленивую лямбду — на этом этапе аддитивная сцена уже загружена в память
+            var container = _containerResolver?.Invoke();
+
+            if (container != null)
+            {
+                // 3. Автоматически инжектим зависимости во все компоненты на заспавненном объекте игрока
+                var components = instance.GetComponentsInChildren<MonoBehaviour>(true);
+                foreach (var monoBehaviour in components)
+                {
+                    container.Inject(monoBehaviour);
+                }
+            }
+        }
+
+        return instance;
     }
 }
