@@ -291,6 +291,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1961054772260347575}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6431293009277355717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3102893130120175275}
+  m_Layer: 0
+  m_Name: PizzaHoldPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3102893130120175275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6431293009277355717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1961054772260347575}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &6877308356612211283
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,6 +430,7 @@ Transform:
   - {fileID: 8687073919806671688}
   - {fileID: 4011118905859521299}
   - {fileID: 529284113810689731}
+  - {fileID: 3102893130120175275}
   - {fileID: 1325722257665676130}
   - {fileID: 5233954255309509437}
   - {fileID: 5130651466803922903}
@@ -678,6 +710,8 @@ MonoBehaviour:
     value: {fileID: 5233954255309509437}
   - key: 9
     value: {fileID: 529284113810689731}
+  - key: 10
+    value: {fileID: 3102893130120175275}
   stunVFXPoint: {fileID: 8290326148455065921}
   speedDamp: 0.1
   runSpeedThreshold: 0.5
