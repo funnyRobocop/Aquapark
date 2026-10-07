@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using VContainer;
 using VContainer.Unity;
 
 /// <summary>
@@ -38,6 +39,8 @@ public class FusionNetworkManager : MonoBehaviour
 
     [SerializeField, Tooltip("Text that displays the connection failure reason.")]
     TextMeshProUGUI connectionFailText;
+
+    [Inject] private LoadingUI _loadingUI;
 
     /// <summary>
     /// The available regions for this game
@@ -83,7 +86,7 @@ public class FusionNetworkManager : MonoBehaviour
             mainMenuCanvasGroup.interactable = true;
         }
 
-        LoadingScreenBehaviour.Instance?.Hide("Returning To Main Menu");
+        _loadingUI?.Hide();
 
         Cursor.lockState = CursorLockMode.None;
     }
@@ -137,7 +140,7 @@ public class FusionNetworkManager : MonoBehaviour
         {
             loadingMessage = string.Empty;
         }
-        LoadingScreenBehaviour.Instance.Show(loadingMessage);
+        _loadingUI?.Show();
 
         // The main menu is no longer interactable
         mainMenuCanvasGroup.interactable = false;
@@ -193,7 +196,7 @@ public class FusionNetworkManager : MonoBehaviour
             ShowShutdown(results.ShutdownReason);
         }
 
-        LoadingScreenBehaviour.Instance?.Hide("Entering Gameplay");
+        _loadingUI?.Hide();
     }
 }
 

@@ -159,7 +159,7 @@ namespace NonameGame
 
             rb.AddForce(force, ForceMode.Impulse);
 
-            Debug.Log($"Player {Id} received push force {force} at position {transform.position}");
+            //Debug.Log($"Player {Id} received push force {force} at position {transform.position}");
 
             _playerView.PlayStunVFX();
         }

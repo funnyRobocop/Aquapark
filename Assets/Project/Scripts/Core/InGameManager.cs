@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 
 namespace NonameGame
@@ -52,6 +53,8 @@ namespace NonameGame
         private int previousTotalPlayers;
         private int previousReadyPlayers;
         private bool showResults;
+        
+        [Inject] private LoadingUI _loadingUI;
 
         public bool ShowResults
         {
@@ -388,8 +391,7 @@ namespace NonameGame
 
         public void LeaveGame()
         {
-            if (LoadingScreenBehaviour.Instance != null)
-                LoadingScreenBehaviour.Instance.Show("Returning To Main Menu");
+            _loadingUI?.Show();
 
             if (CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HideInviteButton();

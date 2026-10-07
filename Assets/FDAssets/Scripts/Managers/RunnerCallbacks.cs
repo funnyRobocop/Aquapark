@@ -4,8 +4,7 @@ using NonameGame;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using VContainer.Unity;
+using VContainer;
 
 [Tooltip("Implements INetworkRunnerCallbacks so various events such as playings joining and leaving will trigger different actions.")]
 public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
@@ -13,6 +12,8 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
 
     [Tooltip("The Spawned on the Network when a player joins the room.")]
     public NetworkObject playerPrefab;
+
+    [Inject] private LoadingUI _loadingUI;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -32,14 +33,14 @@ public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
     {
         // Attempts to unload the gameplay scene.
         var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("GameplayScene");
-        LoadingScreenBehaviour.Instance.Show("Runner Shuttong Down");
+        _loadingUI?.Show();
         if (scene.IsValid())
         {
             UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
         }
         else
         {
-            LoadingScreenBehaviour.Instance?.Hide("Returning To Main Menu");
+            _loadingUI?.Hide();
 
             var fm = GameObject.FindFirstObjectByType<FusionNetworkManager>(FindObjectsInactive.Include);
             fm?.ShowShutdown(shutdownReason);
