@@ -6,38 +6,49 @@ namespace NonameGame
 {
     public interface IPlayerSkinLoader
     {
-        GameObject GetPlayerSkinPrefab(PlayerSkinType skinType);
+        Dictionary<PlayerSkin, PlayerSkinData> PlayerSkinAll { get; }
     }
 
     [CreateAssetMenu(fileName = "PlayerSkinLoader", menuName = "Scriptable Objects/PlayerSkinLoader")]
     public class PlayerSkinLoader : ScriptableObject, IPlayerSkinLoader
     {
-        [SerializeField] private Dictionary<PlayerSkinType, PlayerSkinData> playerSkinAll;
+        [SerializeField] private Dictionary<PlayerSkin, PlayerSkinData> playerSkinAll;
 
-        public PlayerSkinType TestSkinType = PlayerSkinType.Banana;
+        public Dictionary<PlayerSkin, PlayerSkinData> PlayerSkinAll => playerSkinAll;
+    }
 
-        public GameObject GetPlayerSkinPrefab(PlayerSkinType skinType)
+
+    [System.Serializable]
+    public class PlayerSkinData
+    {
+        public PlayerSkin SkinId;
+        public PlayerSkinType SkinType;
+        public string NameRu;
+        public string NameEn;
+        public Sprite Sprite;
+        public GameObject Prefab;
+
+        public string GetSkinTypeString()
         {
-            if (playerSkinAll.TryGetValue(skinType, out PlayerSkinData skinData))
-            {
-                return skinData.Prefab;
-            }
-            else
-            {
-                Debug.LogWarning($"Player skin of type {skinType} not found.");
-                return null;
-            }
+            if (SkinType == PlayerSkinType.Rare)
+                return "Rare";
+                
+            return "Common";
         }
 
-
-        [System.Serializable]
-        public class PlayerSkinData
+        public string GetNameString()
         {
-            public GameObject Prefab;
+            return NameEn;
         }
     }
 
     public enum PlayerSkinType
+    {
+        Common,
+        Rare
+    }
+
+    public enum PlayerSkin
     {
         Banana,
         BigSausage,

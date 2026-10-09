@@ -21,7 +21,19 @@ namespace NonameGame
             if (runner.LocalPlayer != player)
                 return;
 
-            var newPlayer = runner.Spawn(playerPrefab, position: Vector3.up, inputAuthority: player);
+            int selectedSkinId = LocalSkinSelection.SelectedSkinId;
+            var newPlayer = runner.Spawn(
+                playerPrefab,
+                position: Vector3.up,
+                inputAuthority: player,
+                onBeforeSpawned: (spawnRunner, spawnedObject) =>
+                {
+                    var skin = spawnedObject.GetComponent<PlayerView>();
+                    if (skin != null)
+                        skin.InitializeBeforeSpawn(selectedSkinId);
+                    else
+                        Debug.LogError("Add PlayerView to the Player prefab root.");
+                });
 
             runner.SetPlayerObject(player, newPlayer);
         }

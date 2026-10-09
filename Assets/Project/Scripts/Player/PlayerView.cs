@@ -15,7 +15,7 @@ namespace NonameGame
         [SerializeField] private PlayerWeapon weapon;
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
-        [SerializeField] private Dictionary<PlayerSkinType, Transform> holdPointsDict;
+        [SerializeField] private Dictionary<PlayerSkin, Transform> holdPointsDict;
         [SerializeField] private Transform stunVFXPoint;
 
         [Header("Tuning")]
@@ -27,8 +27,8 @@ namespace NonameGame
         private bool _dashTriggered;
         private bool _pushTriggered;
 
-        [Inject] private IPlayerSkinLoader _playerSkinLoader;
         [Inject] private VFXManager _vfxManager;
+        [Inject] private IPlayerSkinLoader _playerSkinLoader;
 
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
         private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -42,7 +42,12 @@ namespace NonameGame
         private static readonly int ThrowHash = Animator.StringToHash("Throw");
         private static readonly int ShootHash = Animator.StringToHash("Shoot");
 
-        public PlayerSkinType SkinType { get; set; }
+        public int SkinId { get; set; }
+
+        public void InitializeBeforeSpawn(int requestedId)
+        {
+            SkinId = requestedId;
+        }
 
         public override void Spawned()
         {
@@ -62,15 +67,15 @@ namespace NonameGame
 
         public void InitSkin()
         {
-            SkinType = (_playerSkinLoader as PlayerSkinLoader).TestSkinType;
-            var skinPrefab = _playerSkinLoader.GetPlayerSkinPrefab((_playerSkinLoader as PlayerSkinLoader).TestSkinType);
-            var skin = Instantiate(skinPrefab, transform.GetChild(0));
+            var skinType = (PlayerSkin) SkinId;
+            var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
+            var skin = Instantiate(skinData.Prefab, transform.GetChild(0));
             var skinAnimator = skin.GetComponent<Animator>();
             animator.avatar = skinAnimator.avatar;
             skinAnimator.enabled = false;
 
-            if (holdPointsDict.ContainsKey(SkinType))
-                grab.SetHoldPoint(holdPointsDict[SkinType]);
+            if (holdPointsDict.ContainsKey(skinType))
+                grab.SetHoldPoint(holdPointsDict[skinType]);
         }
 
         /*public override void Render()
