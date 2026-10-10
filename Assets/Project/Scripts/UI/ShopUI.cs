@@ -23,6 +23,7 @@ namespace NonameGame
 
         [Inject] private IPlayerSkinLoader playerSkinLoader;
 
+
         private void Awake()
         {
             closeButton.onClick.AddListener(Hide);
