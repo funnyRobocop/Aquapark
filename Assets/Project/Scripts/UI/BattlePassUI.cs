@@ -11,28 +11,29 @@ namespace NonameGame
     {
         [Header("Main Progress")]
         [SerializeField] private TextMeshProUGUI levelText;
-        [SerializeField] private Image totalProgressSlider; // Image с типажом Filled
+        [SerializeField] private Slider totalProgressSlider;
 
 
         [Header("Weekly Quests UI")]
         [SerializeField] private TextMeshProUGUI throwText;
-        [SerializeField] private Image throwProgressSlider;
+        [SerializeField] private Slider throwProgressSlider;
 
         [SerializeField] private TextMeshProUGUI kickText;
-        [SerializeField] private Image kickProgressSlider;
+        [SerializeField] private Slider kickProgressSlider;
 
         [SerializeField] private TextMeshProUGUI goldText;
-        [SerializeField] private Image goldProgressSlider;
+        [SerializeField] private Slider goldProgressSlider;
         [SerializeField] private TextMeshProUGUI finishText;
-        [SerializeField] private Image finishProgressSlider;
+        [SerializeField] private Slider finishProgressSlider;
 
         [Header("Timer")]
         [SerializeField] private TextMeshProUGUI timerText;
 
+        [SerializeField] private Button closeButton;
+
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
 
-        // VContainer автоматически внедрит зависимость при спавне или инициализации сцены
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
         {
@@ -40,22 +41,22 @@ namespace NonameGame
             _achievementsConfig = achievementsConfig;
         }
 
-        private void OnEnable()
+        private void Awake()
         {
+            closeButton.onClick.AddListener(Hide);
+
             if (_gameModel != null)
             {
                 // Подписываемся на изменения данных, чтобы интерфейс обновлялся на лету
                 _gameModel.OnDataChanged += RefreshUI;
                 _gameModel.OnLevelChanged += HandleLevelChanged;
             }
-
-            RefreshUI();
-            HandleLevelChanged(_gameModel.Level);
-            UpdateWeeklyTimer();
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
+            closeButton.onClick.RemoveListener(Hide);
+
             if (_gameModel != null)
             {
                 _gameModel.OnDataChanged -= RefreshUI;
@@ -63,12 +64,29 @@ namespace NonameGame
             }
         }
 
+        private void OnEnable()
+        {
+            RefreshUI();
+            HandleLevelChanged(_gameModel.Level);
+            UpdateWeeklyTimer();
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
         private void RefreshUI()
         {
             if (_gameModel == null) return;
 
             // 1. Отображение уровня игрока
-            levelText.text = $"УРОВЕНЬ {_gameModel.Level}";
+            //levelText.text = $"УРОВЕНЬ {_gameModel.LevelName}";
 
             // 2. Считаем суммы всех параметров из массива StatsList
             int totalGold = _gameModel.StatsList.Sum(s => s.GoldCount);
@@ -78,7 +96,7 @@ namespace NonameGame
 
             // 3. Расчет главного прогресс-бара уровня (ваша будущая формула)
             float totalProgressPercent = CalculateTotalProgress(totalThrows, totalKicks, totalGold, totalFinish);
-            totalProgressSlider.fillAmount = Mathf.Clamp01(totalProgressPercent);
+            totalProgressSlider.value = Mathf.Clamp01(totalProgressPercent);
 
             // 4. Обновление недельных квестов
             UpdateQuestTrack(throwText, throwProgressSlider, totalThrows, _achievementsConfig.TargetThrowCount, "Броски");
@@ -101,10 +119,10 @@ namespace NonameGame
         }
 
         // Вспомогательный метод для красивого заполнения баров подзадач
-        private void UpdateQuestTrack(TextMeshProUGUI label, Image slider, int current, int target, string questName)
+        private void UpdateQuestTrack(TextMeshProUGUI label, Slider slider, int current, int target, string questName)
         {
             label.text = $"{questName}: {current} / {target}";
-            slider.fillAmount = (float)current / target;
+            slider.value = (float)current / target;
         }
 
         // Расчет и вывод времени до конца недели

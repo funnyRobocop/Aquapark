@@ -57,15 +57,14 @@ namespace NonameGame
             closeButton.onClick.RemoveListener(Hide);
         }
 
-        internal void Show()
+        public void Show()
         {
             gameObject.SetActive(true);
         }
 
-        internal void Hide()
+        public void Hide()
         {
             gameObject.SetActive(false);
         }
-
     }
 }

@@ -7,10 +7,12 @@ namespace NonameGame
     public class RootScope : LifetimeScope
     {
         [SerializeField] private PlayerSkinLoader playerSkinLoader;
-        
+        [SerializeField] private AchievementsConfig achievementsConfig;
+
         override protected void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance<IPlayerSkinLoader>(playerSkinLoader);
+            builder.RegisterInstance<AchievementsConfig>(achievementsConfig);
 
             // Регистрируем сервис сохранения как обычный Singleton
             builder.Register<SaveService>(Lifetime.Singleton);
