@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 
 namespace NonameGame
@@ -67,15 +68,28 @@ namespace NonameGame
 
         public void InitSkin()
         {
-            var skinType = (PlayerSkin) SkinId;
+            var skinType = (PlayerSkin)SkinId;
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
-            var skin = Instantiate(skinData.Prefab, transform.GetChild(0));
-            var skinAnimator = skin.GetComponent<Animator>();
-            animator.avatar = skinAnimator.avatar;
-            skinAnimator.enabled = false;
+            SpawnPlayerMesh(skinData, transform.GetChild(0));           
 
             if (holdPointsDict.ContainsKey(skinType))
                 grab.SetHoldPoint(holdPointsDict[skinType]);
+        }
+
+        public unsafe void SpawnPlayerMesh(PlayerSkinData activeSkinData, Transform spawnPoint)
+        {
+            // Загрузка и создание префаба на сцене одной командой
+            activeSkinData.PrefabReference.InstantiateAsync(spawnPoint).Completed += handle =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    GameObject skin = handle.Result;
+
+                    var skinAnimator = skin.GetComponent<Animator>();
+                    animator.avatar = skinAnimator.avatar;
+                    skinAnimator.enabled = false;
+                }
+            };
         }
 
         /*public override void Render()

@@ -14,6 +14,7 @@ namespace NonameGame
         [Tooltip("The Spawned on the Network when a player joins the room.")]
         public NetworkObject playerPrefab;
 
+        [Inject] private GameModel _gameModel;
         [Inject] private LoadingUI _loadingUI;
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -21,7 +22,7 @@ namespace NonameGame
             if (runner.LocalPlayer != player)
                 return;
 
-            int selectedSkinId = LocalSkinSelection.SelectedSkinId;
+            int selectedSkinId = _gameModel.SelectedSkinId;
             var newPlayer = runner.Spawn(
                 playerPrefab,
                 position: Vector3.up,

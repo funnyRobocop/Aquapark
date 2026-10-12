@@ -11,6 +11,11 @@ namespace NonameGame
 
         override protected void Configure(IContainerBuilder builder)
         {
+            if (playerSkinLoader != null)
+            {
+                playerSkinLoader.Initialize();
+            }
+            
             builder.RegisterInstance<IPlayerSkinLoader>(playerSkinLoader);
             builder.RegisterInstance<AchievementsConfig>(achievementsConfig);
 

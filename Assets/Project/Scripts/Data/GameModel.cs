@@ -100,6 +100,11 @@ namespace NonameGame
             _saveService.Save(this); // Конец уровня — идеальный момент для сохранения на WebGL
         }
 
+        internal bool IsSkinPurchased(int skinId)
+        {
+            return PurchasedSkinIdList.Contains(skinId);
+        }
+
         [System.Serializable]
         public class Stats
         {
