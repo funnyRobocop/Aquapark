@@ -12,10 +12,11 @@ namespace NonameGame
     public class ShopUI : MonoBehaviour
     {
 
-        [SerializeField] private Button closeButton;
         [SerializeField] private Button chooseButton;
         [SerializeField] private Button purchaseButton;
+        [SerializeField] private Button confirmPurchaseButton;
         [SerializeField] private TMP_Text purchaseButtonText;
+        [SerializeField] private TMP_Text confirmPurchaseButtonText;
         [SerializeField] private Transform itemContainer;
         [SerializeField] private TMP_Text selectedSkinNameText;
         [SerializeField] private TMP_Text selectedSkinTypeText;
@@ -33,9 +34,9 @@ namespace NonameGame
 
         private void Awake()
         {
-            closeButton.onClick.AddListener(Hide);
             chooseButton.onClick.AddListener(ChooseSkin);
             purchaseButton.onClick.AddListener(PurchaseSkin);
+            confirmPurchaseButton.onClick.AddListener(ConfirmPurchase);
 
             foreach (var item in playerSkinLoader.PlayerSkinAll)
             {
@@ -52,15 +53,16 @@ namespace NonameGame
         private void OnEnable()
         {
             UpdateButtonsView();
-            confirmPanel.SetActive(false);
+            HideConfirmPanel();
         }
 
         private void OnDestroy()
         {
-            closeButton.onClick.RemoveListener(Hide);
             chooseButton.onClick.RemoveListener(ChooseSkin);
             purchaseButton.onClick.RemoveListener(PurchaseSkin);
+            confirmPurchaseButton.onClick.RemoveListener(ConfirmPurchase);
         }
+
 
         private void UpdateButtonsView()
         {
@@ -71,7 +73,7 @@ namespace NonameGame
             {
                 if (_gameModel.IsSkinPurchased((int)_selectedSkinData.SkinId))
                 {
-                    chooseButton.gameObject.SetActive(true);
+                    chooseButton.gameObject.SetActive(_gameModel.SelectedSkinId != (int)_selectedSkinData.SkinId);
                     purchaseButton.gameObject.SetActive(false);
                 }
                 else
@@ -80,6 +82,7 @@ namespace NonameGame
                     purchaseButton.gameObject.SetActive(true);
 
                     purchaseButtonText.text = _selectedSkinData.Price.ToString();
+                    confirmPurchaseButtonText.text = _selectedSkinData.Price.ToString();
                     purchaseButton.interactable = _gameModel.Money >= _selectedSkinData.Price;
                 }
             }
@@ -87,18 +90,30 @@ namespace NonameGame
 
         private void ChooseSkin()
         {
-            if (_selectedSkinData != null)
-            {
-                _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
-            }
+            if (_selectedSkinData == null)
+                return;
+
+            _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
+            UpdateButtonsView();
         }
 
         private void PurchaseSkin()
         {
-            if (_selectedSkinData != null)
-            {
-                _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);
-            }
+            if (_selectedSkinData == null)
+                return;
+
+            ShowConfirmPanel();
+        }
+
+        private void ConfirmPurchase()
+        {
+            if (_selectedSkinData == null)
+                return;
+
+            _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);            
+
+            HideConfirmPanel();
+            UpdateButtonsView();
         }
 
         private void SelectSkin(PlayerSkinData skinData)
@@ -120,6 +135,16 @@ namespace NonameGame
         public void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public void ShowConfirmPanel()
+        {
+            confirmPanel.SetActive(true);
+        }
+
+        public void HideConfirmPanel()
+        {
+            confirmPanel.SetActive(false);
         }
     }
 }
