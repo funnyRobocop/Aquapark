@@ -17,7 +17,7 @@ namespace NonameGame
 
         public Button SelectButton => selectButton;
 
-        private PlayerSkin _skinType;
+        private PlayerSkin _playerSkin;
         private PlayerSkinData _skinData;
 
         private IPlayerSkinLoader _playerSkinLoader;
@@ -27,9 +27,11 @@ namespace NonameGame
 
         public event Action<PlayerSkinData, ShopItemUI> OnSkinSelected;
 
+        public PlayerSkin PlayerSkin => _playerSkin;
+
         public void Initialize(PlayerSkin skinType, IPlayerSkinLoader playerSkinLoader)
         {
-            _skinType = skinType;
+            _playerSkin = skinType;
             _playerSkinLoader = playerSkinLoader;
             _skinData = _playerSkinLoader.PlayerSkinAll[skinType];
 

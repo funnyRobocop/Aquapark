@@ -61,6 +61,9 @@ namespace NonameGame
 
             _shopItems[0].SelectButton.onClick?.Invoke();
             scroll.verticalNormalizedPosition = 1f; // Scroll to top
+
+            foreach (var item in _shopItems)
+                item.SetChoosed(_gameModel.SelectedSkinId == (int)item.PlayerSkin);
         }
 
         private void OnDestroy()
