@@ -41,6 +41,7 @@ namespace NonameGame
         [SerializeField, Tooltip("Text that displays the connection failure reason.")]
         TextMeshProUGUI connectionFailText;
 
+        [Inject] private IObjectResolver _resolver;
         [Inject] private LoadingUI _loadingUI;
 
         /// <summary>
@@ -151,6 +152,12 @@ namespace NonameGame
 
             // The new runner is created
             Runner = Instantiate(networkRunnerPrefab);
+
+            var callbacks = Runner.GetComponent<RunnerCallbacks>();
+            if (callbacks != null)
+            {
+                _resolver.Inject(callbacks);
+            }
 
             // App settings for region and version are set.
             if (region == null)
