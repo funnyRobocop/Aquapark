@@ -10,8 +10,12 @@ namespace NonameGame
     public class ShopItemUI : MonoBehaviour
     {
         [SerializeField] private Button selectButton;
+        [SerializeField] private GameObject selectedIndicator;
+        [SerializeField] private GameObject choosedIndicator;
         [SerializeField] private Image skinImage;
         [SerializeField] private float maxIconSize = 512f;
+
+        public Button SelectButton => selectButton;
 
         private PlayerSkin _skinType;
         private PlayerSkinData _skinData;
@@ -21,7 +25,7 @@ namespace NonameGame
         // Храним хэндл загрузки, чтобы выгрузить из памяти при удалении объекта
         private AsyncOperationHandle<Sprite> _spriteLoadHandle;
 
-        public event Action<PlayerSkinData> OnSkinSelected;
+        public event Action<PlayerSkinData, ShopItemUI> OnSkinSelected;
 
         public void Initialize(PlayerSkin skinType, IPlayerSkinLoader playerSkinLoader)
         {
@@ -59,12 +63,17 @@ namespace NonameGame
 
         private void OnSelectButtonClicked()
         {
-            OnSkinSelected?.Invoke(_skinData);
-            SetSelected(true);
+            OnSkinSelected?.Invoke(_skinData, this);
         }
 
         public void SetSelected(bool isSelected)
         {
+            selectedIndicator.SetActive(isSelected);
+        }
+
+        public void SetChoosed(bool isChoosed)
+        {
+            choosedIndicator.SetActive(isChoosed);
         }
 
         private void OnDestroy()

@@ -12,6 +12,7 @@ namespace NonameGame
     public class ShopUI : MonoBehaviour
     {
 
+        [SerializeField] private ScrollRect scroll;
         [SerializeField] private Button chooseButton;
         [SerializeField] private Button purchaseButton;
         [SerializeField] private Button confirmPurchaseButton;
@@ -30,6 +31,8 @@ namespace NonameGame
         [Inject] private GameModel _gameModel;
 
         private PlayerSkinData _selectedSkinData;
+        private ShopItemUI _selectedItem;
+
 
 
         private void Awake()
@@ -48,12 +51,16 @@ namespace NonameGame
                 itemUI.OnSkinSelected += SelectSkin;
                 _shopItems.Add(itemUI);
             }
+
         }
         
         private void OnEnable()
         {
             UpdateButtonsView();
             HideConfirmPanel();
+
+            _shopItems[0].SelectButton.onClick?.Invoke();
+            scroll.verticalNormalizedPosition = 1f; // Scroll to top
         }
 
         private void OnDestroy()
@@ -95,6 +102,11 @@ namespace NonameGame
 
             _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
             UpdateButtonsView();
+
+            foreach (var item in _shopItems)
+                item.SetChoosed(false);
+
+            _selectedItem?.SetChoosed(true);
         }
 
         private void PurchaseSkin()
@@ -116,15 +128,21 @@ namespace NonameGame
             UpdateButtonsView();
         }
 
-        private void SelectSkin(PlayerSkinData skinData)
+        private void SelectSkin(PlayerSkinData skinData, ShopItemUI shopItem)
         {
             _selectedSkinData = skinData;
+            _selectedItem = shopItem;
 
             foreach (var item in _shopItems)
                 item.SetSelected(false);
 
+            if (_selectedItem != null)
+                _selectedItem.SetSelected(true);
+
             selectedSkinNameText.text = skinData.GetNameString();
             selectedSkinTypeText.text = skinData.GetSkinTypeString();
+
+            UpdateButtonsView();
         }
 
         public void Show()
