@@ -8,6 +8,7 @@ namespace NonameGame
         int TargetFinishCount { get; }
         int TargetThrowCount { get; }
         int TargetKickCount { get; }
+        int TargetPoints { get; }
     }
 
     [CreateAssetMenu(fileName = "AchievementsConfig", menuName = "Scriptable Objects/AchievementsConfig")]
@@ -18,6 +19,7 @@ namespace NonameGame
         [SerializeField] private int targetFinishCount;
         [SerializeField] private int targetThrowCount;
         [SerializeField] private int targetKickCount;
+        [SerializeField] private int targetPoints;
 
         public int TargetGoldCount => targetGoldCount;
 
@@ -26,5 +28,6 @@ namespace NonameGame
         public int TargetThrowCount => targetThrowCount;
 
         public int TargetKickCount => targetKickCount;
+        public int TargetPoints => targetPoints;
     }
 }

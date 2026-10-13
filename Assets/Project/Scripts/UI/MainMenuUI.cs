@@ -36,7 +36,7 @@ namespace NonameGame
             if (_gameModel != null)
             {
                 _gameModel.OnLevelChanged += UpdateLevelText;
-                UpdateLevelText(_gameModel.Level);
+                UpdateLevelText(_gameModel.Points, _gameModel.Level);
                 _gameModel.OnMoneyChanged += UpdateMoneyText;
                 UpdateMoneyText(_gameModel.Money);  
             }
@@ -47,7 +47,7 @@ namespace NonameGame
             moneyText.text = money.ToString();
         }
 
-        private void UpdateLevelText(int level)
+        private void UpdateLevelText(int points, int level)
         {
             levelText.text = level.ToString();
         }

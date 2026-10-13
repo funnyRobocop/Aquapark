@@ -34,7 +34,7 @@ namespace NonameGame
                 SelectedSkinId = 0,
                 PurchasedSkinIdList = new System.Collections.Generic.List<int> { },
                 Money = 0,
-                Level = 1,
+                Points = 0,
                 StatsList = new System.Collections.Generic.List<GameModel.Stats>()
             };
         }

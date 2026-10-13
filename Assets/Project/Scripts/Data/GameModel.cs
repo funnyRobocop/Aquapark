@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace NonameGame
@@ -13,16 +15,23 @@ namespace NonameGame
         // События для UI, чтобы обновлять экраны при изменении
         public event Action OnDataChanged;
         public event Action<int> OnMoneyChanged;
-        public event Action<int> OnLevelChanged;
+        public event Action<int, int> OnLevelChanged;
 
         // Поля данных
         public int SelectedSkinId;
         public List<int> PurchasedSkinIdList;
         public int Money;
-        public int Level;
+        public int Points;
         public List<Stats> StatsList;
+        [Inject] private AchievementsConfig _achievementsConfig;
 
-        // Конструктор для VContainer
+        public int Level => Mathf.CeilToInt(Points / 1000f);
+
+        public int CalculatePoints(int throws, int kicks, int gold, int finish)
+        {
+            return (throws * 5) + (kicks * 5) + (gold * 100) + (finish * 50);
+        }
+
         public GameModel(SaveService saveService)
         {
             _saveService = saveService;
@@ -37,7 +46,7 @@ namespace NonameGame
             this.SelectedSkinId = savedData.SelectedSkinId;
             this.PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
             this.Money = savedData.Money;
-            this.Level = savedData.Level;
+            this.Points = savedData.Points;
             this.StatsList = savedData.StatsList ?? new List<Stats>();
         }
 
@@ -70,7 +79,7 @@ namespace NonameGame
         }
 
         // Вызывается в конце уровня: принимает накопленную локально за уровень статистику
-        public void UpdateStatsAndProgress(int newLevel, Stats newStats)
+        public void UpdateStatsAndProgress(Stats newStats)
         {
             if (StatsList == null)
                 StatsList = new List<Stats>();
@@ -84,20 +93,32 @@ namespace NonameGame
             {
                 // Если уровень уже игрался, обновляем существующий элемент
                 var existingStats = StatsList.Find(s => s.Id == newStats.Id);
-                existingStats.GoldCount += newStats.GoldCount;
-                existingStats.FinishCount += newStats.FinishCount;
-                existingStats.KickCount += newStats.KickCount;
-                existingStats.ThrowCount += newStats.ThrowCount;
+                existingStats.GoldCount = Mathf.Clamp(
+                    existingStats.GoldCount + newStats.GoldCount, 0, _achievementsConfig.TargetGoldCount);
+                existingStats.FinishCount = Mathf.Clamp(
+                    existingStats.FinishCount + newStats.FinishCount, 0, _achievementsConfig.TargetFinishCount);
+                existingStats.KickCount = Mathf.Clamp(
+                    existingStats.KickCount + newStats.KickCount, 0, _achievementsConfig.TargetKickCount);
+                existingStats.ThrowCount = Mathf.Clamp(
+                    existingStats.ThrowCount + newStats.ThrowCount, 0, _achievementsConfig.TargetThrowCount);
             }
-            
-            if (this.Level != newLevel)
-            {
-                this.Level = newLevel;
-                OnLevelChanged?.Invoke(Level);
-            }
+
+            var newPoints = CalculatePoints(newStats.ThrowCount, newStats.KickCount, newStats.GoldCount, newStats.FinishCount);
+
+            Points = Mathf.Clamp(Points + newPoints, 0, _achievementsConfig.TargetPoints);
+            OnLevelChanged?.Invoke(Points, Level);
 
             OnDataChanged?.Invoke();
             _saveService.Save(this); // Конец уровня — идеальный момент для сохранения на WebGL
+        }
+
+        public void ClearStatsAndProgress()
+        {
+            this.Points = 0;
+            OnLevelChanged?.Invoke(Points, Level);
+            StatsList.Clear();
+            OnDataChanged?.Invoke();
+            _saveService.Save(this);
         }
 
         internal bool IsSkinPurchased(int skinId)
@@ -113,6 +134,15 @@ namespace NonameGame
             public int FinishCount;
             public int KickCount;
             public int ThrowCount;
+
+            public Stats(int id, int goldCount, int finishCount, int kickCount, int throwCount)
+            {
+                Id = id;
+                GoldCount = goldCount;
+                FinishCount = finishCount;
+                KickCount = kickCount;
+                ThrowCount = throwCount;
+            }
         }
     }
 }

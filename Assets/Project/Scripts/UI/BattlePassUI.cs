@@ -67,7 +67,7 @@ namespace NonameGame
         private void OnEnable()
         {
             RefreshUI();
-            HandleLevelChanged(_gameModel.Level);
+            HandleLevelChanged(_gameModel.Points, _gameModel.Level);
             UpdateWeeklyTimer();
         }
 
@@ -86,7 +86,7 @@ namespace NonameGame
             if (_gameModel == null) return;
 
             // 1. Отображение уровня игрока
-            //levelText.text = $"УРОВЕНЬ {_gameModel.LevelName}";
+            levelText.text = $"{_gameModel.Points}";
 
             // 2. Считаем суммы всех параметров из массива StatsList
             int totalGold = _gameModel.StatsList.Sum(s => s.GoldCount);
@@ -95,34 +95,22 @@ namespace NonameGame
             int totalKicks = _gameModel.StatsList.Sum(s => s.KickCount);
 
             // 3. Расчет главного прогресс-бара уровня (ваша будущая формула)
-            float totalProgressPercent = CalculateTotalProgress(totalThrows, totalKicks, totalGold, totalFinish);
+            float totalProgressPercent = _gameModel.Points / (float)_achievementsConfig.TargetPoints;
             totalProgressSlider.value = Mathf.Clamp01(totalProgressPercent);
 
             // 4. Обновление недельных квестов
-            UpdateQuestTrack(throwText, throwProgressSlider, totalThrows, _achievementsConfig.TargetThrowCount, "Броски");
-            UpdateQuestTrack(kickText, kickProgressSlider, totalKicks, _achievementsConfig.TargetKickCount, "Удары");
-            UpdateQuestTrack(goldText, goldProgressSlider, totalGold, _achievementsConfig.TargetGoldCount, "Золото");
-            UpdateQuestTrack(finishText, finishProgressSlider, totalFinish, _achievementsConfig.TargetFinishCount, "Завершения");
-        }
-
-        // Пример вашей формулы прогресса уровня
-        private float CalculateTotalProgress(int throws, int kicks, int gold, int finish)
-        {
-            // Например: каждый бросок дает 10 очков, кик — 15, золото — 100.
-            // Для достижения следующего уровня нужно, допустим, 5000 очков (или прогрессия от текущего уровня).
-            float currentPoints = (throws * 10) + (kicks * 15) + (gold * 100) + (finish * 50);
-
-            // Настоятельно рекомендуем делать шкалу необходимого опыта динамической
-            float requiredPointsForNextLevel = 1000 * _gameModel.Level;
-
-            return currentPoints / requiredPointsForNextLevel;
+            UpdateQuestTrack(throwText, throwProgressSlider, totalThrows, _achievementsConfig.TargetThrowCount);
+            UpdateQuestTrack(kickText, kickProgressSlider, totalKicks, _achievementsConfig.TargetKickCount);
+            UpdateQuestTrack(goldText, goldProgressSlider, totalGold, _achievementsConfig.TargetGoldCount);
+            UpdateQuestTrack(finishText, finishProgressSlider, totalFinish, _achievementsConfig.TargetFinishCount);
         }
 
         // Вспомогательный метод для красивого заполнения баров подзадач
-        private void UpdateQuestTrack(TextMeshProUGUI label, Slider slider, int current, int target, string questName)
+        private void UpdateQuestTrack(TextMeshProUGUI label, Slider slider, int current, int target)
         {
-            label.text = $"{questName}: {current} / {target}";
-            slider.value = (float)current / target;
+            label.text = $"{current} / {target}";
+            slider.value = Mathf.Clamp01(current / (float)target);
+            Debug.Log(slider.value);
         }
 
         // Расчет и вывод времени до конца недели
@@ -139,7 +127,7 @@ namespace NonameGame
             TimeSpan timeRemaining = nextResetTime - now;
 
             // Форматируем строку: Дней:Часов:Минут (секунды по желанию)
-            timerText.text = $"До сброса: {timeRemaining.Days}д {timeRemaining.Hours}ч {timeRemaining.Minutes}м";
+            timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours}h {timeRemaining.Minutes}m";
 
             // Если таймер истек в ноль (прошла неделя) — отправляем запрос на очистку
             if (timeRemaining.TotalSeconds <= 0)
@@ -156,7 +144,7 @@ namespace NonameGame
             RefreshUI();
         }
 
-        private void HandleLevelChanged(int newLevel)
+        private void HandleLevelChanged(int points, int newLevel)
         {
             Debug.Log($"Поздравляем! Новый уровень боевого пропуска: {newLevel}");
             // Здесь можно включить красивый UI-эффект вспышки нового уровня
