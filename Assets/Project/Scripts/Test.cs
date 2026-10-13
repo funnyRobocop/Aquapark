@@ -21,17 +21,17 @@ namespace NonameGame
             
             if (keyboard.numpad2Key.wasPressedThisFrame)
             {
-                _gameModel.UpdateStatsAndProgress(new GameModel.Stats(0, 1, 1, 5, 2));
+                _gameModel.UpdateStatsAndProgress(new GameModel.Stats(0, 1, 1, 5, 5));
             }
 
             if (keyboard.numpad3Key.wasPressedThisFrame)
             {
-                _gameModel.UpdateStatsAndProgress( new GameModel.Stats(0, 0, 1, 5, 2));
+                _gameModel.UpdateStatsAndProgress(new GameModel.Stats(0, 0, 1, 5, 5));
             }
 
             if (keyboard.numpad4Key.wasPressedThisFrame)
             {
-                _gameModel.UpdateStatsAndProgress( new GameModel.Stats(0, 0, 0, 10, 10));
+                _gameModel.UpdateStatsAndProgress(new GameModel.Stats(0, 0, 0, 5, 5));
             }
 
             if (keyboard.numpad5Key.wasPressedThisFrame)

@@ -125,8 +125,8 @@ namespace NonameGame
             if (_selectedSkinData == null)
                 return;
 
-            _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);            
-
+            _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);
+            ChooseSkin();
             HideConfirmPanel();
             UpdateButtonsView();
         }

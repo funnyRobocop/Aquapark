@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -13,23 +14,18 @@ namespace NonameGame
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Slider totalProgressSlider;
 
+        [Header("Achievements List")]
+        [SerializeField] private Transform achievementsContainer;
+        [SerializeField] private AchievementItemUI achievementItemPrefab;
 
-        [Header("Weekly Quests UI")]
-        [SerializeField] private TextMeshProUGUI throwText;
-        [SerializeField] private Slider throwProgressSlider;
-
-        [SerializeField] private TextMeshProUGUI kickText;
-        [SerializeField] private Slider kickProgressSlider;
-
-        [SerializeField] private TextMeshProUGUI goldText;
-        [SerializeField] private Slider goldProgressSlider;
-        [SerializeField] private TextMeshProUGUI finishText;
-        [SerializeField] private Slider finishProgressSlider;
+        [Header("Battle Pass Level Rewards (уже раскиданы в UI)")]
+        [SerializeField] private List<BattlePassRewardButton> levelRewardButtons = new();
 
         [Header("Timer")]
         [SerializeField] private TextMeshProUGUI timerText;
 
         [SerializeField] private Button closeButton;
+        [SerializeField] private List<GameObject> levelNumList;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -47,9 +43,15 @@ namespace NonameGame
 
             if (_gameModel != null)
             {
-                // Подписываемся на изменения данных, чтобы интерфейс обновлялся на лету
                 _gameModel.OnDataChanged += RefreshUI;
                 _gameModel.OnLevelChanged += HandleLevelChanged;
+            }
+
+            // Подписываем кнопки
+            foreach (var btn in levelRewardButtons)
+            {
+                if (btn.button != null)
+                    btn.button.onClick.AddListener(() => OnLevelRewardClaimed(btn.rewardId));
             }
         }
 
@@ -67,7 +69,8 @@ namespace NonameGame
         private void OnEnable()
         {
             RefreshUI();
-            HandleLevelChanged(_gameModel.Points, _gameModel.Level);
+            if (_gameModel != null)
+                HandleLevelChanged(_gameModel.Points, _gameModel.Level);
             UpdateWeeklyTimer();
         }
 
@@ -83,71 +86,123 @@ namespace NonameGame
 
         private void RefreshUI()
         {
-            if (_gameModel == null) return;
+            if (_gameModel == null || _achievementsConfig == null) return;
 
-            // 1. Отображение уровня игрока
+            // Очищаем контейнер
+            foreach (Transform child in achievementsContainer)
+                Destroy(child.gameObject);
+
+            // Сортировка: сначала можно забрать → незавершённые → уже забранные
+            var sorted = _gameModel.Achievements
+                /*.OrderBy(a => a.RewardTaken)          // false (можно/ещё нет) выше
+                .ThenByDescending(a => a.CanClaim)    // CanClaim = true выше
+                .ThenBy(a => a.Id)*/
+                .ToList();
+
+            foreach (var ach in sorted)
+            {
+                var def = _achievementsConfig.Achievements.Find(d => d.Id == ach.Id);
+                if (def == null) continue;
+
+                var item = Instantiate(achievementItemPrefab, achievementsContainer);
+                item.Setup(ach, def, OnClaimClicked);
+            }
+
+            RefreshLevelRewardButtons();
+            UpdateTotalProgressTrack();
+        }
+
+        private void RefreshLevelRewardButtons()
+        {
+            foreach (var btnData in levelRewardButtons)
+            {
+                if (btnData.root == null) continue;
+
+                bool canClaim = _gameModel.CanClaimBattlePassReward(btnData.rewardId);
+                bool alreadyClaimed = _gameModel.ClaimedBattlePassRewards.Contains(btnData.rewardId);
+
+                // Если уже забрали — полностью скрываем
+                if (alreadyClaimed)
+                {
+                    btnData.root.SetActive(false);
+                    continue;
+                }
+
+                // Показываем объект
+                btnData.root.SetActive(true);
+
+                // Кнопка активна только когда можно забрать
+                if (btnData.button != null)
+                    btnData.button.interactable = canClaim;
+            }
+        }
+
+        private void UpdateTotalProgressTrack()
+        {
+            if (_gameModel == null || _achievementsConfig == null) return;
+
             levelText.text = $"{_gameModel.Points}";
-
-            // 2. Считаем суммы всех параметров из массива StatsList
-            int totalGold = _gameModel.StatsList.Sum(s => s.GoldCount);
-            int totalFinish = _gameModel.StatsList.Sum(s => s.FinishCount);
-            int totalThrows = _gameModel.StatsList.Sum(s => s.ThrowCount);
-            int totalKicks = _gameModel.StatsList.Sum(s => s.KickCount);
-
-            // 3. Расчет главного прогресс-бара уровня (ваша будущая формула)
             float totalProgressPercent = _gameModel.Points / (float)_achievementsConfig.TargetPoints;
             totalProgressSlider.value = Mathf.Clamp01(totalProgressPercent);
-
-            // 4. Обновление недельных квестов
-            UpdateQuestTrack(throwText, throwProgressSlider, totalThrows, _achievementsConfig.TargetThrowCount);
-            UpdateQuestTrack(kickText, kickProgressSlider, totalKicks, _achievementsConfig.TargetKickCount);
-            UpdateQuestTrack(goldText, goldProgressSlider, totalGold, _achievementsConfig.TargetGoldCount);
-            UpdateQuestTrack(finishText, finishProgressSlider, totalFinish, _achievementsConfig.TargetFinishCount);
         }
 
-        // Вспомогательный метод для красивого заполнения баров подзадач
-        private void UpdateQuestTrack(TextMeshProUGUI label, Slider slider, int current, int target)
-        {
-            label.text = $"{current} / {target}";
-            slider.value = Mathf.Clamp01(current / (float)target);
-            Debug.Log(slider.value);
-        }
-
-        // Расчет и вывод времени до конца недели
         private void UpdateWeeklyTimer()
         {
             DateTime now = DateTime.UtcNow;
 
-            // Вычисляем следующий понедельник 00:00:00
             int daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-            if (daysUntilMonday == 0 && now.Hour >= 0) daysUntilMonday = 7; // Если сегодня уже понедельник, берем следующий
+            if (daysUntilMonday == 0) daysUntilMonday = 7;
 
             DateTime nextResetTime = now.Date.AddDays(daysUntilMonday);
-
             TimeSpan timeRemaining = nextResetTime - now;
 
-            // Форматируем строку: Дней:Часов:Минут (секунды по желанию)
             timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours}h {timeRemaining.Minutes}m";
 
-            // Если таймер истек в ноль (прошла неделя) — отправляем запрос на очистку
             if (timeRemaining.TotalSeconds <= 0)
             {
                 ResetWeeklyStats();
             }
+
+            foreach (var item in levelNumList)
+                item.SetActive(false);
+
+            int levelIndex = _gameModel.Level - 1;
+            if (levelIndex >= 0 && levelIndex < levelNumList.Count)
+                levelNumList[levelIndex].SetActive(true);
         }
 
         private void ResetWeeklyStats()
         {
-            // Очищаем локальный список или обнуляем показатели в GameModel
-            _gameModel.StatsList.Clear();
-            // Сохраняем пустой прогресс
+            _gameModel.ClearStatsAndProgress();
             RefreshUI();
+        }
+
+        private void OnClaimClicked(string achievementId)
+        {
+            if (_gameModel.ClaimAchievement(achievementId))
+            {
+                RefreshUI(); // сразу перерисовываем — забранная уходит в конец
+            }
+        }
+        
+        private void OnLevelRewardClaimed(string rewardId)
+        {
+            if (_gameModel.ClaimBattlePassReward(rewardId))
+                RefreshUI();   // кнопка сразу исчезнет
         }
 
         private void HandleLevelChanged(int points, int newLevel)
         {
             Debug.Log($"Поздравляем! Новый уровень боевого пропуска: {newLevel}");
-            // Здесь можно включить красивый UI-эффект вспышки нового уровня
+        }
+
+        // Вспомогательный класс для инспектора
+        [Serializable]
+        public class BattlePassRewardButton
+        {
+            public string rewardId;          // должен совпадать с Id в конфиге ("bp_500" и т.д.)
+            public GameObject root;          // весь объект кнопки/награды
+            public Button button;            // сама кнопка (можно оставить null, если root = кнопка)
         }
     }
 }

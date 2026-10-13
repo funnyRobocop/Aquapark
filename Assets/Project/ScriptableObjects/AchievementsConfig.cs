@@ -1,33 +1,98 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace NonameGame
 {
-    public interface IAchievementsConfig
+    public enum AchievementType
     {
-        int TargetGoldCount { get; }
-        int TargetFinishCount { get; }
-        int TargetThrowCount { get; }
-        int TargetKickCount { get; }
-        int TargetPoints { get; }
+        Gold,
+        Finish,
+        Throw,
+        Kick
+    }
+
+    [Serializable]
+    public class AchievementDefinition
+    {
+        public string Id;               // уникальный id, например "kick_50"
+        public AchievementType Type;
+        public int Goal;
+        public int RewardMoney;         // сколько денег даём при клейме
+        public string[] Title;
+        public string[] Description;           // текст для UI
+    }
+
+    [Serializable]
+    public class AchievementData
+    {
+        public string Id;
+        public int Current;
+        public int Goal;
+        public bool RewardTaken;
+
+        public AchievementData() { } // для сериализации
+
+        public AchievementData(string id, int goal)
+        {
+            Id = id;
+            Goal = goal;
+            Current = 0;
+            RewardTaken = false;
+        }
+
+        public bool IsCompleted => Current >= Goal;
+        public bool CanClaim => IsCompleted && !RewardTaken;
+    }
+
+    [Serializable]
+    public class BattlePassLevelReward
+    {
+        public int RequiredPoints;
+        public int RewardMoney;
+        public string Id;
     }
 
     [CreateAssetMenu(fileName = "AchievementsConfig", menuName = "Scriptable Objects/AchievementsConfig")]
-    public class AchievementsConfig : ScriptableObject, IAchievementsConfig
+    public class AchievementsConfig : ScriptableObject
     {
-        [Header("Weekly Quest Goals")]
-        [SerializeField] private int targetGoldCount;
-        [SerializeField] private int targetFinishCount;
-        [SerializeField] private int targetThrowCount;
-        [SerializeField] private int targetKickCount;
-        [SerializeField] private int targetPoints;
+        [Header("Список всех ачивок")]
+        public List<AchievementDefinition> Achievements = new();
 
-        public int TargetGoldCount => targetGoldCount;
+        [Header("Награды боевого пропуска по очкам")]
+        public List<BattlePassLevelReward> LevelRewards = new();
 
-        public int TargetFinishCount => targetFinishCount;
+        [Header("Целевые очки боевого пропуска")]
+        public int TargetPoints = 5000;
 
-        public int TargetThrowCount => targetThrowCount;
-
-        public int TargetKickCount => targetKickCount;
-        public int TargetPoints => targetPoints;
-    }
+        void OnValidate()
+        {
+            foreach (var item in Achievements)
+            {
+                if (item.Title.Length == 0 || item.Description.Length == 0)
+                {
+                    if (item.Type == AchievementType.Kick)
+                    {
+                        item.Title = new string[] { "Give 'Em a Kick!", "Пни их!" };
+                        item.Description = new string[] { "Kick Other Players", "Пинай других игроков" };
+                    }
+                    else if (item.Type == AchievementType.Throw)
+                    {
+                        item.Title = new string[] { "Catch!", "Лови!" };
+                        item.Description = new string[] { "Throw an Item at Another Player", "Бросай предметы в других игроков" };
+                    }
+                    else if (item.Type == AchievementType.Gold)
+                    {
+                        item.Title = new string[] { "#1 Number One", "#1 Номер один" };
+                        item.Description = new string[] { "Take First Place", "Займи первое место" };
+                    }
+                    else if (item.Type == AchievementType.Finish)
+                    {
+                        item.Title = new string[] { "Cross the Line", "Перейти черту" };
+                        item.Description = new string[] { "Reach the Finish Line", "Достигни финиша" };
+                    }
+                }
+            }
+        }
+    }    
 }

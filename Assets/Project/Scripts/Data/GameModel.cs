@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -9,27 +10,27 @@ namespace NonameGame
     [System.Serializable]
     public class GameModel : IInitializable
     {
-        // Ссылку на SaveService контейнер внедрит автоматически через конструктор
         private readonly SaveService _saveService;
 
-        // События для UI, чтобы обновлять экраны при изменении
         public event Action OnDataChanged;
         public event Action<int> OnMoneyChanged;
         public event Action<int, int> OnLevelChanged;
 
-        // Поля данных
         public int SelectedSkinId;
         public List<int> PurchasedSkinIdList;
         public int Money;
         public int Points;
         public List<Stats> StatsList;
+        public List<AchievementData> Achievements = new();
+        public List<string> ClaimedBattlePassRewards = new();
+
         [Inject] private AchievementsConfig _achievementsConfig;
 
-        public int Level => Mathf.CeilToInt(Points / 1000f);
+        public int Level => Mathf.FloorToInt(Points / 500f) + 1;
 
         public int CalculatePoints(int throws, int kicks, int gold, int finish)
         {
-            return (throws * 5) + (kicks * 5) + (gold * 100) + (finish * 50);
+            return throws + kicks + (gold * 100) + (finish * 10);
         }
 
         public GameModel(SaveService saveService)
@@ -37,26 +38,81 @@ namespace NonameGame
             _saveService = saveService;
         }
 
-        // Вызовется автоматически ОДИН раз при старте игры
         public void Initialize()
         {
             GameModel savedData = _saveService.Load();
 
-            // Переносим загруженные данные в этот экземпляр
-            this.SelectedSkinId = savedData.SelectedSkinId;
-            this.PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
-            this.Money = savedData.Money;
-            this.Points = savedData.Points;
-            this.StatsList = savedData.StatsList ?? new List<Stats>();
+            SelectedSkinId = savedData.SelectedSkinId;
+            PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
+            Money = savedData.Money;
+            Points = savedData.Points;
+            StatsList = savedData.StatsList ?? new List<Stats>();
+            ClaimedBattlePassRewards = savedData.ClaimedBattlePassRewards ?? new List<string>();
+
+            // Инициализация / восстановление ачивок
+            if (savedData.Achievements == null || savedData.Achievements.Count == 0)
+            {
+                Achievements = new List<AchievementData>();
+                if (_achievementsConfig != null)
+                {
+                    foreach (var def in _achievementsConfig.Achievements)
+                    {
+                        Achievements.Add(new AchievementData(def.Id, def.Goal));
+                    }
+                }
+            }
+            else
+            {
+                Achievements = savedData.Achievements;
+                // Синхронизация с конфигом (если добавили новые ачивки)
+                SyncAchievementsWithConfig();
+            }
         }
 
-        // --- МЕТОДЫ ИЗМЕНЕНИЯ ДАННЫХ (Вызываются из UI / Геймплея) ---
+        public bool CanClaimBattlePassReward(string rewardId)
+        {
+            if (ClaimedBattlePassRewards.Contains(rewardId)) return false;
+
+            var reward = _achievementsConfig.LevelRewards.Find(r => r.Id == rewardId);
+            if (reward == null) return false;
+
+            return Points >= reward.RequiredPoints;
+        }
+
+        public bool ClaimBattlePassReward(string rewardId)
+        {
+            if (!CanClaimBattlePassReward(rewardId)) return false;
+
+            var reward = _achievementsConfig.LevelRewards.Find(r => r.Id == rewardId);
+            if (reward == null) return false;
+
+            ClaimedBattlePassRewards.Add(rewardId);
+            Money += reward.RewardMoney;
+            OnMoneyChanged?.Invoke(Money);
+
+            OnDataChanged?.Invoke();
+            _saveService.Save(this);
+            return true;
+        }
+
+        private void SyncAchievementsWithConfig()
+        {
+            if (_achievementsConfig == null) return;
+
+            foreach (var def in _achievementsConfig.Achievements)
+            {
+                if (!Achievements.Exists(a => a.Id == def.Id))
+                {
+                    Achievements.Add(new AchievementData(def.Id, def.Goal));
+                }
+            }
+        }
 
         public void SelectSkin(int skinId)
         {
             SelectedSkinId = skinId;
             OnDataChanged?.Invoke();
-            _saveService.Save(this); // Выбор скина нечастый — сохраняем сразу
+            _saveService.Save(this);
         }
 
         public void PurchaseSkin(int skinId, int price)
@@ -67,7 +123,7 @@ namespace NonameGame
                 PurchasedSkinIdList.Add(skinId);
                 OnMoneyChanged?.Invoke(Money);
                 OnDataChanged?.Invoke();
-                _saveService.Save(this); // Покупка редкая — сохраняем сразу
+                _saveService.Save(this);
             }
         }
 
@@ -75,10 +131,9 @@ namespace NonameGame
         {
             Money += rewardAmount;
             OnMoneyChanged?.Invoke(Money);
-            _saveService.Save(this); // Забрали награду в UI — сохраняем сразу
+            _saveService.Save(this);
         }
 
-        // Вызывается в конце уровня: принимает накопленную локально за уровень статистику
         public void UpdateStatsAndProgress(Stats newStats)
         {
             if (StatsList == null)
@@ -86,37 +141,90 @@ namespace NonameGame
 
             if (StatsList.Count == 0 || !StatsList.Exists(s => s.Id == newStats.Id))
             {
-                // Если уровень ещё не игрался, добавляем новый элемент в список
                 StatsList.Add(newStats);
             }
             else
             {
-                // Если уровень уже игрался, обновляем существующий элемент
                 var existingStats = StatsList.Find(s => s.Id == newStats.Id);
-                existingStats.GoldCount = Mathf.Clamp(
-                    existingStats.GoldCount + newStats.GoldCount, 0, _achievementsConfig.TargetGoldCount);
-                existingStats.FinishCount = Mathf.Clamp(
-                    existingStats.FinishCount + newStats.FinishCount, 0, _achievementsConfig.TargetFinishCount);
-                existingStats.KickCount = Mathf.Clamp(
-                    existingStats.KickCount + newStats.KickCount, 0, _achievementsConfig.TargetKickCount);
-                existingStats.ThrowCount = Mathf.Clamp(
-                    existingStats.ThrowCount + newStats.ThrowCount, 0, _achievementsConfig.TargetThrowCount);
+                existingStats.GoldCount += newStats.GoldCount;
+                existingStats.FinishCount += newStats.FinishCount;
+                existingStats.KickCount += newStats.KickCount;
+                existingStats.ThrowCount += newStats.ThrowCount;
             }
 
             var newPoints = CalculatePoints(newStats.ThrowCount, newStats.KickCount, newStats.GoldCount, newStats.FinishCount);
+            Points = Mathf.Clamp(Points + newPoints, 0, _achievementsConfig != null ? _achievementsConfig.TargetPoints : int.MaxValue);
 
-            Points = Mathf.Clamp(Points + newPoints, 0, _achievementsConfig.TargetPoints);
+            UpdateAchievementsProgress();
+
             OnLevelChanged?.Invoke(Points, Level);
+            OnDataChanged?.Invoke();
+            _saveService.Save(this);
+        }
+
+        public void UpdateAchievementsProgress()
+        {
+            if (Achievements == null || _achievementsConfig == null) return;
+
+            int totalGold = StatsList?.Sum(s => s.GoldCount) ?? 0;
+            int totalFinish = StatsList?.Sum(s => s.FinishCount) ?? 0;
+            int totalThrow = StatsList?.Sum(s => s.ThrowCount) ?? 0;
+            int totalKick = StatsList?.Sum(s => s.KickCount) ?? 0;
+
+            foreach (var ach in Achievements)
+            {
+                var def = _achievementsConfig.Achievements.Find(d => d.Id == ach.Id);
+                if (def == null) continue;
+
+                int value = def.Type switch
+                {
+                    AchievementType.Gold => totalGold,
+                    AchievementType.Finish => totalFinish,
+                    AchievementType.Throw => totalThrow,
+                    AchievementType.Kick => totalKick,
+                    _ => 0
+                };
+
+                ach.Current = Mathf.Min(value, ach.Goal);
+            }
+        }
+
+        public bool ClaimAchievement(string achievementId)
+        {
+            var ach = Achievements.Find(a => a.Id == achievementId);
+            if (ach == null || !ach.CanClaim) return false;
+
+            var def = _achievementsConfig.Achievements.Find(d => d.Id == achievementId);
+            if (def == null) return false;
+
+            ach.RewardTaken = true;
+
+            // Перемещаем в конец списка
+            Achievements.Remove(ach);
+            Achievements.Add(ach);
+
+            Money += def.RewardMoney;
+            OnMoneyChanged?.Invoke(Money);
 
             OnDataChanged?.Invoke();
-            _saveService.Save(this); // Конец уровня — идеальный момент для сохранения на WebGL
+            _saveService.Save(this);
+            return true;
         }
 
         public void ClearStatsAndProgress()
         {
-            this.Points = 0;
+            Points = 0;
             OnLevelChanged?.Invoke(Points, Level);
             StatsList.Clear();
+            ClaimedBattlePassRewards.Clear();
+
+            // Сбрасываем только прогресс, награды оставляем полученными
+            foreach (var ach in Achievements)
+            {
+                ach.Current = 0;
+                ach.RewardTaken = false;
+            }
+
             OnDataChanged?.Invoke();
             _saveService.Save(this);
         }
