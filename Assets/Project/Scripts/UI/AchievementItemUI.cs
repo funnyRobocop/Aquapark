@@ -1,5 +1,5 @@
 using TMPro;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +17,7 @@ namespace NonameGame
         private string _achievementId;
         private System.Action<string> _onClaim;
 
-        public void Setup(AchievementData data, AchievementDefinition def, System.Action<string> onClaim)
+        public void Setup(GameModel.AchievementData data, AchievementDefinition def, Action<string> onClaim)
         {
             _achievementId = data.Id;
             _onClaim = onClaim;

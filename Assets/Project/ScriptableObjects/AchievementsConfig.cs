@@ -24,28 +24,6 @@ namespace NonameGame
     }
 
     [Serializable]
-    public class AchievementData
-    {
-        public string Id;
-        public int Current;
-        public int Goal;
-        public bool RewardTaken;
-
-        public AchievementData() { } // для сериализации
-
-        public AchievementData(string id, int goal)
-        {
-            Id = id;
-            Goal = goal;
-            Current = 0;
-            RewardTaken = false;
-        }
-
-        public bool IsCompleted => Current >= Goal;
-        public bool CanClaim => IsCompleted && !RewardTaken;
-    }
-
-    [Serializable]
     public class BattlePassLevelReward
     {
         public int RequiredPoints;
@@ -57,13 +35,29 @@ namespace NonameGame
     public class AchievementsConfig : ScriptableObject
     {
         [Header("Список всех ачивок")]
-        public List<AchievementDefinition> Achievements = new();
+        [SerializeField] private List<AchievementDefinition> Achievements = new();
+
+        private Dictionary<string, AchievementDefinition> _achievementsAll;
+        public Dictionary<string, AchievementDefinition> AchievementsAll => _achievementsAll;
 
         [Header("Награды боевого пропуска по очкам")]
         public List<BattlePassLevelReward> LevelRewards = new();
 
         [Header("Целевые очки боевого пропуска")]
-        public int TargetPoints = 5000;
+        public int TargetPoints;
+
+        public void Initialize()
+        {
+            _achievementsAll = new Dictionary<string, AchievementDefinition>();
+
+            foreach (var item in Achievements)
+            {
+                if (item != null && !_achievementsAll.ContainsKey(item.Id))
+                {
+                    _achievementsAll.Add(item.Id, item);
+                }
+            }
+        }
 
         void OnValidate()
         {

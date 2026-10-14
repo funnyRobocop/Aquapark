@@ -55,9 +55,9 @@ namespace NonameGame
                 Achievements = new List<AchievementData>();
                 if (_achievementsConfig != null)
                 {
-                    foreach (var def in _achievementsConfig.Achievements)
+                    foreach (var def in _achievementsConfig.AchievementsAll)
                     {
-                        Achievements.Add(new AchievementData(def.Id, def.Goal));
+                        Achievements.Add(new AchievementData(def.Key, def.Value.Goal));
                     }
                 }
             }
@@ -79,7 +79,7 @@ namespace NonameGame
             return Points >= reward.RequiredPoints;
         }
 
-        public bool ClaimBattlePassReward(string rewardId)
+        public bool ClaimBattlePassReward(string rewardId, int multiplier = 1)
         {
             if (!CanClaimBattlePassReward(rewardId)) return false;
 
@@ -87,7 +87,7 @@ namespace NonameGame
             if (reward == null) return false;
 
             ClaimedBattlePassRewards.Add(rewardId);
-            Money += reward.RewardMoney;
+            Money += reward.RewardMoney * multiplier;
             OnMoneyChanged?.Invoke(Money);
 
             OnDataChanged?.Invoke();
@@ -99,11 +99,11 @@ namespace NonameGame
         {
             if (_achievementsConfig == null) return;
 
-            foreach (var def in _achievementsConfig.Achievements)
+            foreach (var def in _achievementsConfig.AchievementsAll)
             {
-                if (!Achievements.Exists(a => a.Id == def.Id))
+                if (!Achievements.Exists(a => a.Id == def.Key))
                 {
-                    Achievements.Add(new AchievementData(def.Id, def.Goal));
+                    Achievements.Add(new AchievementData(def.Key, def.Value.Goal));
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace NonameGame
 
             foreach (var ach in Achievements)
             {
-                var def = _achievementsConfig.Achievements.Find(d => d.Id == ach.Id);
+                _achievementsConfig.AchievementsAll.TryGetValue(ach.Id, out AchievementDefinition def);
                 if (def == null) continue;
 
                 int value = def.Type switch
@@ -189,12 +189,12 @@ namespace NonameGame
             }
         }
 
-        public bool ClaimAchievement(string achievementId)
+        public bool ClaimAchievement(string achievementId, int multiplier = 1)
         {
             var ach = Achievements.Find(a => a.Id == achievementId);
             if (ach == null || !ach.CanClaim) return false;
 
-            var def = _achievementsConfig.Achievements.Find(d => d.Id == achievementId);
+            _achievementsConfig.AchievementsAll.TryGetValue(ach.Id, out AchievementDefinition def);
             if (def == null) return false;
 
             ach.RewardTaken = true;
@@ -203,7 +203,7 @@ namespace NonameGame
             Achievements.Remove(ach);
             Achievements.Add(ach);
 
-            Money += def.RewardMoney;
+            Money += def.RewardMoney * multiplier;
             OnMoneyChanged?.Invoke(Money);
 
             OnDataChanged?.Invoke();
@@ -234,7 +234,7 @@ namespace NonameGame
             return PurchasedSkinIdList.Contains(skinId);
         }
 
-        [System.Serializable]
+        [Serializable]
         public class Stats
         {
             public int Id;
@@ -251,6 +251,28 @@ namespace NonameGame
                 KickCount = kickCount;
                 ThrowCount = throwCount;
             }
+        }
+
+        [Serializable]
+        public class AchievementData
+        {
+            public string Id;
+            public int Current;
+            public int Goal;
+            public bool RewardTaken;
+
+            public AchievementData() { } // для сериализации
+
+            public AchievementData(string id, int goal)
+            {
+                Id = id;
+                Goal = goal;
+                Current = 0;
+                RewardTaken = false;
+            }
+
+            public bool IsCompleted => Current >= Goal;
+            public bool CanClaim => IsCompleted && !RewardTaken;
         }
     }
 }

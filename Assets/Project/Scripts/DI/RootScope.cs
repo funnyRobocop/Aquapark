@@ -15,7 +15,11 @@ namespace NonameGame
             {
                 playerSkinLoader.Initialize();
             }
-            
+            if (achievementsConfig != null)
+            {
+                achievementsConfig.Initialize();
+            }
+
             builder.RegisterInstance<IPlayerSkinLoader>(playerSkinLoader);
             builder.RegisterInstance<AchievementsConfig>(achievementsConfig);
 

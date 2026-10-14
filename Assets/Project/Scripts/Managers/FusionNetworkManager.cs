@@ -29,6 +29,9 @@ namespace NonameGame
         [SerializeField, Tooltip("Reference to the main canvas.")]
         Canvas mainMenuCanvas;
 
+        [SerializeField, Tooltip("Reference to the main camera.")]
+        Camera mainMenuCamera;
+
         [SerializeField, Tooltip("Reference to the main canvas group.")]
         CanvasGroup mainMenuCanvasGroup;
 
@@ -67,6 +70,7 @@ namespace NonameGame
         internal void ShowShutdown(ShutdownReason shutdownReason)
         {
             mainMenuCanvas.enabled = true;
+            mainMenuCamera.gameObject.SetActive(true);
             mainMenuCanvasGroup.alpha = 1f;
             mainMenuCanvasGroup.interactable = true;
 
@@ -84,6 +88,7 @@ namespace NonameGame
             if (mainMenuCanvas != null)
             {
                 mainMenuCanvas.enabled = true;
+                mainMenuCamera.gameObject.SetActive(true);
                 mainMenuCanvasGroup.alpha = 1f;
                 mainMenuCanvasGroup.interactable = true;
             }
@@ -197,6 +202,7 @@ namespace NonameGame
             if (results.Ok)
             {
                 mainMenuCanvas.enabled = false;
+                mainMenuCamera.gameObject.SetActive(false);
                 mainMenuCanvasGroup.alpha = 0f;
             }
             else

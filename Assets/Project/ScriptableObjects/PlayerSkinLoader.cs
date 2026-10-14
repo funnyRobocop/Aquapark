@@ -14,15 +14,11 @@ namespace NonameGame
     [CreateAssetMenu(fileName = "PlayerSkinLoader", menuName = "Scriptable Objects/PlayerSkinLoader")]
     public class PlayerSkinLoader : ScriptableObject, IPlayerSkinLoader
     {
-        // 1. В инспекторе мы настраиваем простой, понятный для Unity список.
-        // Он будет отлично отображать все поля, включая AssetReference!
         [SerializeField] private List<PlayerSkinData> skinsList = new List<PlayerSkinData>();
 
-        // 2. Сам словарь делаем скрытым от инспектора, но доступным через интерфейс
         private Dictionary<PlayerSkin, PlayerSkinData> _playerSkinAll;
         public Dictionary<PlayerSkin, PlayerSkinData> PlayerSkinAll => _playerSkinAll;
 
-        // 3. Этот метод нужно вызвать ОДИН раз при старте игры (например, в вашем GameManager или Bootstrapper)
         public void Initialize()
         {
             _playerSkinAll = new Dictionary<PlayerSkin, PlayerSkinData>();

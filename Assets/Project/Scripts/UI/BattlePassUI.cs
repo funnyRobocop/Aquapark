@@ -27,8 +27,11 @@ namespace NonameGame
         [SerializeField] private Button closeButton;
         [SerializeField] private List<GameObject> levelNumList;
 
+        [SerializeField] private RewardPanel rewardPanel;
+
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
+
 
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
@@ -94,14 +97,14 @@ namespace NonameGame
 
             // Сортировка: сначала можно забрать → незавершённые → уже забранные
             var sorted = _gameModel.Achievements
-                /*.OrderBy(a => a.RewardTaken)          // false (можно/ещё нет) выше
+                .OrderBy(a => a.RewardTaken)          // false (можно/ещё нет) выше
                 .ThenByDescending(a => a.CanClaim)    // CanClaim = true выше
-                .ThenBy(a => a.Id)*/
+                .ThenBy(a => a.Id)
                 .ToList();
 
             foreach (var ach in sorted)
             {
-                var def = _achievementsConfig.Achievements.Find(d => d.Id == ach.Id);
+                _achievementsConfig.AchievementsAll.TryGetValue(ach.Id, out AchievementDefinition def);
                 if (def == null) continue;
 
                 var item = Instantiate(achievementItemPrefab, achievementsContainer);
@@ -179,16 +182,16 @@ namespace NonameGame
 
         private void OnClaimClicked(string achievementId)
         {
-            if (_gameModel.ClaimAchievement(achievementId))
-            {
-                RefreshUI(); // сразу перерисовываем — забранная уходит в конец
-            }
+            rewardPanel.Show(() => { if (_gameModel.ClaimAchievement(achievementId)) RefreshUI(); },
+                () => { if (_gameModel.ClaimAchievement(achievementId, 2)) RefreshUI(); },
+                _achievementsConfig.AchievementsAll[achievementId].RewardMoney);            
         }
         
         private void OnLevelRewardClaimed(string rewardId)
         {
-            if (_gameModel.ClaimBattlePassReward(rewardId))
-                RefreshUI();   // кнопка сразу исчезнет
+            rewardPanel.Show(() => { if (_gameModel.ClaimBattlePassReward(rewardId)) RefreshUI(); },
+                () => { if (_gameModel.ClaimBattlePassReward(rewardId, 2)) RefreshUI(); },
+                 _achievementsConfig.LevelRewards.Find(f => f.Id == rewardId).RewardMoney);
         }
 
         private void HandleLevelChanged(int points, int newLevel)
