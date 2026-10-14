@@ -5,6 +5,7 @@ namespace NonameGame
 {
     public class CameraManager : MonoBehaviour
     {
+        [SerializeField] private CinemachineSplineDolly splineDolly;
         [SerializeField] private CinemachineCamera _playerCamera;
         [SerializeField] private CinemachineOrbitalFollow _playerCameraFollow;
         [SerializeField] private CinemachineCamera[] _allRagdollCameras;
@@ -13,6 +14,12 @@ namespace NonameGame
         {
             if (_playerCameraFollow != null)
                 _playerCameraFollow.HorizontalAxis.Value = 180f;
+        }
+        
+        public void FlyingCameraStart()
+        {
+            splineDolly.CameraPosition = 0;
+            splineDolly.AutomaticDolly.Enabled = true;
         }
 
         public void InitForPlayer(Transform playerTransform)

@@ -92,13 +92,6 @@ namespace NonameGame
 
             SetFriction(frictionAgainstFloor, true);
             _currentLockOnSlope = lockOnSlope;
-
-            if (HasStateAuthority && cameraTarget != null)
-            {
-                var cam = FindAnyObjectByType<CameraManager>();
-                if (cam != null)
-                    cam.InitForPlayer(cameraTarget);
-            }
         }
 
         public override void FixedUpdateNetwork()

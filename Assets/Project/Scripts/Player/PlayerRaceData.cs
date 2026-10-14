@@ -22,6 +22,7 @@ namespace NonameGame
 
         [SerializeField] private PlayerGrab _playerGrab;
         [SerializeField] private PlayerView _playerView;
+        [SerializeField] private Transform cameraTarget;
 
         [Inject] private CameraManager _cameraManager;
         [Inject] private VFXManager _vfxManager;
@@ -147,6 +148,15 @@ namespace NonameGame
             StartingPointIndex = index;
             IsReady = false;
             TeleportToStartingPoint();
+            _cameraManager?.FlyingCameraStart();
+            StartCoroutine(FlyCameraCrtn());
+        }
+
+        private IEnumerator FlyCameraCrtn()
+        {
+            yield return new WaitForSeconds(3f);
+
+            _cameraManager?.InitForPlayer(cameraTarget);
         }
 
         /// <summary>
