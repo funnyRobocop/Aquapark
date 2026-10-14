@@ -71,7 +71,32 @@ namespace NonameGame
         {
             Instance = this;
             Cursor.lockState = CursorLockMode.Locked;
+
+            if (startingPoints == null || startingPoints.Length == 0)
+                startingPoints = GetComponentsInChildren<StartingPointBehaviour>(true);
+
             OnGameStateChanged();
+
+            // Назначаем стартовые точки игрокам, которые заспавнились
+            // раньше InGameManager (аддитивная сцена загрузилась позже спавна)
+            if (Object.HasStateAuthority)
+            {
+                foreach (var player in Runner.GetAllBehaviours<PlayerRaceData>())
+                {
+                    if (player == null || player.StartingPointIndex >= 0)
+                        continue; // уже назначена точка — пропускаем
+
+                    for (int i = 0; i < playerList.Length; i++)
+                    {
+                        if (Runner.TryFindBehaviour(playerList[i], out PlayerRaceData _))
+                            continue; // слот занят
+
+                        playerList.Set(i, player.Id);
+                        player.RPC_AssignStartingPoint(i);
+                        break;
+                    }
+                }
+            }
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -176,7 +201,6 @@ namespace NonameGame
             AllPlayersReady = false;
             FinishedCount = 0;
 
-            // Сброс финиша у всех
             for (int i = 0; i < playerList.Length; i++)
             {
                 if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData player))
@@ -184,6 +208,11 @@ namespace NonameGame
 
                 player.HasFinished = false;
                 player.FinishPlace = 0;
+
+                // Размораживаем физику
+                var rb = player.GetComponent<Rigidbody>();
+                if (rb != null)
+                    rb.isKinematic = false;
             }
         }
 
