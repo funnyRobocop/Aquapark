@@ -19,6 +19,8 @@ namespace NonameGame
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
+        [Inject] private SkinPreviewUI _skinPreviewUI;
+        [Inject] private IPlayerSkinLoader _playerSkinLoader;
 
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
@@ -26,7 +28,7 @@ namespace NonameGame
             _gameModel = gameModel;
             _achievementsConfig = achievementsConfig;
         }
-        
+
         private void Awake()
         {
             settingsButton.onClick.AddListener(OnSettingsButtonClicked);
@@ -38,8 +40,15 @@ namespace NonameGame
                 _gameModel.OnLevelChanged += UpdateLevelText;
                 UpdateLevelText(_gameModel.Points, _gameModel.Level);
                 _gameModel.OnMoneyChanged += UpdateMoneyText;
-                UpdateMoneyText(_gameModel.Money);  
+                UpdateMoneyText(_gameModel.Money);
             }
+        }
+
+        void OnEnable()
+        {
+            var skinType = (PlayerSkin)_gameModel.SelectedSkinId;
+            var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
+            _skinPreviewUI.SpawnPlayerMesh(skinData);
         }
 
         private void UpdateMoneyText(int money)

@@ -29,6 +29,7 @@ namespace NonameGame
 
         [Inject] private IPlayerSkinLoader playerSkinLoader;
         [Inject] private GameModel _gameModel;
+        [Inject] private SkinPreviewUI _skinPreviewUI;
 
         private PlayerSkinData _selectedSkinData;
         private ShopItemUI _selectedItem;
@@ -110,6 +111,8 @@ namespace NonameGame
                 item.SetChoosed(false);
 
             _selectedItem?.SetChoosed(true);
+            _skinPreviewUI.SpawnPlayerMesh(_selectedSkinData);
+            Hide();
         }
 
         private void PurchaseSkin()
@@ -126,9 +129,12 @@ namespace NonameGame
                 return;
 
             _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);
-            ChooseSkin();
-            HideConfirmPanel();
-            UpdateButtonsView();
+            _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
+            //ChooseSkin();
+            //HideConfirmPanel();
+            //UpdateButtonsView();
+            _skinPreviewUI.SpawnPlayerMesh(_selectedSkinData);
+            Hide();
         }
 
         private void SelectSkin(PlayerSkinData skinData, ShopItemUI shopItem)
