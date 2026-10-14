@@ -31,6 +31,10 @@ namespace NonameGame
         private GameObject _remoteHeldVisual;
         private NetworkId _remoteHeldItemId;
 
+        // Оригинальный предмет, который мы скрыли на экране наблюдателя
+        private NetworkId _remoteHiddenItemId;
+        private bool _remoteItemHidden;
+
         public bool IsHolding => _isHolding;
         public Transform HoldPoint => holdPoint;
 
@@ -88,30 +92,45 @@ namespace NonameGame
             if (holdPoint == null || Runner == null)
                 return;
 
-            PlayerRef owner = Object.InputAuthority;
-            if (owner == PlayerRef.None)
-                owner = Object.StateAuthority;
-
-            ThrowableItem heldItem = FindHeldItemByPlayer(owner);
-
-            if (heldItem != null)
+            // Используем _isHolding / _heldItemId на PlayerGrab,
+            // а не ThrowableItem.IsHeld / HeldBy.
+            // PlayerGrab принадлежит Player-у: State Authority есть всегда,
+            // поэтому репликация надёжна.
+            // ThrowableItem.IsHeld не успевает обновиться при первом взятии:
+            // RequestStateAuthority() асинхронный, и запись [Networked] до её
+            // передачи игнорируется Fusion-ом.
+            if (!_isHolding)
             {
-                if (_remoteHeldVisual == null || _remoteHeldItemId != heldItem.Object.Id)
-                {
-                    DestroyRemoteHeldVisual();
-                    _remoteHeldVisual = CreateVisualCopy(heldItem.gameObject);
-                    _remoteHeldItemId = heldItem.Object.Id;
-                }
-
-                if (_remoteHeldVisual != null)
-                {
-                    _remoteHeldVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
-                }
+                RestoreOriginalItemOnRemote();
+                DestroyRemoteHeldVisual();
+                return;
             }
-            else
+
+            if (!Runner.TryFindObject(_heldItemId, out var obj))
             {
                 DestroyRemoteHeldVisual();
+                return;
             }
+
+            var heldItem = obj.GetBehaviour<ThrowableItem>();
+            if (heldItem == null)
+            {
+                DestroyRemoteHeldVisual();
+                return;
+            }
+
+            // Прячем оригинальный предмет на экране наблюдателя
+            HideOriginalItemOnRemote(heldItem);
+
+            if (_remoteHeldVisual == null || _remoteHeldItemId != _heldItemId)
+            {
+                DestroyRemoteHeldVisual();
+                _remoteHeldVisual = CreateVisualCopy(heldItem.gameObject);
+                _remoteHeldItemId = _heldItemId;
+            }
+
+            if (_remoteHeldVisual != null)
+                _remoteHeldVisual.transform.SetPositionAndRotation(holdPoint.position, holdPoint.rotation);
         }
 
         private ThrowableItem FindHeldItemByPlayer(PlayerRef player)
@@ -331,6 +350,32 @@ namespace NonameGame
             }
         }
 
+        private void HideOriginalItemOnRemote(ThrowableItem item)
+        {
+            if (item == null) return;
+            if (_remoteItemHidden && _remoteHiddenItemId == item.Object.Id) return;
+
+            // Восстанавливаем предыдущий (если поменялся предмет)
+            RestoreOriginalItemOnRemote();
+
+            SetRenderersEnabled(item.gameObject, false);
+            _remoteHiddenItemId = item.Object.Id;
+            _remoteItemHidden = true;
+        }
+
+        private void RestoreOriginalItemOnRemote()
+        {
+            if (!_remoteItemHidden) return;
+            if (Runner != null && Runner.TryFindObject(_remoteHiddenItemId, out var obj))
+            {
+                var item = obj.GetBehaviour<ThrowableItem>();
+                if (item != null)
+                    SetRenderersEnabled(item.gameObject, true);
+            }
+            _remoteHiddenItemId = default;
+            _remoteItemHidden = false;
+        }
+
         private void DestroyRemoteHeldVisual()
         {
             if (_remoteHeldVisual != null)
@@ -394,6 +439,7 @@ namespace NonameGame
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             DestroyLocalVisual();
+            RestoreOriginalItemOnRemote();
             DestroyRemoteHeldVisual();
         }
     }
