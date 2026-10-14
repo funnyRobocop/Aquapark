@@ -72,7 +72,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5587488131536091520}
   - component: {fileID: 7420484192698730146}
-  - component: {fileID: 3229857241638445635}
   m_Layer: 0
   m_Name: View
   m_TagString: Untagged
@@ -118,24 +117,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3229857241638445635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2603898608511775808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkMecanimAnimator
-  Animator: {fileID: 7420484192698730146}
-  ApplyTiming: 0
-  SyncSettings: 14
-  StateHashes: 0000000049cda535535c9fdf28a981077af3fe2e5ab908ff08e377d63e725c3b6c28231248d3833bccf055d47f6e1699a1c557fa9ac5a14a74a7693fbad385b1389cc934i
-  TriggerHashes: 0000000028a981073e725c3b5ab908ff336e528ebad385b1i
-  TotalWords: 3
 --- !u!1 &3458330681808181714
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,7 +510,6 @@ MonoBehaviour:
   - {fileID: 2137247441811218386}
   - {fileID: 2485695873283258591}
   - {fileID: 9023704135855332127}
-  - {fileID: 3229857241638445635}
   ForceRemoteRenderTimeframe: 0
 --- !u!136 &7429013140986272679
 CapsuleCollider:
@@ -761,7 +741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerView
   animator: {fileID: 7420484192698730146}
-  networkAnimator: {fileID: 3229857241638445635}
+  networkAnimator: {fileID: 0}
   controller: {fileID: 7187583196042404613}
   grab: {fileID: 6363781521094476151}
   weapon: {fileID: 2485695873283258591}
@@ -784,6 +764,7 @@ MonoBehaviour:
   speedDamp: 0.1
   runSpeedThreshold: 0.5
   fallYThreshold: -10
+  _SkinId: 0
 --- !u!114 &2485695873283258591
 MonoBehaviour:
   m_ObjectHideFlags: 0
