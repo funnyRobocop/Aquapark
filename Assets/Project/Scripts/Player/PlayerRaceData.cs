@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer;
 
 namespace NonameGame
@@ -16,6 +17,9 @@ namespace NonameGame
         [Networked] public Vector3 CheckpointPosition { get; set; }
         [Networked] public Quaternion CheckpointRotation { get; set; }
 
+        /// <summary>Игрок нажал Enter в лобби — готов к старту.</summary>
+        [Networked] public NetworkBool IsReady { get; set; }
+
         [SerializeField] private PlayerGrab _playerGrab;
         [SerializeField] private PlayerView _playerView;
 
@@ -25,41 +29,28 @@ namespace NonameGame
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
 
+        // ─────────────────────────────────────────────
+        // Lifecycle
+        // ─────────────────────────────────────────────
+
         public override void Spawned()
         {
             if (!HasStateAuthority)
                 return;
 
-            // Замораживаем физику, пока не телепортируемся на стартовую точку.
-            // Иначе игрок падает сквозь пол пока ждёт загрузки InGameManager.
-            FreezePhysics(true);
-
+            // Игрок может ходить в лобби — не замораживаем.
+            // Телепорт на стартовую позицию произойдёт через RPC_AssignStartingPoint.
             CheckpointPosition = transform.position;
             CheckpointRotation = transform.rotation;
 
             if (InGameManager.Instance != null)
-            {
-                // InGameManager уже готов — сразу регистрируемся
                 InGameManager.Instance.RPC_PlayerJoined(Id);
-            }
             else
-            {
-                // Аддитивная сцена ещё не загрузила InGameManager — ждём
                 StartCoroutine(WaitForInGameManager());
-            }
-        }
-
-        // Включает/выключает физику. isKinematic=true — игрок висит на месте.
-        private void FreezePhysics(bool freeze)
-        {
-            var rb = GetComponent<Rigidbody>();
-            if (rb != null)
-                rb.isKinematic = freeze;
         }
 
         private IEnumerator WaitForInGameManager()
         {
-            // Ждём появления InGameManager (сцена level грузится аддитивно)
             float timeout = 10f;
             float elapsed = 0f;
             while (InGameManager.Instance == null && elapsed < timeout)
@@ -70,27 +61,44 @@ namespace NonameGame
 
             if (InGameManager.Instance == null)
             {
-                Debug.LogError("[PlayerRaceData] InGameManager not found after 10s. " +
-                    "Check that InGameManager is on the additive level scene.");
+                Debug.LogError("[PlayerRaceData] InGameManager not found after 10s.");
                 yield break;
             }
 
             InGameManager.Instance.RPC_PlayerJoined(Id);
         }
 
+        // ─────────────────────────────────────────────
+        // Update — Enter для Ready (локально, только свой клиент)
+        // ─────────────────────────────────────────────
+
+        private void Update()
+        {
+            // Только свой клиент обрабатывает Enter
+            if (!HasInputAuthority)
+                return;
+
+            if (InGameManager.Instance == null ||
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+                return;
+
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame)
+            {
+                RPC_SetReady(!IsReady); // тоггл: Enter готов/не готов
+            }
+        }
+
+        // ─────────────────────────────────────────────
+        // FixedUpdateNetwork
+        // ─────────────────────────────────────────────
+
         public override void FixedUpdateNetwork()
         {
             if (!HasStateAuthority)
                 return;
-
-            // Гарантируем kinematic только пока ждём старта
-            if (InGameManager.Instance != null &&
-                InGameManager.Instance.gameState == InGameManager.GameState.Waiting)
-            {
-                var rb = GetComponent<Rigidbody>();
-                if (rb != null && !rb.isKinematic)
-                    rb.isKinematic = true;
-            }
 
             UpdateOnStartPoint();
         }
@@ -119,33 +127,59 @@ namespace NonameGame
             OnStartPoint = points[StartingPointIndex].IsPlayerInRange(transform.position);
         }
 
+        // ─────────────────────────────────────────────
+        // RPC: Ready / телепорт
+        // ─────────────────────────────────────────────
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_SetReady(NetworkBool ready)
+        {
+            if (InGameManager.Instance == null ||
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+                return;
+
+            IsReady = ready;
+        }
+
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_AssignStartingPoint(int index)
         {
             StartingPointIndex = index;
+            IsReady = false;
             TeleportToStartingPoint();
         }
 
+        /// <summary>
+        /// Телепорт на стартовую позицию. Вызывается InGameManager при старте гонки.
+        /// </summary>
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_TeleportToStart()
+        {
+            TeleportToStartingPoint();
+        }
+
+        // ─────────────────────────────────────────────
+        // Телепорт
+        // ─────────────────────────────────────────────
+
         public void TeleportToStartingPoint()
         {
-            if (!HasStateAuthority)
-                return;
+            if (!HasStateAuthority) return;
 
             if (InGameManager.Instance == null || StartingPointIndex < 0)
             {
-                Debug.LogWarning($"[PlayerRaceData] Cannot teleport: Instance={InGameManager.Instance != null}, Index={StartingPointIndex}");
+                Debug.LogWarning($"[PlayerRaceData] Cannot teleport: Manager={InGameManager.Instance != null}, Index={StartingPointIndex}");
                 return;
             }
 
             var points = InGameManager.Instance.startingPoints;
             if (points == null || StartingPointIndex >= points.Length || points[StartingPointIndex] == null)
             {
-                Debug.LogError($"[PlayerRaceData] Invalid starting point index {StartingPointIndex}. Points count = {points?.Length ?? 0}");
+                Debug.LogError($"[PlayerRaceData] Invalid starting point index {StartingPointIndex}");
                 return;
             }
 
             var point = points[StartingPointIndex];
-            Debug.Log($"[PlayerRaceData] Teleporting to starting point {StartingPointIndex} at {point.SpawnPosition}");
             TeleportTo(point.SpawnPosition, point.SpawnRotation);
 
             CheckpointPosition = point.SpawnPosition;
@@ -154,18 +188,14 @@ namespace NonameGame
 
         public void SetCheckpoint(Vector3 pos, Quaternion rot)
         {
-            if (!HasStateAuthority)
-                return;
-
+            if (!HasStateAuthority) return;
             CheckpointPosition = pos;
             CheckpointRotation = rot;
         }
 
         public void RespawnAtCheckpoint()
         {
-            if (!HasStateAuthority)
-                return;
-
+            if (!HasStateAuthority) return;
             _playerGrab?.DropHeldItem();
             TeleportTo(CheckpointPosition, CheckpointRotation);
         }
@@ -175,43 +205,37 @@ namespace NonameGame
             var rb = GetComponent<Rigidbody>();
             var nt = GetComponent<NetworkTransform>();
 
-            // 1. Останавливаем физику и делаем kinematic для чистого телепорта
+            // Останавливаем и телепортируем
             if (rb != null)
             {
-                rb.linearVelocity = Vector3.zero;
+                rb.linearVelocity  = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
-                rb.position = pos;
-                rb.rotation = rot;
+                rb.isKinematic     = true;
+                rb.position        = pos;
+                rb.rotation        = rot;
             }
 
-            // 2. Телепорт сетевого и локального transform
-            if (nt != null)
-                nt.Teleport(pos, rot);
-
+            if (nt != null) nt.Teleport(pos, rot);
             transform.SetPositionAndRotation(pos, rot);
 
-            // 3. Решаем, должен ли игрок оставаться kinematic
-            //    Только в Waiting — стоим на старте. Во время Game/EndGame — бегаем.
-            bool keepKinematic = InGameManager.Instance != null &&
-                                 InGameManager.Instance.gameState == InGameManager.GameState.Waiting;
-
-            if (rb != null)
-                rb.isKinematic = keepKinematic;
+            // Всегда размораживаем после телепорта:
+            // игрок может ходить и в лобби, и в гонке.
+            if (rb != null) rb.isKinematic = false;
 
             _cameraManager?.ResetPlayerCameraPos();
             _vfxManager?.PlaySalutVFX(pos + Vector3.up);
         }
 
+        // ─────────────────────────────────────────────
+        // Прочее
+        // ─────────────────────────────────────────────
+
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_ApplyPush(Vector3 force)
         {
             var rb = GetComponent<Rigidbody>();
-            if (rb == null)
-                return;
-
+            if (rb == null) return;
             rb.AddForce(force, ForceMode.Impulse);
-
             _playerView.PlayStunVFX();
         }
     }

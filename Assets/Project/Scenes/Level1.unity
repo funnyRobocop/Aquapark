@@ -316,20 +316,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1833958840}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InGameManager, Assembly-CSharp
+      - m_Target: {fileID: 1712975623}
+        m_TargetAssemblyTypeName: NonameGame.InGameManager, Assembly-CSharp
         m_MethodName: LeaveGame
         m_Mode: 1
         m_Arguments:
@@ -6129,19 +6117,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 752376049}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InGameManager, Assembly-CSharp
-        m_MethodName: set_ShowResults
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &752376049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13536,21 +13512,26 @@ MonoBehaviour:
   - {fileID: 391275679}
   - {fileID: 1690309268}
   - {fileID: 445063183}
-  _playerList: []
-  _gameState: 0
-  _TotalPlayers: 0
-  _ReadyPlayers: 0
-  _AllPlayersReady:
-    RawValue: 0
-  _FinishedCount: 0
+  maxPlayersToAutoStart: 8
+  minPlayersToStartTimer: 2
+  lobbyWaitSeconds: 30
+  readyCountdownSeconds: 3.1
   raceDurationSeconds: 60000
-  countdownSeconds: 3.1
   endGameDelay: 3
   resultsDelay: 8
   gameStateText: {fileID: 1079069886}
   timerText: {fileID: 1347084335}
   resultsText: {fileID: 375189770}
   resultsCanvasGroup: {fileID: 1833958840}
+  _playerList: []
+  _gameState: 0
+  _LobbyTimerRunning:
+    RawValue: 0
+  _TotalPlayers: 0
+  _ReadyPlayers: 0
+  _AllPlayersReady:
+    RawValue: 0
+  _FinishedCount: 0
 --- !u!1 &1726058426
 GameObject:
   m_ObjectHideFlags: 0
