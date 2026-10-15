@@ -11,7 +11,6 @@ namespace NonameGame
     {
         [Networked] public int           StartingPointIndex { get; set; } = -1;
         [Networked] public NetworkBool   OnStartPoint       { get; set; }
-        [Networked] public NetworkBool   HasFinished        { get; set; }
         [Networked] public int           FinishPlace        { get; set; }
         [Networked] public NetworkString<_32> PlayerName    { get; set; }
         [Networked] public Vector3       CheckpointPosition { get; set; }
@@ -22,10 +21,12 @@ namespace NonameGame
         public NetworkBool IsReady { get; set; }
 
         /// <summary>Игрок финишировал — скрыть и переключить камеру.</summary>
-        [Networked, OnChangedRender(nameof(OnHasFinishedChanged))]
-        public NetworkBool HasFinishedRendered { get; set; } // зеркало HasFinished для OnChangedRender
+        // HasFinished теперь напрямую триггерит OnChangedRender на всех клиентах
 
         /// <summary>Управляет видимостью аватара для всех клиентов.</summary>
+        [Networked, OnChangedRender(nameof(OnHasFinishedChanged))]
+        public NetworkBool HasFinished { get; set; }
+
         [Networked, OnChangedRender(nameof(OnIsVisibleChanged))]
         public NetworkBool IsVisible { get; set; } = true;
 
@@ -40,7 +41,7 @@ namespace NonameGame
         [Inject] private VFXManager    _vfxManager;
 
         // Кэш Renderer-ов для быстрого вкл/выкл видимости
-        [SerializeField] private Renderer[] _renderers;
+        private Renderer[] _renderers;
 
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
@@ -136,9 +137,6 @@ namespace NonameGame
         {
             if (!HasStateAuthority) return;
 
-            if ((bool)HasFinishedRendered != (bool)HasFinished)
-                HasFinishedRendered = HasFinished;
-
             UpdateOnStartPoint();
         }
 
@@ -173,7 +171,7 @@ namespace NonameGame
 
         private void OnHasFinishedChanged()
         {
-            if (!HasFinishedRendered) return; // сработал только при true
+            if (!HasFinished) return; // срабатываем только при true (не при сбросе в false)
 
             // Плашка "is finished" для всех
             InGameManager.Instance?.OnPlayerFinishedUI(DisplayName);
@@ -303,9 +301,15 @@ namespace NonameGame
 
         private void SetRenderersEnabled(bool visible)
         {
+            if (_renderers == null)
+            {
+                _renderers = GetComponentsInChildren<Renderer>(true);
+            }
+            
             if (_renderers == null) return;
             foreach (var r in _renderers)
                 if (r != null) r.enabled = visible;
+            GetComponent<Collider>().enabled = visible;
         }
     }
 }

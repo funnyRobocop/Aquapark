@@ -270,6 +270,20 @@ namespace NonameGame
         // RPC: finish
         // ─────────────────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// Вызывай этот метод из FinishZone — он сам разберётся с authority.
+        /// Не важно, на каком клиенте вызван.
+        /// </summary>
+        public void RequestFinish(PlayerRaceData player)
+        {
+            if (player == null || player.HasFinished) return;
+
+            if (Object.HasStateAuthority)
+                RegisterFinish(player);
+            else
+                RPC_RequestFinish(player.Object.Id);
+        }
+
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_RequestFinish(NetworkId playerObjectId)
         {
