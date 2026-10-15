@@ -1,5 +1,6 @@
 using Fusion;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -8,52 +9,75 @@ namespace NonameGame
 {
     public class PlayerRaceData : NetworkBehaviour
     {
-        [Networked] public int StartingPointIndex { get; set; } = -1;
-        [Networked] public NetworkBool OnStartPoint { get; set; }
-        [Networked] public NetworkBool HasFinished { get; set; }
-        [Networked] public int FinishPlace { get; set; }
-        [Networked] public NetworkString<_32> PlayerName { get; set; }
+        [Networked] public int           StartingPointIndex { get; set; } = -1;
+        [Networked] public NetworkBool   OnStartPoint       { get; set; }
+        [Networked] public NetworkBool   HasFinished        { get; set; }
+        [Networked] public int           FinishPlace        { get; set; }
+        [Networked] public NetworkString<_32> PlayerName    { get; set; }
+        [Networked] public Vector3       CheckpointPosition { get; set; }
+        [Networked] public Quaternion    CheckpointRotation { get; set; }
 
-        [Networked] public Vector3 CheckpointPosition { get; set; }
-        [Networked] public Quaternion CheckpointRotation { get; set; }
+        /// <summary>Игрок нажал Enter — готов к старту.</summary>
+        [Networked, OnChangedRender(nameof(OnIsReadyChanged))]
+        public NetworkBool IsReady { get; set; }
 
-        /// <summary>Игрок нажал Enter в лобби — готов к старту.</summary>
-        [Networked] public NetworkBool IsReady { get; set; }
+        /// <summary>Игрок финишировал — скрыть и переключить камеру.</summary>
+        [Networked, OnChangedRender(nameof(OnHasFinishedChanged))]
+        public NetworkBool HasFinishedRendered { get; set; } // зеркало HasFinished для OnChangedRender
 
-        [SerializeField] private PlayerGrab _playerGrab;
-        [SerializeField] private PlayerView _playerView;
-        [SerializeField] private Transform cameraTarget;
+        /// <summary>Управляет видимостью аватара для всех клиентов.</summary>
+        [Networked, OnChangedRender(nameof(OnIsVisibleChanged))]
+        public NetworkBool IsVisible { get; set; } = true;
+
+        [SerializeField] private PlayerGrab  _playerGrab;
+        [SerializeField] private PlayerView  _playerView;
+        [SerializeField] private Transform   _cameraTarget;      // Follow-target для CinemachineCamera
+
+        /// <summary>Follow-target для Cinemachine, доступен снаружи.</summary>
+        public Transform CameraTarget => _cameraTarget;
 
         [Inject] private CameraManager _cameraManager;
-        [Inject] private VFXManager _vfxManager;
+        [Inject] private VFXManager    _vfxManager;
+
+        // Кэш Renderer-ов для быстрого вкл/выкл видимости
+        [SerializeField] private Renderer[] _renderers;
 
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
 
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
         // Lifecycle
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         public override void Spawned()
         {
-            if (!HasStateAuthority)
-                return;
+            if (!HasStateAuthority) return;
 
-            // Игрок может ходить в лобби — не замораживаем.
-            // Телепорт на стартовую позицию произойдёт через RPC_AssignStartingPoint.
             CheckpointPosition = transform.position;
             CheckpointRotation = transform.rotation;
+            IsVisible          = true;
 
             if (InGameManager.Instance != null)
+            {
+                // Опоздавший — сразу в режим спектатора если гонка уже идёт
+                if (HasInputAuthority &&
+                    InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+                {
+                    StartCoroutine(SetupLateJoinerSpectator());
+                    return;
+                }
+
                 InGameManager.Instance.RPC_PlayerJoined(Id);
+            }
             else
+            {
                 StartCoroutine(WaitForInGameManager());
+            }
         }
 
         private IEnumerator WaitForInGameManager()
         {
-            float timeout = 10f;
-            float elapsed = 0f;
+            float timeout = 10f, elapsed = 0f;
             while (InGameManager.Instance == null && elapsed < timeout)
             {
                 yield return null;
@@ -66,79 +90,113 @@ namespace NonameGame
                 yield break;
             }
 
+            if (HasInputAuthority &&
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+            {
+                StartCoroutine(SetupLateJoinerSpectator());
+                yield break;
+            }
+
             InGameManager.Instance.RPC_PlayerJoined(Id);
         }
 
-        // ─────────────────────────────────────────────
-        // Update — Enter для Ready (локально, только свой клиент)
-        // ─────────────────────────────────────────────
+        /// <summary>Опоздавший игрок: ожидаем кадр и входим в режим наблюдателя.</summary>
+        private IEnumerator SetupLateJoinerSpectator()
+        {
+            yield return null; // ожидаем кадр инициализации
+
+            // Скрываем своёго игрока (он не участвует в гонке)
+            SetRenderersEnabled(false);
+
+            InGameManager.Instance?.BeginSpectatingForLateJoiner(this);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Update — Enter для Ready
+        // ─────────────────────────────────────────────────────────────────────
 
         private void Update()
         {
-            // Только свой клиент обрабатывает Enter
-            if (!HasInputAuthority)
-                return;
-
+            if (!HasInputAuthority) return;
             if (InGameManager.Instance == null ||
-                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
-                return;
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting) return;
 
-            var keyboard = Keyboard.current;
-            if (keyboard == null) return;
+            var kb = Keyboard.current;
+            if (kb == null) return;
 
-            if (keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame)
-            {
-                RPC_SetReady(!IsReady); // тоггл: Enter готов/не готов
-            }
+            if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame)
+                RPC_SetReady(!IsReady);
         }
 
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
         // FixedUpdateNetwork
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         public override void FixedUpdateNetwork()
         {
-            if (!HasStateAuthority)
-                return;
+            if (!HasStateAuthority) return;
+
+            if ((bool)HasFinishedRendered != (bool)HasFinished)
+                HasFinishedRendered = HasFinished;
 
             UpdateOnStartPoint();
         }
 
         private void UpdateOnStartPoint()
         {
-            if (InGameManager.Instance == null || StartingPointIndex < 0)
+            if (InGameManager.Instance == null || StartingPointIndex < 0 ||
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
             {
                 OnStartPoint = false;
                 return;
             }
 
-            if (InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
+            var pts = InGameManager.Instance.startingPoints;
+            if (pts == null || StartingPointIndex >= pts.Length || pts[StartingPointIndex] == null)
             {
                 OnStartPoint = false;
                 return;
             }
 
-            var points = InGameManager.Instance.startingPoints;
-            if (points == null || StartingPointIndex >= points.Length || points[StartingPointIndex] == null)
-            {
-                OnStartPoint = false;
-                return;
-            }
-
-            OnStartPoint = points[StartingPointIndex].IsPlayerInRange(transform.position);
+            OnStartPoint = pts[StartingPointIndex].IsPlayerInRange(transform.position);
         }
 
-        // ─────────────────────────────────────────────
-        // RPC: Ready / телепорт
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // OnChangedRender колбэки (работают на всех клиентах)
+        // ─────────────────────────────────────────────────────────────────────
+
+        private void OnIsReadyChanged()
+        {
+            // Обновляем плашку Ready в LevelInfoContent (на всех клиентах)
+            InGameManager.Instance?.OnPlayerReadyChanged(Id, DisplayName, IsReady);
+        }
+
+        private void OnHasFinishedChanged()
+        {
+            if (!HasFinishedRendered) return; // сработал только при true
+
+            // Плашка "is finished" для всех
+            InGameManager.Instance?.OnPlayerFinishedUI(DisplayName);
+
+            // Локальный игрок — переключаем камеру
+            if (HasInputAuthority)
+                InGameManager.Instance?.OnLocalPlayerFinished(this);
+        }
+
+        private void OnIsVisibleChanged()
+        {
+            SetRenderersEnabled(IsVisible);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // RPC
+        // ─────────────────────────────────────────────────────────────────────
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_SetReady(NetworkBool ready)
         {
             if (InGameManager.Instance == null ||
-                InGameManager.Instance.gameState != InGameManager.GameState.Waiting)
-                return;
-
+                InGameManager.Instance.gameState != InGameManager.GameState.Waiting) return;
             IsReady = ready;
         }
 
@@ -146,7 +204,8 @@ namespace NonameGame
         public void RPC_AssignStartingPoint(int index)
         {
             StartingPointIndex = index;
-            IsReady = false;
+            IsReady            = false;
+            IsVisible          = true;
             TeleportToStartingPoint();
             _cameraManager?.FlyingCameraStart();
             StartCoroutine(FlyCameraCrtn());
@@ -155,22 +214,27 @@ namespace NonameGame
         private IEnumerator FlyCameraCrtn()
         {
             yield return new WaitForSeconds(3f);
-
-            _cameraManager?.InitForPlayer(cameraTarget);
+            _cameraManager?.InitForPlayer(_cameraTarget);
         }
 
-        /// <summary>
-        /// Телепорт на стартовую позицию. Вызывается InGameManager при старте гонки.
-        /// </summary>
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_TeleportToStart()
         {
             TeleportToStartingPoint();
         }
 
-        // ─────────────────────────────────────────────
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_ApplyPush(Vector3 force)
+        {
+            var rb = GetComponent<Rigidbody>();
+            if (rb == null) return;
+            rb.AddForce(force, ForceMode.Impulse);
+            _playerView.PlayStunVFX();
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
         // Телепорт
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         public void TeleportToStartingPoint()
         {
@@ -182,18 +246,18 @@ namespace NonameGame
                 return;
             }
 
-            var points = InGameManager.Instance.startingPoints;
-            if (points == null || StartingPointIndex >= points.Length || points[StartingPointIndex] == null)
+            var pts = InGameManager.Instance.startingPoints;
+            if (pts == null || StartingPointIndex >= pts.Length || pts[StartingPointIndex] == null)
             {
                 Debug.LogError($"[PlayerRaceData] Invalid starting point index {StartingPointIndex}");
                 return;
             }
 
-            var point = points[StartingPointIndex];
-            TeleportTo(point.SpawnPosition, point.SpawnRotation);
+            var pt = pts[StartingPointIndex];
+            TeleportTo(pt.SpawnPosition, pt.SpawnRotation);
 
-            CheckpointPosition = point.SpawnPosition;
-            CheckpointRotation = point.SpawnRotation;
+            CheckpointPosition = pt.SpawnPosition;
+            CheckpointRotation = pt.SpawnRotation;
         }
 
         public void SetCheckpoint(Vector3 pos, Quaternion rot)
@@ -215,7 +279,6 @@ namespace NonameGame
             var rb = GetComponent<Rigidbody>();
             var nt = GetComponent<NetworkTransform>();
 
-            // Останавливаем и телепортируем
             if (rb != null)
             {
                 rb.linearVelocity  = Vector3.zero;
@@ -228,25 +291,21 @@ namespace NonameGame
             if (nt != null) nt.Teleport(pos, rot);
             transform.SetPositionAndRotation(pos, rot);
 
-            // Всегда размораживаем после телепорта:
-            // игрок может ходить и в лобби, и в гонке.
             if (rb != null) rb.isKinematic = false;
 
             _cameraManager?.ResetPlayerCameraPos();
             _vfxManager?.PlaySalutVFX(pos + Vector3.up);
         }
 
-        // ─────────────────────────────────────────────
-        // Прочее
-        // ─────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // Видимость
+        // ─────────────────────────────────────────────────────────────────────
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-        public void RPC_ApplyPush(Vector3 force)
+        private void SetRenderersEnabled(bool visible)
         {
-            var rb = GetComponent<Rigidbody>();
-            if (rb == null) return;
-            rb.AddForce(force, ForceMode.Impulse);
-            _playerView.PlayStunVFX();
+            if (_renderers == null) return;
+            foreach (var r in _renderers)
+                if (r != null) r.enabled = visible;
         }
     }
 }

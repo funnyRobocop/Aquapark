@@ -29,7 +29,6 @@ namespace NonameGame
     {
         [Header("Refs")]
         [SerializeField] private Animator animator;
-        [SerializeField] private NetworkMecanimAnimator networkAnimator; // оставляем ссылку, но не используем SetTrigger
         [SerializeField] private PlayerController controller;
         [SerializeField] private PlayerGrab grab;
         [SerializeField] private PlayerWeapon weapon;
@@ -111,7 +110,6 @@ namespace NonameGame
 
         public void InitSkin()
         {
-            Debug.Log("[PlayerView] InitSkin SkinId=" + SkinId);
             var skinType = (PlayerSkin)SkinId;
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
             SpawnPlayerMesh(skinData, transform.GetChild(0));

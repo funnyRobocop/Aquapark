@@ -13,7 +13,7 @@ namespace NonameGame
         public enum GameState
         {
             Waiting = 0,
-            Game = 1,
+            Game    = 1,
             EndGame = 2,
             ShowResults = 3,
         }
@@ -22,23 +22,30 @@ namespace NonameGame
         public StartingPointBehaviour[] startingPoints;
 
         [Header("Lobby Settings")]
-        [SerializeField] private int maxPlayersToAutoStart = 8;      // авто-старт при заполнении
-        [SerializeField] private int minPlayersToStartTimer = 2;     // мин. игроков для запуска 30-сек таймера
-        [SerializeField] private float lobbyWaitSeconds = 30f;       // макс. ожидание в лобби
-        [SerializeField] private float readyCountdownSeconds = 3.1f; // обратный отсчёт когда все готовы
+        [SerializeField] private int   maxPlayersToAutoStart  = 8;
+        [SerializeField] private int   minPlayersToStartTimer = 2;
+        [SerializeField] private float lobbyWaitSeconds       = 30f;
+        [SerializeField] private float readyCountdownSeconds  = 3.1f;
 
         [Header("Race Settings")]
-        [SerializeField] private float raceDurationSeconds = 60f;
-        [SerializeField] private float endGameDelay = 3f;
-        [SerializeField] private float resultsDelay = 8f;
+        [SerializeField] private float raceDurationSeconds    = 300f;
+        [SerializeField] private float afterFirstFinishSeconds = 60f;   // таймер после первого финиша
+        [SerializeField] private float endGameDelay           = 3f;
+        [SerializeField] private float resultsDelay           = 30f;
 
-        [Header("UI")]
+        [Header("UI: Level Info Feed")]
+        public Transform  playerLevelInfoContent;              // VerticalLayoutGroup
+        public GameObject playerLevelInfoPrefab;              // префаб плашки
+
+        [Header("UI: HUD")]
         public TextMeshProUGUI gameStateText;
         public TextMeshProUGUI timerText;
-        public TextMeshProUGUI resultsText;
-        public CanvasGroup resultsCanvasGroup;
 
-        // ─── Networked ───────────────────────────────────────────────
+        [Header("UI: Results")]
+        public TextMeshProUGUI resultsText;
+        public CanvasGroup     resultsCanvasGroup;
+
+        // ─── Networked ───────────────────────────────────────────────────────
 
         [Networked, Capacity(8)]
         public NetworkArray<NetworkBehaviourId> playerList => default;
@@ -46,39 +53,45 @@ namespace NonameGame
         [Networked, OnChangedRender(nameof(OnGameStateChanged))]
         public GameState gameState { get; set; }
 
-        [Networked] public TickTimer gameplayTimer    { get; set; }
-        [Networked] public TickTimer countdownTimer   { get; set; }  // когда все Ready
-        [Networked] public TickTimer lobbyTimer       { get; set; }  // 30-сек ожидание
-        [Networked] public NetworkBool LobbyTimerRunning { get; set; }
+        [Networked] public TickTimer     gameplayTimer     { get; set; }
+        [Networked] public TickTimer     countdownTimer    { get; set; }
+        [Networked] public TickTimer     lobbyTimer        { get; set; }
+        [Networked] public NetworkBool   LobbyTimerRunning { get; set; }
 
-        [Networked] public int  TotalPlayers    { get; set; }
-        [Networked] public int  ReadyPlayers    { get; set; }
-        [Networked] public NetworkBool AllPlayersReady { get; set; }
-        [Networked] public int  FinishedCount   { get; set; }
+        [Networked] public int           TotalPlayers      { get; set; }
+        [Networked] public int           ReadyPlayers      { get; set; }
+        [Networked] public NetworkBool   AllPlayersReady   { get; set; }
+        [Networked] public int           FinishedCount     { get; set; }
+        [Networked] public NetworkBool   FirstFinished     { get; set; } // сработал первый финиш
 
-        // ─── Local ────────────────────────────────────────────────
+        // ─── Local (only this client) ─────────────────────────────────────────
 
-        private int?  previousTimerSeconds;
-        private int   previousTotalPlayers = -1;
-        private int   previousReadyPlayers = -1;
-        private bool  showResults;
+        private int?  _prevTimerSec;
+        private int   _prevTotalPlayers = -1;
+        private int   _prevReadyPlayers = -1;
+        private bool  _showResults;
 
-        [Inject] private LoadingUI _loadingUI;
+        // Карточки готовности (id → GO) — удаляются при снятии Ready
+        private readonly Dictionary<NetworkBehaviourId, GameObject> _readyCards = new();
+
+        //[Inject] private LoadingUI    _loadingUI;
+        [SerializeField] private CameraManager _cameraManager;
+        [Inject] private IPlayerSkinLoader   _skinLoader;   // для выгрузки addressables
 
         public bool ShowResults
         {
-            get => showResults;
+            get => _showResults;
             set
             {
-                showResults = value;
+                _showResults = value;
                 if (resultsCanvasGroup != null)
                     resultsCanvasGroup.interactable = value;
             }
         }
 
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
         // Lifecycle
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         public override void Spawned()
         {
@@ -90,19 +103,15 @@ namespace NonameGame
 
             OnGameStateChanged();
 
-            // Назначаем точки игрокам, заспавнившимся до InGameManager
             if (Object.HasStateAuthority)
             {
                 foreach (var player in Runner.GetAllBehaviours<PlayerRaceData>())
                 {
-                    if (player == null || player.StartingPointIndex >= 0)
-                        continue;
+                    if (player == null || player.StartingPointIndex >= 0) continue;
 
                     for (int i = 0; i < playerList.Length; i++)
                     {
-                        if (Runner.TryFindBehaviour(playerList[i], out PlayerRaceData _))
-                            continue;
-
+                        if (Runner.TryFindBehaviour(playerList[i], out PlayerRaceData _)) continue;
                         playerList.Set(i, player.Id);
                         player.RPC_AssignStartingPoint(i);
                         break;
@@ -130,9 +139,9 @@ namespace NonameGame
                 CrazyManager.ShowInviteButton();
         }
 
-        // ───────────────────────────────────────────────────────
-        // FixedUpdateNetwork — только StateAuthority
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // FixedUpdateNetwork
+        // ─────────────────────────────────────────────────────────────────────
 
         public override void FixedUpdateNetwork()
         {
@@ -140,7 +149,8 @@ namespace NonameGame
 
             switch (gameState)
             {
-                case GameState.Waiting:   UpdateWaitingState(); break;
+                case GameState.Waiting: UpdateWaitingState(); break;
+
                 case GameState.Game:
                     if (gameplayTimer.Expired(Runner))
                     {
@@ -148,6 +158,7 @@ namespace NonameGame
                         gameplayTimer = TickTimer.CreateFromSeconds(Runner, endGameDelay);
                     }
                     break;
+
                 case GameState.EndGame:
                     if (gameplayTimer.Expired(Runner))
                     {
@@ -158,9 +169,9 @@ namespace NonameGame
             }
         }
 
-        // ───────────────────────────────────────────────────────
-        // Waiting logic
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // Waiting
+        // ─────────────────────────────────────────────────────────────────────
 
         private void UpdateWaitingState()
         {
@@ -169,33 +180,25 @@ namespace NonameGame
 
             for (int i = 0; i < playerList.Length; i++)
             {
-                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData player)) continue;
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
                 TotalPlayers++;
-                if (player.IsReady) ReadyPlayers++;
+                if (p.IsReady) ReadyPlayers++;
             }
 
-            // 1. Авто-старт при maxPlayers
-            if (TotalPlayers >= maxPlayersToAutoStart)
-            {
-                StartRace();
-                return;
-            }
+            if (TotalPlayers >= maxPlayersToAutoStart) { StartRace(); return; }
 
-            // 2. Запускаем 30-сек таймер лобби (1 раз)
             if (TotalPlayers >= minPlayersToStartTimer && !LobbyTimerRunning)
             {
-                lobbyTimer       = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
+                lobbyTimer        = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
                 LobbyTimerRunning = true;
             }
 
-            // 3. Принудительный старт по таймеру
             if (LobbyTimerRunning && lobbyTimer.Expired(Runner) && TotalPlayers > 0)
             {
                 StartRace();
                 return;
             }
 
-            // 4. Ранний старт: все нажали Enter (IsReady)
             if (TotalPlayers > 0 && TotalPlayers == ReadyPlayers)
             {
                 if (!AllPlayersReady)
@@ -203,11 +206,7 @@ namespace NonameGame
                     AllPlayersReady = true;
                     countdownTimer  = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
                 }
-                if (countdownTimer.Expired(Runner))
-                {
-                    StartRace();
-                    return;
-                }
+                if (countdownTimer.Expired(Runner)) { StartRace(); return; }
             }
             else
             {
@@ -216,9 +215,9 @@ namespace NonameGame
             }
         }
 
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
         // StartRace
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         private void StartRace()
         {
@@ -229,39 +228,35 @@ namespace NonameGame
             LobbyTimerRunning = false;
             AllPlayersReady   = false;
             FinishedCount     = 0;
+            FirstFinished     = false;
 
             for (int i = 0; i < playerList.Length; i++)
             {
-                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData player)) continue;
-
-                player.HasFinished = false;
-                player.FinishPlace = 0;
-                player.IsReady     = false;
-
-                // Телепорт на стартовую позицию.
-                // RPC_TeleportToStart → RpcTargets.StateAuthority (сам игрок) —
-                // так что в Shared Mode каждый сам делает телепорт своей физики.
-                player.RPC_TeleportToStart();
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                p.HasFinished  = false;
+                p.FinishPlace  = 0;
+                p.IsReady      = false;
+                p.IsVisible    = true;
+                p.RPC_TeleportToStart();
             }
         }
 
-        // ───────────────────────────────────────────────────────
-        // RPC: регистрация / финиш
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // RPC: join
+        // ─────────────────────────────────────────────────────────────────────
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_PlayerJoined(NetworkBehaviourId newPlayerID)
         {
             if (gameState != GameState.Waiting)
             {
-                Debug.Log($"[InGameManager] Race started, ignoring late joiner {newPlayerID}");
+                Debug.Log($"[InGameManager] Race in progress — late joiner {newPlayerID} is spectator.");
                 return;
             }
 
             for (int i = 0; i < playerList.Length; i++)
             {
                 if (Runner.TryFindBehaviour(playerList[i], out PlayerRaceData _)) continue;
-
                 playerList.Set(i, newPlayerID);
                 if (Runner.TryFindBehaviour(newPlayerID, out PlayerRaceData player))
                     player.RPC_AssignStartingPoint(i);
@@ -270,6 +265,10 @@ namespace NonameGame
 
             Debug.LogWarning("[InGameManager] No free slot for new player.");
         }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // RPC: finish
+        // ─────────────────────────────────────────────────────────────────────
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_RequestFinish(NetworkId playerObjectId)
@@ -280,14 +279,23 @@ namespace NonameGame
 
         public void RegisterFinish(PlayerRaceData player)
         {
-            if (!Object.HasStateAuthority) return;
-            if (gameState != GameState.Game)  return;
+            if (!Object.HasStateAuthority)       return;
+            if (gameState != GameState.Game)      return;
             if (player == null || player.HasFinished) return;
 
             FinishedCount++;
             player.HasFinished = true;
             player.FinishPlace = FinishedCount;
+            player.IsVisible   = false;  // скрываем для всех
 
+            // Первый финиш — перезапускаем таймер на 1 минуту
+            if (!FirstFinished)
+            {
+                FirstFinished = true;
+                gameplayTimer = TickTimer.CreateFromSeconds(Runner, afterFirstFinishSeconds);
+            }
+
+            // Все финишировали
             if (FinishedCount >= TotalPlayers && TotalPlayers > 0)
             {
                 gameState     = GameState.EndGame;
@@ -295,9 +303,164 @@ namespace NonameGame
             }
         }
 
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // UI: Level Info Feed  (вызывается из PlayerRaceData через OnChangedRender)
+        // ─────────────────────────────────────────────────────────────────────
+
+        /// <summary>Обновляет плашку "игрок X is ready". Вызывается на всех клиентах.</summary>
+        public void OnPlayerReadyChanged(NetworkBehaviourId id, string name, bool ready)
+        {
+            if (playerLevelInfoContent == null || playerLevelInfoPrefab == null) return;
+
+            if (ready)
+            {
+                if (!_readyCards.ContainsKey(id))
+                {
+                    var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
+                    go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is ready");
+                    _readyCards[id] = go;
+                }
+            }
+            else
+            {
+                if (_readyCards.TryGetValue(id, out var go))
+                {
+                    Destroy(go);
+                    _readyCards.Remove(id);
+                }
+            }
+        }
+
+        /// <summary>Спавнить плашку "игрок X is finished". Вызывается на всех клиентах.</summary>
+        public void OnPlayerFinishedUI(string name)
+        {
+            if (playerLevelInfoContent == null || playerLevelInfoPrefab == null) return;
+            var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
+            go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is finished");
+        }
+
+        /// <summary>После Keep Playing возвращает камеру на локального игрока.</summary>
+        private void ReinitLocalPlayerCamera()
+        {
+            if (_cameraManager == null || Runner == null) return;
+
+            var localObj = Runner.GetPlayerObject(Runner.LocalPlayer);
+            var localPlayer = localObj?.GetBehaviour<PlayerRaceData>();
+            if (localPlayer != null && localPlayer.CameraTarget != null)
+                _cameraManager.InitForPlayer(localPlayer.CameraTarget);
+        }
+
+        private void ClearAllMessages()
+        {
+            foreach (var card in _readyCards.Values)
+                if (card != null) Destroy(card);
+            _readyCards.Clear();
+
+            if (playerLevelInfoContent == null) return;
+            foreach (Transform child in playerLevelInfoContent)
+                Destroy(child.gameObject);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Camera / Spectator (вызывается из PlayerRaceData.OnHasFinishedChanged)
+        // ─────────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Локальный игрок финишировал — переключаем камеру на одного из активных.
+        /// </summary>
+        public void OnLocalPlayerFinished(PlayerRaceData finishedPlayer)
+        {
+            var targets = new List<PlayerRaceData>();
+            foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
+            {
+                if (p == finishedPlayer)           continue;
+                if (p.StartingPointIndex < 0)      continue; // опоздавший спектатор
+                if (p.HasFinished)                 continue; // уже финишировал
+                targets.Add(p);
+            }
+
+            if (targets.Count == 0)
+            {
+                // Все финишировали — наблюдаем за первым местом
+                foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
+                    if (p.StartingPointIndex >= 0 && p != finishedPlayer)
+                        targets.Add(p);
+            }
+
+            _cameraManager?.BeginSpectating(targets);
+        }
+
+        /// <summary>Опоздавший игрок входит в режим наблюдателя.</summary>
+        public void BeginSpectatingForLateJoiner(PlayerRaceData spectator)
+        {
+            var targets = new List<PlayerRaceData>();
+            foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
+            {
+                if (p == spectator)           continue;
+                if (p.StartingPointIndex < 0) continue;
+                targets.Add(p);
+            }
+            _cameraManager?.BeginSpectating(targets);
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Results buttons
+        // ─────────────────────────────────────────────────────────────────────
+
+        /// <summary>UI: кнопка "Leave Game".</summary>
+        public void LeaveGame()
+        {
+            //_loadingUI?.Show();
+            if (CrazyGames.CrazySDK.IsInitialized)
+                CrazyGames.CrazySDK.Game.HideInviteButton();
+
+            // Выгрузка addressable скинов
+            _skinLoader?.ReleaseAll();
+
+            Runner.Shutdown();
+        }
+
+        /// <summary>UI: кнопка "Keep Playing" — сброс в Waiting без выхода из сессии.</summary>
+        public void KeepPlaying()
+        {
+            RPC_RequestKeepPlaying();
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        private void RPC_RequestKeepPlaying()
+        {
+            if (gameState != GameState.ShowResults) return;
+            ResetToWaiting();
+        }
+
+        private void ResetToWaiting()
+        {
+            // Сбрасываем состояние игроков
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                p.HasFinished = false;
+                p.FinishPlace = 0;
+                p.IsReady     = false;
+                p.IsVisible   = true;
+                p.RPC_TeleportToStart();
+            }
+
+            gameState         = GameState.Waiting;
+            gameplayTimer     = default;
+            countdownTimer    = default;
+            lobbyTimer        = default;
+            LobbyTimerRunning = false;
+            AllPlayersReady   = false;
+            FinishedCount     = 0;
+            TotalPlayers      = 0;
+            ReadyPlayers      = 0;
+            FirstFinished     = false;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
         // Render
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         public override void Render()
         {
@@ -318,20 +481,18 @@ namespace NonameGame
 
         private void RenderWaitingState()
         {
-            bool dirty = previousReadyPlayers != ReadyPlayers ||
-                         previousTotalPlayers != TotalPlayers;
-
+            bool dirty = _prevReadyPlayers != ReadyPlayers || _prevTotalPlayers != TotalPlayers;
             if (dirty)
             {
-                previousReadyPlayers = ReadyPlayers;
-                previousTotalPlayers = TotalPlayers;
+                _prevReadyPlayers = ReadyPlayers;
+                _prevTotalPlayers = TotalPlayers;
 
                 if (gameStateText != null)
                 {
                     if (TotalPlayers == 0)
                         gameStateText.text = $"Waiting for players... (max {maxPlayersToAutoStart})";
                     else if (ReadyPlayers < TotalPlayers)
-                        gameStateText.text = $"Ready: {ReadyPlayers} / {TotalPlayers}  [← Press Enter to ready up]";
+                        gameStateText.text = $"Ready: {ReadyPlayers} / {TotalPlayers}  [Press Enter to ready up]";
                     else
                         gameStateText.text = "All players ready!";
                 }
@@ -339,29 +500,19 @@ namespace NonameGame
 
             if (timerText == null) return;
 
-            // Обратный отсчёт (все нажали Enter)
             if (AllPlayersReady && !countdownTimer.ExpiredOrNotRunning(Runner))
             {
                 int s = Mathf.CeilToInt(countdownTimer.RemainingTime(Runner) ?? 0f);
-                if (previousTimerSeconds != s)
-                {
-                    previousTimerSeconds = s;
-                    timerText.text = s > 0 ? s.ToString() : string.Empty;
-                }
+                if (_prevTimerSec != s) { _prevTimerSec = s; timerText.text = s > 0 ? s.ToString() : string.Empty; }
             }
-            // 30-сек таймер лобби
             else if (LobbyTimerRunning && !lobbyTimer.ExpiredOrNotRunning(Runner))
             {
                 int s = Mathf.CeilToInt(lobbyTimer.RemainingTime(Runner) ?? 0f);
-                if (previousTimerSeconds != s)
-                {
-                    previousTimerSeconds = s;
-                    timerText.text = $"Starting in {s}s";
-                }
+                if (_prevTimerSec != s) { _prevTimerSec = s; timerText.text = $"Starting in {s}s"; }
             }
-            else if (previousTimerSeconds != null)
+            else if (_prevTimerSec != null)
             {
-                previousTimerSeconds = null;
+                _prevTimerSec = null;
                 timerText.text = string.Empty;
             }
         }
@@ -369,38 +520,43 @@ namespace NonameGame
         private void RenderGameState()
         {
             if (timerText == null) return;
-
-            int seconds = Mathf.CeilToInt(gameplayTimer.RemainingTime(Runner) ?? 0f);
-            if (previousTimerSeconds == seconds) return;
-
-            previousTimerSeconds = seconds;
-            timerText.text = $"{seconds / 60:00}:{seconds % 60:00}";
+            int s = Mathf.CeilToInt(gameplayTimer.RemainingTime(Runner) ?? 0f);
+            if (_prevTimerSec == s) return;
+            _prevTimerSec = s;
+            timerText.text = $"{s / 60:00}:{s % 60:00}";
         }
 
-        // ───────────────────────────────────────────────────────
-        // OnGameStateChanged
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
+        // OnGameStateChanged (OnChangedRender)
+        // ─────────────────────────────────────────────────────────────────────
 
         private void OnGameStateChanged()
         {
-            previousTimerSeconds = null;
-            previousTotalPlayers = -1;
-            previousReadyPlayers = -1;
+            _prevTimerSec     = null;
+            _prevTotalPlayers = -1;
+            _prevReadyPlayers = -1;
 
             switch (gameState)
             {
                 case GameState.Game:
+                    ClearAllMessages();                         // убираем все плашки Ready
+                    _cameraManager?.StopSpectating();           // сброс спектатора
+
                     if (CrazyGames.CrazySDK.IsInitialized)
                     {
                         CrazyGames.CrazySDK.Game.GameplayStart();
                         CrazyGames.CrazySDK.Game.HideInviteButton();
                     }
                     if (gameStateText != null) gameStateText.text = string.Empty;
-                    if (timerText    != null) timerText.text    = string.Empty;
+                    if (timerText     != null) timerText.text     = string.Empty;
                     ShowResults = false;
                     break;
 
                 case GameState.Waiting:
+                    ClearAllMessages();
+                    _cameraManager?.StopSpectating();
+                    ReinitLocalPlayerCamera();
+
                     if (CrazyGames.CrazySDK.IsInitialized)
                     {
                         if (Runner.SessionInfo.PlayerCount < Runner.SessionInfo.MaxPlayers)
@@ -420,31 +576,27 @@ namespace NonameGame
             }
         }
 
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
         // Results
-        // ───────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────────────────
 
         private void BuildResults()
         {
             var finished    = new List<PlayerRaceData>();
             var notFinished = new List<PlayerRaceData>();
 
-            foreach (var player in Runner.GetAllBehaviours<PlayerRaceData>())
+            foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
             {
-                if (player.HasFinished) finished.Add(player);
-                else                    notFinished.Add(player);
+                if (p.HasFinished) finished.Add(p);
+                else               notFinished.Add(p);
             }
-
             finished.Sort((a, b) => a.FinishPlace.CompareTo(b.FinishPlace));
 
             var sb = new System.Text.StringBuilder();
-            foreach (var p in finished)
-                sb.AppendLine($"{p.FinishPlace}. {p.DisplayName}");
-            foreach (var p in notFinished)
-                sb.AppendLine($"— {p.DisplayName} (Not Finished)");
+            foreach (var p in finished)    sb.AppendLine($"{p.FinishPlace}. {p.DisplayName}");
+            foreach (var p in notFinished) sb.AppendLine($"— {p.DisplayName} (Not Finished)");
 
-            if (resultsText != null)
-                resultsText.text = sb.ToString();
+            if (resultsText != null) resultsText.text = sb.ToString();
 
             var localObj    = Runner.GetPlayerObject(Runner.LocalPlayer);
             var localPlayer = localObj?.GetBehaviour<PlayerRaceData>();
@@ -455,18 +607,6 @@ namespace NonameGame
 
             ShowResults = true;
             Cursor.lockState = CursorLockMode.None;
-        }
-
-        // ───────────────────────────────────────────────────────
-        // Misc
-        // ───────────────────────────────────────────────────────
-
-        public void LeaveGame()
-        {
-            _loadingUI?.Show();
-            if (CrazyGames.CrazySDK.IsInitialized)
-                CrazyGames.CrazySDK.Game.HideInviteButton();
-            Runner.Shutdown();
         }
 
         void OnValidate()

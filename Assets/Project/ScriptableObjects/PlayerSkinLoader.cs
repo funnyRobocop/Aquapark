@@ -9,6 +9,7 @@ namespace NonameGame
     {        
         Dictionary<PlayerSkin, PlayerSkinData> PlayerSkinAll { get; }
         void Initialize();
+        public void ReleaseAll();
     }
 
     [CreateAssetMenu(fileName = "PlayerSkinLoader", menuName = "Scriptable Objects/PlayerSkinLoader")]
@@ -30,6 +31,11 @@ namespace NonameGame
                     _playerSkinAll.Add(skin.SkinId, skin);
                 }
             }
+        }
+
+        public void ReleaseAll()
+        {
+            
         }
     }
 
