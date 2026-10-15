@@ -329,7 +329,7 @@ namespace NonameGame
             foreach (var r in _renderers)
                 if (r != null) r.enabled = visible;
 
-            GetComponent<Collider>().enabled = visible;
+            //GetComponent<Collider>().enabled = visible;
         }
     }
 }
