@@ -52,6 +52,8 @@ namespace NonameGame
 
         public override void Spawned()
         {
+            _renderers = GetComponentsInChildren<Renderer>(true);
+
             if (!HasStateAuthority) return;
 
             CheckpointPosition = transform.position;
@@ -221,6 +223,28 @@ namespace NonameGame
             TeleportToStartingPoint();
         }
 
+        /// <summary>
+        /// Вызывается InGameManager-ом: игрок сам себя помечает как финишировавшего.
+        /// </summary>
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_SetFinished(int place)
+        {
+            HasFinished = true;
+            FinishPlace = place;
+            IsVisible   = false;
+        }
+
+        /// <summary>Reset перед новым раундом (KeepPlaying / StartRace).</summary>
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RPC_ResetForNewRound()
+        {
+            HasFinished = false;
+            FinishPlace = 0;
+            IsVisible   = true;
+            IsReady     = false;
+            TeleportToStartingPoint();
+        }
+
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_ApplyPush(Vector3 force)
         {
@@ -301,15 +325,9 @@ namespace NonameGame
 
         private void SetRenderersEnabled(bool visible)
         {
-            if (_renderers == null)
-            {
-                _renderers = GetComponentsInChildren<Renderer>(true);
-            }
-            
             if (_renderers == null) return;
             foreach (var r in _renderers)
                 if (r != null) r.enabled = visible;
-            GetComponent<Collider>().enabled = visible;
         }
     }
 }

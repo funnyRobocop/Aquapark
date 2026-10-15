@@ -74,6 +74,11 @@ namespace NonameGame
         // Карточки готовности (id → GO) — удаляются при снятии Ready
         private readonly Dictionary<NetworkBehaviourId, GameObject> _readyCards = new();
 
+        // Локальный трекер финишировавших (StateAuthority only).
+        // player.HasFinished теперь ставится через RPC с задержкой — 
+        // нельзя использовать его как guard от дубль на хосте.
+        private readonly HashSet<NetworkBehaviourId> _finishedSet = new();
+
         //[Inject] private LoadingUI    _loadingUI;
         [SerializeField] private CameraManager _cameraManager;
         [Inject] private IPlayerSkinLoader   _skinLoader;   // для выгрузки addressables
@@ -229,15 +234,12 @@ namespace NonameGame
             AllPlayersReady   = false;
             FinishedCount     = 0;
             FirstFinished     = false;
+            _finishedSet.Clear();
 
             for (int i = 0; i < playerList.Length; i++)
             {
                 if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
-                p.HasFinished  = false;
-                p.FinishPlace  = 0;
-                p.IsReady      = false;
-                p.IsVisible    = true;
-                p.RPC_TeleportToStart();
+                p.RPC_ResetForNewRound();
             }
         }
 
@@ -295,12 +297,13 @@ namespace NonameGame
         {
             if (!Object.HasStateAuthority)       return;
             if (gameState != GameState.Game)      return;
-            if (player == null || player.HasFinished) return;
+            if (player == null)                   return;
+            if (!_finishedSet.Add(player.Id))     return; // дубль — уже зарегистрирован
 
             FinishedCount++;
-            player.HasFinished = true;
-            player.FinishPlace = FinishedCount;
-            player.IsVisible   = false;  // скрываем для всех
+            // Игрок сам себя помечает через RPC —
+            // нельзя писать напрямую в чужой NetworkBehaviour в Shared Mode
+            player.RPC_SetFinished(FinishedCount);
 
             // Первый финиш — перезапускаем таймер на 1 минуту
             if (!FirstFinished)
@@ -353,7 +356,7 @@ namespace NonameGame
             go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is finished");
         }
 
-        /// <summary>После Keep Playing возвращает камеру на локального игрока.</summary>
+        /// <summary>После Keep Playing возвращает камеру на локального иг��ока.</summary>
         private void ReinitLocalPlayerCamera()
         {
             if (_cameraManager == null || Runner == null) return;
@@ -395,7 +398,7 @@ namespace NonameGame
 
             if (targets.Count == 0)
             {
-                // Все финишировали — наблюдаем за первым местом
+                // Все финишировали — наб��юдаем за первым местом
                 foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
                     if (p.StartingPointIndex >= 0 && p != finishedPlayer)
                         targets.Add(p);
@@ -453,11 +456,9 @@ namespace NonameGame
             for (int i = 0; i < playerList.Length; i++)
             {
                 if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
-                p.HasFinished = false;
-                p.FinishPlace = 0;
-                p.IsReady     = false;
-                p.IsVisible   = true;
-                p.RPC_TeleportToStart();
+                // RPC_ResetForNewRound сразу сбрасывает HasFinished/FinishPlace/IsReady/IsVisible
+                // И телепортирует на старт — один RPC вместо двух
+                p.RPC_ResetForNewRound();
             }
 
             gameState         = GameState.Waiting;
@@ -470,6 +471,7 @@ namespace NonameGame
             TotalPlayers      = 0;
             ReadyPlayers      = 0;
             FirstFinished     = false;
+            _finishedSet.Clear();
         }
 
         // ─────────────────────────────────────────────────────────────────────
