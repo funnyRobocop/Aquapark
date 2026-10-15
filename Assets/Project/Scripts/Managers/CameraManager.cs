@@ -14,7 +14,7 @@ namespace NonameGame
 
         // ─── Spectator ─────────────────────────────────────────────────────────────────
 
-        private readonly List<Transform> _spectateTargets = new();
+        private readonly List<PlayerRaceData> _spectateTargets = new();
         private int  _spectateIndex;
         private bool _isSpectating;
 
@@ -24,7 +24,22 @@ namespace NonameGame
 
         private void Update()
         {
-            if (!_isSpectating || _spectateTargets.Count <= 1) return;
+            if (!_isSpectating || _spectateTargets.Count == 0) return;
+
+            // Авто-переключение: текущий таргет финишировал — найти следующего активного
+            var current = CurrentTarget;
+            if (current != null && current.HasFinished)
+            {
+                var next = FindNextActive(_spectateIndex, +1);
+                if (next >= 0)
+                {
+                    _spectateIndex = next;
+                    ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
+                }
+                // если все финишировали — остаёмся на последнем
+            }
+
+            if (_spectateTargets.Count <= 1) return;
 
             var kb = Keyboard.current;
             if (kb == null) return;
@@ -33,6 +48,25 @@ namespace NonameGame
                 SpectateRelative(-1);
             else if (kb.eKey.wasPressedThisFrame)
                 SpectateRelative(+1);
+        }
+
+        private PlayerRaceData CurrentTarget =>
+            _spectateTargets.Count > 0 ? _spectateTargets[_spectateIndex] : null;
+
+        /// <summary>
+        /// Находит индекс следующего нефинишировавшего игрока в направлении dir.
+        /// Возвращает -1 если все финишировали.
+        /// </summary>
+        private int FindNextActive(int from, int dir)
+        {
+            int n = _spectateTargets.Count;
+            for (int i = 1; i <= n; i++)
+            {
+                int idx = (from + dir * i + n * n) % n;
+                if (_spectateTargets[idx] != null && !_spectateTargets[idx].HasFinished)
+                    return idx;
+            }
+            return -1;
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -55,6 +89,9 @@ namespace NonameGame
         /// <summary>Передаём камеру на локального игрока и останавливаем авто-долли.</summary>
         public void InitForPlayer(Transform playerTransform)
         {
+            if (_splineDolly != null)
+                _splineDolly.AutomaticDolly.Enabled = false;
+
             if (_playerCamera != null)
                 _playerCamera.Target.TrackingTarget = playerTransform;
 
@@ -75,7 +112,7 @@ namespace NonameGame
             _spectateTargets.Clear();
             foreach (var p in players)
                 if (p != null && p.CameraTarget != null)
-                    _spectateTargets.Add(p.CameraTarget);
+                    _spectateTargets.Add(p);
 
             if (_spectateTargets.Count == 0)
             {
@@ -83,10 +120,16 @@ namespace NonameGame
                 return;
             }
 
-            _spectateIndex    = 0;
-            _isSpectating     = true;
+            if (_splineDolly != null)
+                _splineDolly.AutomaticDolly.Enabled = false;
+
+            // Начинаем с первого нефинишировавшего
+            _spectateIndex    = FindNextActive(-1, +1);
+            if (_spectateIndex < 0) _spectateIndex = 0;
+
+            _isSpectating          = true;
             _playerCamera.Priority = 10;
-            ApplySpectateTarget(_spectateTargets[0]);
+            ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
         }
 
         /// <summary>Выход из режима спектатора (например при Keep Playing).</summary>
@@ -132,8 +175,10 @@ namespace NonameGame
         private void SpectateRelative(int delta)
         {
             if (_spectateTargets.Count == 0) return;
-            _spectateIndex = (_spectateIndex + delta + _spectateTargets.Count) % _spectateTargets.Count;
-            ApplySpectateTarget(_spectateTargets[_spectateIndex]);
+            int next = FindNextActive(_spectateIndex, delta);
+            if (next < 0) return; // все финишировали
+            _spectateIndex = next;
+            ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
         }
 
         private void ApplySpectateTarget(Transform target)
