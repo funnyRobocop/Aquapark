@@ -204,6 +204,8 @@ namespace NonameGame
             StartingPointIndex = index;
             IsReady            = false;
             IsVisible          = true;
+            // OnChangedRender срабатывает только при смене значения — вызываем напрямую
+            SetRenderersEnabled(true);
             TeleportToStartingPoint();
             _cameraManager?.FlyingCameraStart();
             StartCoroutine(FlyCameraCrtn());
@@ -323,13 +325,10 @@ namespace NonameGame
 
         private void SetRenderersEnabled(bool visible)
         {
-            if (_renderers == null)
-                _renderers = GetComponentsInChildren<Renderer>(true);
+            if (_renderers == null) _renderers = GetComponentsInChildren<Renderer>(true);
             if (_renderers == null) return;
             foreach (var r in _renderers)
                 if (r != null) r.enabled = visible;
-
-            //GetComponent<Collider>().enabled = visible;
         }
     }
 }
