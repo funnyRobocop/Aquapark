@@ -385,12 +385,9 @@ namespace NonameGame
                 gameplayTimer = TickTimer.CreateFromSeconds(Runner, afterFirstFinishSeconds);
             }
 
-            // Все финишировали
-            if (FinishedCount >= TotalPlayers && TotalPlayers > 0)
-            {
-                gameState     = GameState.EndGame;
-                gameplayTimer = TickTimer.CreateFromSeconds(Runner, endGameDelay);
-            }
+            // Проверяем завершение гонки через CheckRaceOver —
+            // учитывает и финишировавших, и вышедших из сессии игроков.
+            CheckRaceOver();
         }
 
         // ─────────────────────────────────────────────────────────────────────
