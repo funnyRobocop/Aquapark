@@ -14,8 +14,10 @@ namespace NonameGame
 
         public event Action OnDataChanged;
         public event Action<int> OnMoneyChanged;
+        public event Action<string> OnPlayerNameChanged;
         public event Action<int, int> OnLevelChanged;
 
+        public string PlayerName;
         public int SelectedSkinId;
         public List<int> PurchasedSkinIdList;
         public int Money;
@@ -42,6 +44,7 @@ namespace NonameGame
         {
             GameModel savedData = _saveService.Load();
 
+            PlayerName = savedData.PlayerName;
             SelectedSkinId = savedData.SelectedSkinId;
             PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
             Money = savedData.Money;
@@ -106,6 +109,13 @@ namespace NonameGame
                     Achievements.Add(new AchievementData(def.Key, def.Value.Goal));
                 }
             }
+        }
+
+        public void ChangeName(string name)
+        {
+            PlayerName = name;
+            OnPlayerNameChanged?.Invoke(name);
+            _saveService.Save(this);
         }
 
         public void SelectSkin(int skinId)

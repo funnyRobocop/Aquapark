@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using VContainer;
 
 namespace NonameGame
 {
@@ -13,11 +14,10 @@ namespace NonameGame
         [SerializeField, Tooltip("Reference to the Fusion Network Manager.")]
         FusionNetworkManager fusionNetworkManager;
 
-        [SerializeField, Tooltip("Reference to the TextMeshProUGUI object that will display the player's name.")]
-        TextMeshProUGUI playerName;
-
         [SerializeField, Tooltip("Event invokved if the game was instantly joined through an invite.")]
         UnityEvent onInstantJoin;
+
+        [Inject] private GameModel _gameModel;
 
         void Start()
         {
@@ -43,8 +43,11 @@ namespace NonameGame
             {
                 if (user != null)
                 {
-                    playerName.text = user.username;
-                    Debug.Log("Get user result: " + user);
+                    if (string.IsNullOrEmpty(_gameModel.PlayerName))
+                    {
+                        _gameModel.ChangeName(user.username);
+                        Debug.Log("Get user result: " + user);
+                    }
                 }
             });
         }

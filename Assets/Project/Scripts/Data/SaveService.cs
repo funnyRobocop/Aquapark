@@ -31,7 +31,8 @@ namespace NonameGame
         {
             return new GameModel(this)
             {
-                SelectedSkinId = 0,
+                PlayerName = "",
+                SelectedSkinId = -1,
                 PurchasedSkinIdList = new System.Collections.Generic.List<int> { },
                 Money = 0,
                 Points = 0,

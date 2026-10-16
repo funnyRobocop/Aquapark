@@ -16,6 +16,7 @@ namespace NonameGame
         [SerializeField] private BattlePassUI battlePassUI;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private TextMeshProUGUI moneyText;
+        [SerializeField] private TextMeshProUGUI playerName;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -41,6 +42,8 @@ namespace NonameGame
                 UpdateLevelText(_gameModel.Points, _gameModel.Level);
                 _gameModel.OnMoneyChanged += UpdateMoneyText;
                 UpdateMoneyText(_gameModel.Money);
+                _gameModel.OnPlayerNameChanged += UpdatePlayerNameText;
+                UpdatePlayerNameText(_gameModel.PlayerName);
             }
         }
 
@@ -49,6 +52,11 @@ namespace NonameGame
             var skinType = (PlayerSkin)_gameModel.SelectedSkinId;
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
             _skinPreviewUI.SpawnPlayerMesh(skinData);
+        }
+
+        private void UpdatePlayerNameText(string name)
+        {
+            playerName.text = name;
         }
 
         private void UpdateMoneyText(int money)
@@ -71,6 +79,7 @@ namespace NonameGame
             {
                 _gameModel.OnLevelChanged -= UpdateLevelText;
                 _gameModel.OnMoneyChanged -= UpdateMoneyText;
+                _gameModel.OnPlayerNameChanged -= UpdatePlayerNameText;
             }
         }
 

@@ -1,20 +1,37 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace NonameGame
 {
     public class SettingsUI : MonoBehaviour
     {
-        [SerializeField] private Button closeButton;
 
-        private void Awake()
+        [Inject] private GameModel _gameModel;
+
+        [SerializeField] private TMP_InputField nameInputField;
+
+        void OnEnable()
         {
-            closeButton.onClick.AddListener(Hide);
+            nameInputField.text = _gameModel.PlayerName;
         }
 
-        private void OnDestroy()
+        // Метод, который мы вызовем при нажатии на кнопку
+        public void SavePlayerName()
         {
-            closeButton.onClick.RemoveListener(Hide);
+            // Считываем текст из поля ввода и удаляем лишние пробелы по краям
+            string enteredName = nameInputField.text.Trim();
+
+            // Проверяем, не оставил ли игрок поле пустым
+            if (!string.IsNullOrEmpty(enteredName))
+            {
+                _gameModel.ChangeName(enteredName);
+            }
+            else
+            {
+                Debug.LogWarning("Поле ввода пустое! Пожалуйста, введите имя.");
+            }
         }
 
         public void Show()

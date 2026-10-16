@@ -37,6 +37,7 @@ namespace NonameGame
         /// <summary>Follow-target для Cinemachine, доступен снаружи.</summary>
         public Transform CameraTarget => _cameraTarget;
 
+        [Inject] private GameModel _gameModel;
         [Inject] private CameraManager _cameraManager;
         [Inject] private VFXManager    _vfxManager;
 
@@ -58,6 +59,8 @@ namespace NonameGame
             CheckpointRotation = transform.rotation;
             IsVisible          = true;
 
+            PlayerName = _gameModel.PlayerName;
+            
             if (InGameManager.Instance != null)
             {
                 // Опоздавший — сразу в режим спектатора если гонка уже идёт

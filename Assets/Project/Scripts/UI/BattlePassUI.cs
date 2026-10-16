@@ -24,7 +24,6 @@ namespace NonameGame
         [Header("Timer")]
         [SerializeField] private TextMeshProUGUI timerText;
 
-        [SerializeField] private Button closeButton;
         [SerializeField] private List<GameObject> levelNumList;
 
         [SerializeField] private RewardPanel rewardPanel;
@@ -42,8 +41,6 @@ namespace NonameGame
 
         private void Awake()
         {
-            closeButton.onClick.AddListener(Hide);
-
             if (_gameModel != null)
             {
                 _gameModel.OnDataChanged += RefreshUI;
@@ -60,8 +57,6 @@ namespace NonameGame
 
         private void OnDestroy()
         {
-            closeButton.onClick.RemoveListener(Hide);
-
             if (_gameModel != null)
             {
                 _gameModel.OnDataChanged -= RefreshUI;
