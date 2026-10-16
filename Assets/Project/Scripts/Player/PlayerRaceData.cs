@@ -326,6 +326,9 @@ namespace NonameGame
         // Видимость
         // ─────────────────────────────────────────────────────────────────────
 
+        /// <summary>Принудительно скрыть с экрана — вызывается из BuildResults на всех клиентах.</summary>
+        public void ForceHide() => SetRenderersEnabled(false);
+
         private void SetRenderersEnabled(bool visible)
         {
             if (_renderers == null) _renderers = GetComponentsInChildren<Renderer>(true);

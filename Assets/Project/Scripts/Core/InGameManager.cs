@@ -64,6 +64,11 @@ namespace NonameGame
         [Networked] public int           FinishedCount     { get; set; }
         [Networked] public NetworkBool   FirstFinished     { get; set; } // сработал первый финиш
 
+        // Результаты гонки: индекс = слот в playerList, значение = место (1-based, 0 = не финишировал).
+        // Устанавливается напрямую на StateAuthority InGameManager-а — без двойного RPC-хопа.
+        [Networked, Capacity(8)]
+        public NetworkArray<int> SlotFinishPlace => default;
+
         // ─── Local (only this client) ─────────────────────────────────────────
 
         private int?  _prevTimerSec;
@@ -194,7 +199,7 @@ namespace NonameGame
 
             if (TotalPlayers >= minPlayersToStartTimer && !LobbyTimerRunning)
             {
-                lobbyTimer = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
+                lobbyTimer        = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
                 LobbyTimerRunning = true;
             }
 
@@ -209,21 +214,21 @@ namespace NonameGame
                 if (!AllPlayersReady)
                 {
                     AllPlayersReady = true;
-                    countdownTimer = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
+                    countdownTimer  = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
                 }
                 if (countdownTimer.Expired(Runner)) { StartRace(); return; }
             }
             else
             {
                 AllPlayersReady = false;
-                countdownTimer = default;
+                countdownTimer  = default;
             }
         }
 
         // ─────────────────────────────────────────────────────────────────────
         // StartRace
         // ─────────────────────────────────────────────────────────────────────
-        
+
         private void StartRace()
         {
             gameState         = GameState.Game;
@@ -235,6 +240,7 @@ namespace NonameGame
             FinishedCount     = 0;
             FirstFinished     = false;
             _finishedSet.Clear();
+            for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
 
             for (int i = 0; i < playerList.Length; i++)
             {
@@ -301,8 +307,19 @@ namespace NonameGame
             if (!_finishedSet.Add(player.Id))     return; // дубль — уже зарегистрирован
 
             FinishedCount++;
-            // Игрок сам себя помечает через RPC —
-            // нельзя писать напрямую в чужой NetworkBehaviour в Shared Mode
+
+            // Записываем место прямо на InGameManager (StateAuthority) — реплицируется без
+            // двойного RPC-хопа. BuildResults читает отсюда, а не из HasFinished игрока.
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (playerList[i] == player.Id)
+                {
+                    SlotFinishPlace.Set(i, FinishedCount);
+                    break;
+                }
+            }
+
+            // Игрок сам себя помечает через RPC (для IsVisible / камеры).
             player.RPC_SetFinished(FinishedCount);
 
             // Первый финиш — перезапускаем таймер на 1 минуту
@@ -356,7 +373,7 @@ namespace NonameGame
             go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is finished");
         }
 
-        /// <summary>После Keep Playing возвращает камеру на локального иг��ока.</summary>
+        /// <summary>После Keep Playing возвращает камеру на локального иг����ока.</summary>
         private void ReinitLocalPlayerCamera()
         {
             if (_cameraManager == null || Runner == null) return;
@@ -472,6 +489,7 @@ namespace NonameGame
             ReadyPlayers      = 0;
             FirstFinished     = false;
             _finishedSet.Clear();
+            for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
 
             // Дорегистрировать опоздавших, которых не было в playerList
             RegisterPendingPlayers();
@@ -629,25 +647,46 @@ namespace NonameGame
 
         private void BuildResults()
         {
-            var finished    = new List<PlayerRaceData>();
+            // SlotFinishPlace устанавливается напрямую на StateAuthority InGameManager-а —
+            // без двойного RPC-хопа, поэтому гарантированно актуально на всех клиентах.
+            var finished    = new List<(PlayerRaceData player, int place)>();
             var notFinished = new List<PlayerRaceData>();
 
-            foreach (var p in Runner.GetAllBehaviours<PlayerRaceData>())
+            for (int i = 0; i < playerList.Length; i++)
             {
-                if (p.HasFinished) finished.Add(p);
-                else               notFinished.Add(p);
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                int place = SlotFinishPlace[i];
+                if (place > 0)
+                {
+                    finished.Add((p, place));
+                    // Гарантируем выключение рендерера: RPC_SetFinished мог не успеть за endGameDelay
+                    p.ForceHide();
+                }
+                else
+                {
+                    notFinished.Add(p);
+                }
             }
-            finished.Sort((a, b) => a.FinishPlace.CompareTo(b.FinishPlace));
+            finished.Sort((a, b) => a.place.CompareTo(b.place));
 
             var sb = new System.Text.StringBuilder();
-            foreach (var p in finished)    sb.AppendLine($"{p.FinishPlace}. {p.DisplayName}");
-            foreach (var p in notFinished) sb.AppendLine($"— {p.DisplayName} (Not Finished)");
+            foreach (var (p, place) in finished)    sb.AppendLine($"{place}. {p.DisplayName}");
+            foreach (var p in notFinished)          sb.AppendLine($"— {p.DisplayName} (Not Finished)");
 
             if (resultsText != null) resultsText.text = sb.ToString();
 
             var localObj    = Runner.GetPlayerObject(Runner.LocalPlayer);
             var localPlayer = localObj?.GetBehaviour<PlayerRaceData>();
-            bool isWinner   = localPlayer != null && localPlayer.HasFinished && localPlayer.FinishPlace == 1;
+
+            // Первое место локального игрока — через SlotFinishPlace
+            int localSlot     = -1;
+            int localPlace    = 0;
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (localPlayer != null && playerList[i] == localPlayer.Id)
+                    { localSlot = i; localPlace = SlotFinishPlace[i]; break; }
+            }
+            bool isWinner = localPlace == 1;
 
             if (isWinner && CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HappyTime();
