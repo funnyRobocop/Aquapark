@@ -472,6 +472,37 @@ namespace NonameGame
             ReadyPlayers      = 0;
             FirstFinished     = false;
             _finishedSet.Clear();
+
+            // Дорегистрировать опоздавших, которых не было в playerList
+            RegisterPendingPlayers();
+        }
+
+        /// <summary>
+        /// После Keep Playing: добавляет в playerList всех PlayerRaceData,
+        /// которые подключились во время гонки и не были добавлены.
+        /// </summary>
+        private void RegisterPendingPlayers()
+        {
+            foreach (var player in Runner.GetAllBehaviours<PlayerRaceData>())
+            {
+                if (player == null) continue;
+
+                // Уже в списке?
+                bool inList = false;
+                for (int i = 0; i < playerList.Length; i++)
+                    if (playerList[i] == player.Id) { inList = true; break; }
+                if (inList) continue;
+
+                // Найти свободный слот и добавить
+                for (int i = 0; i < playerList.Length; i++)
+                {
+                    if (Runner.TryFindBehaviour(playerList[i], out PlayerRaceData _)) continue;
+
+                    playerList.Set(i, player.Id);
+                    player.RPC_AssignStartingPoint(i); // телепорт + камера
+                    break;
+                }
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
