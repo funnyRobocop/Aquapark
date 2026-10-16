@@ -102,6 +102,9 @@ namespace NonameGame
             if (!GetInput(out NetworkInputData data))
                 return;
 
+            if (InGameManager.Instance == null || InGameManager.Instance.gameState == InGameManager.GameState.ShowResults)
+                return;
+
             // Направление от камеры
             if (data.Move.magnitude > movementThreshold)
             {

@@ -30,8 +30,8 @@ namespace NonameGame
         [Header("Race Settings")]
         [SerializeField] private float raceDurationSeconds    = 300f;
         [SerializeField] private float afterFirstFinishSeconds = 60f;   // таймер после первого финиша
-        [SerializeField] private float endGameDelay           = 3f;
-        [SerializeField] private float resultsDelay           = 30f;
+        [SerializeField] private float endGameDelay           = 0f;
+        [SerializeField] private float resultsDelay           = 10f;
 
         [Header("UI: Level Info Feed")]
         public Transform  playerLevelInfoContent;              // VerticalLayoutGroup
@@ -194,7 +194,7 @@ namespace NonameGame
 
             if (TotalPlayers >= minPlayersToStartTimer && !LobbyTimerRunning)
             {
-                lobbyTimer        = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
+                lobbyTimer = TickTimer.CreateFromSeconds(Runner, lobbyWaitSeconds);
                 LobbyTimerRunning = true;
             }
 
@@ -209,21 +209,21 @@ namespace NonameGame
                 if (!AllPlayersReady)
                 {
                     AllPlayersReady = true;
-                    countdownTimer  = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
+                    countdownTimer = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
                 }
                 if (countdownTimer.Expired(Runner)) { StartRace(); return; }
             }
             else
             {
                 AllPlayersReady = false;
-                countdownTimer  = default;
+                countdownTimer = default;
             }
         }
 
         // ─────────────────────────────────────────────────────────────────────
         // StartRace
         // ─────────────────────────────────────────────────────────────────────
-
+        
         private void StartRace()
         {
             gameState         = GameState.Game;
