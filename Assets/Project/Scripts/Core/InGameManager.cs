@@ -157,6 +157,43 @@ namespace NonameGame
         {
             if (CrazyGames.CrazySDK.IsInitialized && gameState != GameState.Game)
                 CrazyManager.ShowInviteButton();
+
+            if (!Object.HasStateAuthority) return;
+
+            // Удаляем ушедшего из playerList и добавляем в _finishedSet,
+            // чтобы он не считался в TotalPlayers и FinishedCount
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                if (p.Object.InputAuthority != player)                            continue;
+
+                // Считаем ушедшего финишировавшим, чтобы не ждать его
+                _finishedSet.Add(p.Id);
+                SlotFinishPlace.Set(i, -1); // слот освобождён (игрок вышел)
+                break;
+            }
+
+            // Если идёт гонка — проверяем, не закончилась ли она
+            if (gameState == GameState.Game) CheckRaceOver();
+        }
+
+        /// <summary>
+        /// Считает активных (невышедших) игроков во время гонки.
+        /// Если все оставшиеся финишировали / вышли — заканчивает гонку.
+        /// </summary>
+        private void CheckRaceOver()
+        {
+            int active = 0;
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                if (!_finishedSet.Contains(p.Id)) active++;
+            }
+            if (active == 0 && TotalPlayers > 0)
+            {
+                gameState     = GameState.EndGame;
+                gameplayTimer = TickTimer.CreateFromSeconds(Runner, endGameDelay);
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
