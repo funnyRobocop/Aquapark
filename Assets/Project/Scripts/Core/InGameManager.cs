@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer;
 
 namespace NonameGame
@@ -9,6 +10,12 @@ namespace NonameGame
     public class InGameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
     {
         public static InGameManager Instance { get; private set; }
+
+        /// <summary>
+        /// Используйте в скрипте движения: если true — ввод движения заблокирован (отсчёт 3-2-1).
+        /// Вращать камеру мышью по-прежнему разрешено.
+        /// </summary>
+        //public static bool IsMovementLocked => Instance != null && Instance.MovementLocked;
 
         public enum GameState
         {
@@ -43,6 +50,7 @@ namespace NonameGame
 
         [Header("UI: Results")]
         public TextMeshProUGUI resultsText;
+        public TextMeshProUGUI keepPlayingTimerText; // UI-текст обратного отсчёта до Keep Playing
         public CanvasGroup     resultsCanvasGroup;
 
         // ─── Networked ───────────────────────────────────────────────────────
@@ -63,6 +71,8 @@ namespace NonameGame
         [Networked] public NetworkBool   AllPlayersReady   { get; set; }
         [Networked] public int           FinishedCount     { get; set; }
         [Networked] public NetworkBool   FirstFinished     { get; set; } // сработал первый финиш
+        //[Networked] public NetworkBool   MovementLocked    { get; set; } // заблок движения во время отсчёта 3-2-1
+        [Networked] public TickTimer     keepPlayingTimer  { get; set; } // авто-KeepPlaying на экране результатов
 
         // Результаты гонки: индекс = слот в playerList, значение = место (1-based, 0 = не финишировал).
         // Устанавливается напрямую на StateAuthority InGameManager-а — без двойного RPC-хопа.
@@ -84,7 +94,7 @@ namespace NonameGame
         // нельзя использовать его как guard от дубль на хосте.
         private readonly HashSet<NetworkBehaviourId> _finishedSet = new();
 
-        //[Inject] private LoadingUI    _loadingUI;
+       // [Inject] private LoadingUI    _loadingUI;
         [SerializeField] private CameraManager _cameraManager;
         [Inject] private IPlayerSkinLoader   _skinLoader;   // для выгрузки addressables
 
@@ -176,6 +186,12 @@ namespace NonameGame
                         gameplayTimer = TickTimer.CreateFromSeconds(Runner, resultsDelay);
                     }
                     break;
+
+                case GameState.ShowResults:
+                    // Авто Keep Playing по истечении 10 секунд
+                    if (keepPlayingTimer.Expired(Runner))
+                        ResetToWaiting();
+                    break;
             }
         }
 
@@ -213,15 +229,16 @@ namespace NonameGame
             {
                 if (!AllPlayersReady)
                 {
-                    AllPlayersReady = true;
-                    countdownTimer  = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
+                    AllPlayersReady  = true;
+                    //MovementLocked   = true; // заблок движения на время отсчёта
+                    countdownTimer   = TickTimer.CreateFromSeconds(Runner, readyCountdownSeconds);
                 }
                 if (countdownTimer.Expired(Runner)) { StartRace(); return; }
             }
             else
             {
-                AllPlayersReady = false;
-                countdownTimer  = default;
+                // Если не все готовы — сбрасываем отсчёт и разблокируем движение
+                if (AllPlayersReady) { AllPlayersReady = false; /*MovementLocked = false;*/ countdownTimer = default; }
             }
         }
 
@@ -237,8 +254,10 @@ namespace NonameGame
             lobbyTimer        = default;
             LobbyTimerRunning = false;
             AllPlayersReady   = false;
+            //MovementLocked    = false; // разблокировать с стартом гонки
             FinishedCount     = 0;
             FirstFinished     = false;
+            keepPlayingTimer  = default;
             _finishedSet.Clear();
             for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
 
@@ -444,10 +463,15 @@ namespace NonameGame
         /// <summary>UI: кнопка "Leave Game".</summary>
         public void LeaveGame()
         {
-            //_loadingUI?.Show();
+            var _loadingUI = FindAnyObjectByType<LoadingUI>();
+            _loadingUI?.Show();
             if (CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HideInviteButton();
 
+            var scene = SceneManager.GetSceneByName("Level1");
+            if (scene.isLoaded)
+                SceneManager.UnloadSceneAsync(scene);
+                
             // Выгрузка addressable скинов
             _skinLoader?.ReleaseAll();
 
@@ -488,6 +512,8 @@ namespace NonameGame
             TotalPlayers      = 0;
             ReadyPlayers      = 0;
             FirstFinished     = false;
+            //MovementLocked    = false;
+            keepPlayingTimer  = default;
             _finishedSet.Clear();
             for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
 
@@ -637,6 +663,14 @@ namespace NonameGame
 
                 case GameState.ShowResults:
                     BuildResults();
+                    // Обратный отсчёт до авто-KeepPlaying
+                    if (keepPlayingTimerText != null)
+                    {
+                        float rem = keepPlayingTimer.RemainingTime(Runner) ?? 0f;                        
+                        keepPlayingTimerText.text = rem > 0f
+                            ? $"Keep Playing in {Mathf.CeilToInt(rem)}s..."
+                            : string.Empty;
+                    }
                     break;
             }
         }
@@ -690,6 +724,10 @@ namespace NonameGame
 
             if (isWinner && CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HappyTime();
+
+            // Авто-KeepPlaying через 10 секунд (только на StateAuthority)
+            if (Object.HasStateAuthority)
+                keepPlayingTimer = TickTimer.CreateFromSeconds(Runner, 10f);
 
             ShowResults = true;
             Cursor.lockState = CursorLockMode.None;

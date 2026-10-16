@@ -26,9 +26,14 @@ namespace NonameGame
         {
             if (!_isSpectating || _spectateTargets.Count == 0) return;
 
+            // При выходе из сессии объекты могут быть уже деспавнены — очищаем список
+            _spectateTargets.RemoveAll(p => !IsValid(p));
+            if (!_isSpectating || _spectateTargets.Count == 0) return;
+            if (_spectateIndex >= _spectateTargets.Count) _spectateIndex = 0;
+
             // Авто-переключение: текущий таргет финишировал — найти следующего активного
             var current = CurrentTarget;
-            if (current != null && current.HasFinished)
+            if (IsValid(current) && current.HasFinished)
             {
                 var next = FindNextActive(_spectateIndex, +1);
                 if (next >= 0)
@@ -53,6 +58,9 @@ namespace NonameGame
         private PlayerRaceData CurrentTarget =>
             _spectateTargets.Count > 0 ? _spectateTargets[_spectateIndex] : null;
 
+        private static bool IsValid(PlayerRaceData p) =>
+            p != null && p.Object != null && p.Object.IsValid;
+
         /// <summary>
         /// Находит индекс следующего нефинишировавшего игрока в направлении dir.
         /// Возвращает -1 если все финишировали.
@@ -63,7 +71,7 @@ namespace NonameGame
             for (int i = 1; i <= n; i++)
             {
                 int idx = (from + dir * i + n * n) % n;
-                if (_spectateTargets[idx] != null && !_spectateTargets[idx].HasFinished)
+                if (IsValid(_spectateTargets[idx]) && !_spectateTargets[idx].HasFinished)
                     return idx;
             }
             return -1;
