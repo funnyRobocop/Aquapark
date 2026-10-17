@@ -26,7 +26,7 @@ namespace NonameGame
         }
 
         [Header("Start Points and trigger and camera")]
-        [SerializeField] private StartingPointBehaviour[] startingPoints;
+        [SerializeField] public StartingPointBehaviour[] startingPoints;
         [SerializeField] private CheckpointTrigger[] checkpointTriggers;
         [SerializeField] private CameraManager _cameraManager;
 
