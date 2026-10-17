@@ -501,8 +501,8 @@ namespace NonameGame
         /// <summary>UI: кнопка "Leave Game".</summary>
         public void LeaveGame()
         {
-            var _loadingUI = FindAnyObjectByType<LoadingUI>();
-            _loadingUI?.Show();
+            /*var _loadingUI = FindAnyObjectByType<LoadingUI>();
+            _loadingUI?.Show();*/
             if (CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HideInviteButton();
 

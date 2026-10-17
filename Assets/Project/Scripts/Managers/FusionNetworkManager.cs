@@ -74,8 +74,12 @@ namespace NonameGame
             mainMenuCanvasGroup.alpha = 1f;
             mainMenuCanvasGroup.interactable = true;
 
-            // Displays the reason the connection failed.
-            connectionFailText.text = shutdownReason.ToString();
+            if (shutdownReason == ShutdownReason.Ok)
+            {
+                return;
+            }
+            
+            connectionFailText.text = shutdownReason.ToString();            
             connectionFailedPanel.SetActive(true);
         }
 
