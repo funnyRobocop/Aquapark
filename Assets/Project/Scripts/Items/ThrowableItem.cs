@@ -125,7 +125,8 @@ namespace NonameGame
             if (IsAirborneThrown)
             {
                 var player = collision.collider.GetComponentInParent<PlayerRaceData>();
-                if (player != null)
+                // Не применять силу и не считать бросок по самому бросающему
+                if (player != null && player.Object.InputAuthority != ThrownBy)
                 {
                     Vector3 dir = player.transform.position - transform.position;
                     dir.y = 0f;

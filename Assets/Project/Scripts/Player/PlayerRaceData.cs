@@ -204,7 +204,11 @@ namespace NonameGame
             if (HasInputAuthority)
             {
                 FinishCount++;
-                if (FinishPlace == 1) GoldCount++;
+                // GoldCount осчитывается только в мультиплеерных сессиях
+                if (FinishPlace == 1 &&
+                    InGameManager.Instance != null &&
+                    InGameManager.Instance.TotalPlayers > 1)
+                    GoldCount++;
                 InGameManager.Instance?.OnLocalPlayerFinished(this);
             }
         }
