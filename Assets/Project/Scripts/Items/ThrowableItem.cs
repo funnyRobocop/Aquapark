@@ -92,8 +92,11 @@ namespace NonameGame
         private void RPC_NotifyThrowHit(PlayerRef thrower)
         {
             if (Runner.LocalPlayer != thrower) return;
-            var local = PlayerRaceData.LocalInstance;
-            if (local != null) local.ThrowCount++;
+            if (InGameManager.Instance != null && InGameManager.Instance.gameState == InGameManager.GameState.Game)
+            {
+                var local = PlayerRaceData.LocalInstance;
+                if (local != null) local.ThrowCount++;                
+            }
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]

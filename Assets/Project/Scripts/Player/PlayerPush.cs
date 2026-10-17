@@ -87,7 +87,8 @@ namespace NonameGame
 
                 target.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
-                playerRaceData.KickCount++; // локально — StateAuthority игрока = его машина
+                if (InGameManager.Instance != null && InGameManager.Instance.gameState == InGameManager.GameState.Game)
+                    playerRaceData.KickCount++; // локально — StateAuthority игрока = его машина
 
                 if (hit.TryGetComponent<PlayerController>(out var playerController))
                     playerController.SetStunTimer(stunTime);
