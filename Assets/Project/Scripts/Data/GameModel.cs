@@ -28,6 +28,11 @@ namespace NonameGame
 
         [Inject] private AchievementsConfig _achievementsConfig;
 
+        public int SessionKickCount { get; set; }
+        public int SessionThrowCount { get; set; }
+        public int SessionGoldCount { get; set; }
+        public int SessionFinishCount { get; set; }
+
         public int Level => Mathf.FloorToInt(Points / 500f) + 1;
 
         public int CalculatePoints(int throws, int kicks, int gold, int finish)

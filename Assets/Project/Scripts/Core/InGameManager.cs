@@ -25,8 +25,10 @@ namespace NonameGame
             ShowResults = 3,
         }
 
-        [Header("Start Points")]
-        public StartingPointBehaviour[] startingPoints;
+        [Header("Start Points and trigger and camera")]
+        [SerializeField] private StartingPointBehaviour[] startingPoints;
+        [SerializeField] private CheckpointTrigger[] checkpointTriggers;
+        [SerializeField] private CameraManager _cameraManager;
 
         [Header("Lobby Settings")]
         [SerializeField] private int   maxPlayersToAutoStart  = 8;
@@ -94,9 +96,8 @@ namespace NonameGame
         // нельзя использовать его как guard от дубль на хосте.
         private readonly HashSet<NetworkBehaviourId> _finishedSet = new();
 
-       // [Inject] private LoadingUI    _loadingUI;
-        [SerializeField] private CameraManager _cameraManager;
         [Inject] private IPlayerSkinLoader   _skinLoader;   // для выгрузки addressables
+        [Inject] private GameModel _gameModel;
 
         public bool ShowResults
         {
@@ -303,6 +304,9 @@ namespace NonameGame
                 if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
                 p.RPC_ResetForNewRound();
             }
+            
+            foreach (var item in checkpointTriggers)
+                item.Clear();
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -501,6 +505,16 @@ namespace NonameGame
             _loadingUI?.Show();
             if (CrazyGames.CrazySDK.IsInitialized)
                 CrazyGames.CrazySDK.Game.HideInviteButton();
+
+            var localData = PlayerRaceData.LocalInstance;
+            if (localData != null)
+            {
+                _gameModel.SessionKickCount += localData.KickCount;
+                _gameModel.SessionThrowCount += localData.ThrowCount;
+                _gameModel.SessionGoldCount += localData.GoldCount;
+                _gameModel.SessionFinishCount += localData.FinishCount;
+                Debug.Log($"[InGameManager] Session totals: Kick={_gameModel.SessionKickCount}, Throw={_gameModel.SessionThrowCount}, Gold={_gameModel.SessionGoldCount}, Finish={_gameModel.SessionFinishCount}");
+            }
 
             var scene = SceneManager.GetSceneByName("Level1");
             if (scene.isLoaded)

@@ -17,6 +17,8 @@ namespace NonameGame
         [Networked] public NetworkBool IsHeld { get; set; }
         [Networked] public NetworkBool IsAirborneThrown { get; set; }
         [Networked] public PlayerRef HeldBy { get; set; }
+        /// <summary>Кто бросил предмет — сохраняется до приземления для подсчёта ThrowCount.</summary>
+        [Networked] public PlayerRef ThrownBy { get; set; }
 
         private Rigidbody _rb;
         private Collider _col;
@@ -56,6 +58,7 @@ namespace NonameGame
 
         public void Throw(Vector3 force)
         {
+            ThrownBy = HeldBy;       // запомнить до сброса
             IsHeld = false;
             IsAirborneThrown = true;
             HeldBy = default;
@@ -73,12 +76,24 @@ namespace NonameGame
             IsHeld = false;
             IsAirborneThrown = false;
             HeldBy = default;
+            ThrownBy = default;
 
             if (_rb != null)
                 _rb.isKinematic = false;
 
             if (_col != null)
                 _col.enabled = true;
+        }
+
+        /// <summary>
+        /// Рассылается всем; каждый клиент проверяет — он ли бросал — и прибавляет ThrowCount.
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
+        private void RPC_NotifyThrowHit(PlayerRef thrower)
+        {
+            if (Runner.LocalPlayer != thrower) return;
+            var local = PlayerRaceData.LocalInstance;
+            if (local != null) local.ThrowCount++;
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
@@ -120,6 +135,10 @@ namespace NonameGame
 
                     if (collision.collider.TryGetComponent<PlayerController>(out var playerController))
                         playerController.SetStunTimer(stunTime);
+
+                    // Уведомляем бросавшего — он локально прибавит ThrowCount
+                    if (ThrownBy != default)
+                        RPC_NotifyThrowHit(ThrownBy);
                 }
             }
 

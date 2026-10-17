@@ -17,6 +17,7 @@ namespace NonameGame
 
         private PlayerGrab playerGrab;
         private PlayerWeapon playerWeapon;
+        private PlayerRaceData playerRaceData;
 
         [Header("References")]
         [SerializeField] private PlayerView _view;
@@ -56,6 +57,7 @@ namespace NonameGame
         {
             playerGrab = GetComponent<PlayerGrab>();
             playerWeapon = GetComponent<PlayerWeapon>();
+            playerRaceData = GetComponent<PlayerRaceData>();
         }
 
         private void TryPush()
@@ -85,6 +87,7 @@ namespace NonameGame
 
                 target.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
+                playerRaceData.KickCount++; // локально — StateAuthority игрока = его машина
 
                 if (hit.TryGetComponent<PlayerController>(out var playerController))
                     playerController.SetStunTimer(stunTime);

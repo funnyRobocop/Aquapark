@@ -44,6 +44,20 @@ namespace NonameGame
         // Кэш Renderer-ов для быстрого вкл/выкл видимости
         private Renderer[] _renderers;
 
+        // ─── Локальная статистика (не синхронизируется) ───────────────────
+        /// <summary>Ссылка на PlayerRaceData локального игрока, доступна глобально.</summary>
+        public static PlayerRaceData LocalInstance { get; private set; }
+
+        /// <summary>Количество успешных толчков других игроков за сессию.</summary>
+        public int KickCount { get; set; }
+        /// <summary>Сколько раз брошенный предмет попал в другого игрока.</summary>
+        public int ThrowCount { get; set; }
+        /// <summary>Сколько раз занял 1-е место.</summary>
+        public int GoldCount { get; set; }
+        /// <summary>Сколько раз добежал до финиша.</summary>
+        public int FinishCount { get; set; }
+
+
         public string DisplayName =>
             PlayerName.Length > 0 ? PlayerName.ToString() : $"Player {StartingPointIndex + 1}";
 
@@ -53,6 +67,8 @@ namespace NonameGame
 
         public override void Spawned()
         {
+            if (HasInputAuthority) LocalInstance = this;
+
             if (!HasStateAuthority) return;
 
             CheckpointPosition = transform.position;
@@ -77,6 +93,11 @@ namespace NonameGame
             {
                 StartCoroutine(WaitForInGameManager());
             }
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (HasInputAuthority) LocalInstance = null;
         }
 
         private IEnumerator WaitForInGameManager()
@@ -179,9 +200,13 @@ namespace NonameGame
             // Плашка "is finished" для всех
             InGameManager.Instance?.OnPlayerFinishedUI(DisplayName);
 
-            // Локальный игрок — переключаем камеру
+            // Локальный игрок — переключаем камеру и считаем статистику
             if (HasInputAuthority)
+            {
+                FinishCount++;
+                if (FinishPlace == 1) GoldCount++;
                 InGameManager.Instance?.OnLocalPlayerFinished(this);
+            }
         }
 
         private void OnIsVisibleChanged()

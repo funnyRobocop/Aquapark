@@ -12,6 +12,11 @@ namespace NonameGame
         [Inject] private VFXManager _vfxManager;
 
         private List<NetworkBehaviourId> _triggeredPlayers = new List<NetworkBehaviourId>();
+
+        public void Clear()
+        {
+            _triggeredPlayers.Clear();
+        }
         
         private void OnTriggerEnter(Collider other)
         {
@@ -32,8 +37,7 @@ namespace NonameGame
             Quaternion rot = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
             player.SetCheckpoint(pos, rot);
-
-            _vfxManager.PlaySalutVFX(new Vector3(player.transform.position.x,
+            _vfxManager?.PlaySalutVFX(new Vector3(player.transform.position.x,
                 player.transform.position.y + 1f,
                 player.transform.position.z));
 
