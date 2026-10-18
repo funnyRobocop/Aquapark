@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 
@@ -79,9 +80,12 @@ namespace NonameGame
         private static readonly int DashHash       = Animator.StringToHash("Dash");
         private static readonly int PushHash       = Animator.StringToHash("Push");
         private static readonly int ThrowHash      = Animator.StringToHash("Throw");
-        private static readonly int ShootHash      = Animator.StringToHash("Shoot");
+        private static readonly int ShootHash = Animator.StringToHash("Shoot");
 
         // ─────────────────────────────────────────────────────────────────────
+
+        private GameObject _spawnedSkinMesh; //ссылка для выгрузки
+
         public void InitializeBeforeSpawn(int requestedId)
         {
             SkinId = requestedId;
@@ -120,18 +124,34 @@ namespace NonameGame
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData, Transform spawnPoint)
         {
+            // Выгружаем предыдущий скин если был (например при смене скина)
+            ReleaseSkin();
+
             activeSkinData.PrefabReference.InstantiateAsync(spawnPoint).Completed += handle =>
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
-                    GameObject skin = handle.Result;
-                    var skinAnimator = skin.GetComponent<Animator>();
+                    _spawnedSkinMesh = handle.Result;
+                    var skinAnimator = _spawnedSkinMesh.GetComponent<Animator>();
                     animator.avatar = skinAnimator.avatar;
                     skinAnimator.enabled = false;
                 }
             };
         }
 
+
+        /// <summary>
+        /// Выгружает Addressable-инстанс скина и освобождает дескриптор.
+        /// Вызывать перед уничтожением объекта или при смене скина.
+        /// </summary>
+        public void ReleaseSkin()
+        {
+            if (_spawnedSkinMesh != null)
+            {
+                Addressables.ReleaseInstance(_spawnedSkinMesh);
+                _spawnedSkinMesh = null;
+            }
+        }
         // ── Owner: пишем сетевое состояние в FixedUpdateNetwork ──────────────
         public override void FixedUpdateNetwork()
         {

@@ -21,7 +21,7 @@ namespace NonameGame
                     _currentSpawnedSkinMesh = handle.Result;
 
                     _currentSpawnedSkinMesh.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    _currentSpawnedSkinMesh.transform.localScale = new Vector3(500f, 500f, 500f);
+                    _currentSpawnedSkinMesh.transform.localScale = new Vector3(100f, 100f, 100f);
                 }
             };
         }

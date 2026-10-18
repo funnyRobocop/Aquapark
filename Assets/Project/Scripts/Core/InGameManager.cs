@@ -520,8 +520,9 @@ namespace NonameGame
             if (scene.isLoaded)
                 SceneManager.UnloadSceneAsync(scene);
                 
-            // Выгрузка addressable скинов
-            _skinLoader?.ReleaseAll();
+            // Выгрузка Addressable-скинов всех игроков на этом клиенте
+            foreach (var view in Runner.GetAllBehaviours<PlayerView>())
+                view.ReleaseSkin();
 
             Runner.Shutdown();
         }
