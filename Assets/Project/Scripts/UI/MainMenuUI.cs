@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -11,12 +12,14 @@ namespace NonameGame
         [SerializeField] private Button battlePassButton;
         [SerializeField] private Button shopButton;
         [SerializeField] private Button settingsButton;
+        [SerializeField] private Button playButton;
         [SerializeField] private ShopUI shopUI;
         [SerializeField] private SettingsUI settingsUI;
         [SerializeField] private BattlePassUI battlePassUI;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private TextMeshProUGUI moneyText;
         [SerializeField] private TextMeshProUGUI playerName;
+        [SerializeField] private FusionNetworkManager fusionNetworkManager;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -35,6 +38,7 @@ namespace NonameGame
             settingsButton.onClick.AddListener(OnSettingsButtonClicked);
             shopButton.onClick.AddListener(OnShopButtonClicked);
             battlePassButton.onClick.AddListener(OnBattlePassButtonClicked);
+            playButton.onClick.AddListener(OnPlayButtonClicked);
 
             if (_gameModel != null)
             {
@@ -52,6 +56,11 @@ namespace NonameGame
             var skinType = (PlayerSkin)_gameModel.SelectedSkinId;
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
             _skinPreviewUI.SpawnPlayerMesh(skinData);
+        }
+
+        public void Resume()
+        {
+            _skinPreviewUI.Show();
         }
 
         private void UpdatePlayerNameText(string name)
@@ -74,6 +83,7 @@ namespace NonameGame
             settingsButton.onClick.RemoveListener(OnSettingsButtonClicked);
             shopButton.onClick.RemoveListener(OnShopButtonClicked);
             battlePassButton.onClick.RemoveListener(OnBattlePassButtonClicked);
+            playButton.onClick.RemoveListener(OnPlayButtonClicked);
 
             if (_gameModel != null)
             {
@@ -85,17 +95,26 @@ namespace NonameGame
 
         private void OnBattlePassButtonClicked()
         {
+            _skinPreviewUI.Hide();
             battlePassUI.Show();
         }
 
         private void OnSettingsButtonClicked()
         {
+            _skinPreviewUI.Hide();
             settingsUI.Show();
         }
 
         private void OnShopButtonClicked()
         {
+            _skinPreviewUI.Hide();
             shopUI.Show();
+        }
+
+        private void OnPlayButtonClicked()
+        {
+            _skinPreviewUI.ClearCurrentSkin();
+            fusionNetworkManager.OnQuickJoinPressed();
         }
     }
 }

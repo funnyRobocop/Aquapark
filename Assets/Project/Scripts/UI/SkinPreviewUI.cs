@@ -7,8 +7,19 @@ namespace NonameGame
     public class SkinPreviewUI : MonoBehaviour
     {
         [SerializeField] private Transform spawnPoint;
+        [SerializeField] private Animator _animator;
 
         private GameObject _currentSpawnedSkinMesh;
+
+        public void Hide()
+        {
+            _currentSpawnedSkinMesh.SetActive(false);
+        }
+
+        public void Show()
+        {
+            _currentSpawnedSkinMesh.SetActive(true);
+        }
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData)
         {
@@ -18,24 +29,22 @@ namespace NonameGame
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
-                    _currentSpawnedSkinMesh = handle.Result;
-
-                    _currentSpawnedSkinMesh.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    _currentSpawnedSkinMesh.transform.localScale = new Vector3(100f, 100f, 100f);
+                    _currentSpawnedSkinMesh = handle.Result; 
+                    var skinAnimator = _currentSpawnedSkinMesh.GetComponent<Animator>();
+                    _animator.avatar = skinAnimator.avatar;
+                    skinAnimator.enabled = false;
                 }
             };
         }
 
         /// <summary>
-        /// Метод для правильной очистки и выгрузки ассета из памяти
+        /// Метод для очистки и выгрузки ассета из памяти
         /// </summary>
-        private void ClearCurrentSkin()
+        public void ClearCurrentSkin()
         {
             if (_currentSpawnedSkinMesh != null)
             {
-                // Этот метод одновременно уничтожает GameObject на сцене 
-                // и полностью выгружает его ассеты (Mesh, текстуры, материалы) из RAM
-                Addressables.Release(_currentSpawnedSkinMesh);
+                Addressables.ReleaseInstance(_currentSpawnedSkinMesh);
                 _currentSpawnedSkinMesh = null;
             }
         }
