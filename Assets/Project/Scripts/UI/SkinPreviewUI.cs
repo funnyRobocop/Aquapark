@@ -13,7 +13,7 @@ namespace NonameGame
 
         public void Hide()
         {
-            _currentSpawnedSkinMesh.SetActive(false);
+            _currentSpawnedSkinMesh?.SetActive(false);
         }
 
         public void Show()
