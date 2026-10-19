@@ -509,10 +509,10 @@ namespace NonameGame
             var localData = PlayerRaceData.LocalInstance;
             if (localData != null)
             {
-                _gameModel.SessionKickCount += localData.KickCount;
-                _gameModel.SessionThrowCount += localData.ThrowCount;
-                _gameModel.SessionGoldCount += localData.GoldCount;
-                _gameModel.SessionFinishCount += localData.FinishCount;
+                _gameModel.SessionKickCount = localData.KickCount;
+                _gameModel.SessionThrowCount = localData.ThrowCount;
+                _gameModel.SessionGoldCount = localData.GoldCount;
+                _gameModel.SessionFinishCount = localData.FinishCount;
                 Debug.Log($"[InGameManager] Session totals: Kick={_gameModel.SessionKickCount}, Throw={_gameModel.SessionThrowCount}, Gold={_gameModel.SessionGoldCount}, Finish={_gameModel.SessionFinishCount}");
             }
 

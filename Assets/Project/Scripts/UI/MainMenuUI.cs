@@ -20,11 +20,18 @@ namespace NonameGame
         [SerializeField] private TextMeshProUGUI moneyText;
         [SerializeField] private TextMeshProUGUI playerName;
         [SerializeField] private FusionNetworkManager fusionNetworkManager;
+        [SerializeField] private Canvas canvas;
+        [SerializeField] private Camera camera;
+        [SerializeField] private CanvasGroup canvasGroup;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
         [Inject] private SkinPreviewUI _skinPreviewUI;
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
+
+        public Canvas Canvas { get { return canvas; } }
+        public Camera Camera { get { return camera; } }
+        public CanvasGroup CanvasGroup { get { return canvasGroup; } }
 
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
@@ -52,6 +59,11 @@ namespace NonameGame
         }
 
         void OnEnable()
+        {
+            SpawnPlayerMesh();
+        }
+
+        public void SpawnPlayerMesh()
         {
             var skinType = (PlayerSkin)_gameModel.SelectedSkinId;
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];

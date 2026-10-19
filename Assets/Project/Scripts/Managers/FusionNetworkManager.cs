@@ -26,14 +26,10 @@ namespace NonameGame
         [SerializeField, Tooltip("The NetworkRunner prefab that will be instantiated to start a session.")]
         NetworkRunner networkRunnerPrefab;
 
-        [SerializeField, Tooltip("Reference to the main canvas.")]
-        Canvas mainMenuCanvas;
-
-        [SerializeField, Tooltip("Reference to the main camera.")]
-        Camera mainMenuCamera;
-
-        [SerializeField, Tooltip("Reference to the main canvas group.")]
-        CanvasGroup mainMenuCanvasGroup;
+        [SerializeField, Tooltip("Reference to UI.")]
+        MainMenuUI mainMenuUI;
+        [SerializeField, Tooltip("Reference to UI.")]
+        FinishPlayUI finishPlayUI;
 
         [SerializeField, Tooltip("The current region code.  An empty string will direct Fusion to find the best region.")]
         string currentRegion = string.Empty;
@@ -46,6 +42,7 @@ namespace NonameGame
 
         [Inject] private IObjectResolver _resolver;
         [Inject] private LoadingUI _loadingUI;
+        [Inject] private GameModel _gameModel;
 
         /// <summary>
         /// The available regions for this game
@@ -69,13 +66,24 @@ namespace NonameGame
 
         internal void ShowShutdown(ShutdownReason shutdownReason)
         {
-            mainMenuCanvas.enabled = true;
-            mainMenuCamera.gameObject.SetActive(true);
-            mainMenuCanvasGroup.alpha = 1f;
-            mainMenuCanvasGroup.interactable = true;
+            mainMenuUI.Canvas.enabled = true;
+            mainMenuUI.Camera.gameObject.SetActive(true);
+            mainMenuUI.CanvasGroup.alpha = 1f;
+            mainMenuUI.CanvasGroup.interactable = true;
 
             if (shutdownReason == ShutdownReason.Ok)
             {
+                if (_gameModel.SessionFinishCount > 0)
+                {
+                    finishPlayUI.Show();
+                }
+                else
+                {
+                    mainMenuUI.SpawnPlayerMesh();
+                    mainMenuUI.Resume();
+                    _gameModel.ClearSessionData();
+                }
+
                 return;
             }
             
@@ -89,12 +97,12 @@ namespace NonameGame
         /// <param name="arg0"></param>
         private void SceneManager_sceneUnloaded(Scene arg0)
         {
-            if (mainMenuCanvas != null)
+            if (mainMenuUI.Canvas != null)
             {
-                mainMenuCanvas.enabled = true;
-                mainMenuCamera.gameObject.SetActive(true);
-                mainMenuCanvasGroup.alpha = 1f;
-                mainMenuCanvasGroup.interactable = true;
+                mainMenuUI.Canvas.enabled = true;
+                mainMenuUI.Camera.gameObject.SetActive(true);
+                mainMenuUI.CanvasGroup.alpha = 1f;
+                mainMenuUI.CanvasGroup.interactable = true;
             }
 
             _loadingUI?.Hide();
@@ -154,7 +162,7 @@ namespace NonameGame
             _loadingUI?.Show();
 
             // The main menu is no longer interactable
-            mainMenuCanvasGroup.interactable = false;
+            mainMenuUI.CanvasGroup.interactable = false;
 
             // The current menu item is cleared to prevent space from triggering the previosly pressed button.
             EventSystem.current.SetSelectedGameObject(null);
@@ -205,9 +213,9 @@ namespace NonameGame
             // Otherwise, we will return to the main menu.
             if (results.Ok)
             {
-                mainMenuCanvas.enabled = false;
-                mainMenuCamera.gameObject.SetActive(false);
-                mainMenuCanvasGroup.alpha = 0f;
+                mainMenuUI.Canvas.enabled = false;
+                mainMenuUI.Camera.gameObject.SetActive(false);
+                mainMenuUI.CanvasGroup.alpha = 0f;
             }
             else
             {

@@ -35,9 +35,9 @@ namespace NonameGame
 
         public int Level => Mathf.FloorToInt(Points / 500f) + 1;
 
-        public int CalculatePoints(int throws, int kicks, int gold, int finish)
+        public int CalculatePoints(int finish, int gold, int kicks, int throws)
         {
-            return throws + kicks + (gold * 100) + (finish * 10);
+            return (finish * 10) + (gold * 100) + kicks + throws;
         }
 
         public GameModel(SaveService saveService)
@@ -167,7 +167,7 @@ namespace NonameGame
                 existingStats.ThrowCount += newStats.ThrowCount;
             }
 
-            var newPoints = CalculatePoints(newStats.ThrowCount, newStats.KickCount, newStats.GoldCount, newStats.FinishCount);
+            var newPoints = CalculatePoints(newStats.FinishCount, newStats.GoldCount, newStats.KickCount, newStats.ThrowCount);
             Points = Mathf.Clamp(Points + newPoints, 0, _achievementsConfig != null ? _achievementsConfig.TargetPoints : int.MaxValue);
 
             UpdateAchievementsProgress();
@@ -175,6 +175,14 @@ namespace NonameGame
             OnLevelChanged?.Invoke(Points, Level);
             OnDataChanged?.Invoke();
             _saveService.Save(this);
+        }
+
+        public void ClearSessionData()
+        {
+            SessionKickCount = 0;
+            SessionThrowCount = 0;
+            SessionGoldCount = 0;
+            SessionFinishCount = 0;
         }
 
         public void UpdateAchievementsProgress()

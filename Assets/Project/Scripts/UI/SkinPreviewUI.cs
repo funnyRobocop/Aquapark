@@ -18,7 +18,7 @@ namespace NonameGame
 
         public void Show()
         {
-            _currentSpawnedSkinMesh.SetActive(true);
+            _currentSpawnedSkinMesh?.SetActive(true);
         }
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData)
@@ -32,6 +32,7 @@ namespace NonameGame
                     _currentSpawnedSkinMesh = handle.Result; 
                     var skinAnimator = _currentSpawnedSkinMesh.GetComponent<Animator>();
                     _animator.avatar = skinAnimator.avatar;
+                    //_animator.SetTrigger("Preview");
                     skinAnimator.enabled = false;
                 }
             };
