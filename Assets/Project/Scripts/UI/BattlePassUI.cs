@@ -26,7 +26,7 @@ namespace NonameGame
 
         [SerializeField] private List<GameObject> levelNumList;
 
-        [SerializeField] private RewardPanel rewardPanel;
+        [SerializeField] private RewardUI rewardPanel;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;

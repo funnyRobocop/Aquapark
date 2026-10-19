@@ -17,7 +17,6 @@ namespace NonameGame
         [SerializeField] private SettingsUI settingsUI;
         [SerializeField] private BattlePassUI battlePassUI;
         [SerializeField] private TextMeshProUGUI levelText;
-        [SerializeField] private TextMeshProUGUI moneyText;
         [SerializeField] private TextMeshProUGUI playerName;
         [SerializeField] private FusionNetworkManager fusionNetworkManager;
         [SerializeField] private Canvas canvas;
@@ -26,8 +25,8 @@ namespace NonameGame
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
-        [Inject] private SkinPreviewUI _skinPreviewUI;
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
+        [Inject] private SkinPreviewUI _skinPreviewUI;
 
         public Canvas Canvas { get { return canvas; } }
         public Camera Camera { get { return camera; } }
@@ -51,8 +50,6 @@ namespace NonameGame
             {
                 _gameModel.OnLevelChanged += UpdateLevelText;
                 UpdateLevelText(_gameModel.Points, _gameModel.Level);
-                _gameModel.OnMoneyChanged += UpdateMoneyText;
-                UpdateMoneyText(_gameModel.Money);
                 _gameModel.OnPlayerNameChanged += UpdatePlayerNameText;
                 UpdatePlayerNameText(_gameModel.PlayerName);
             }
@@ -65,24 +62,17 @@ namespace NonameGame
 
         public void SpawnPlayerMesh()
         {
-            var skinType = (PlayerSkin)_gameModel.SelectedSkinId;
-            var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
-            _skinPreviewUI.SpawnPlayerMesh(skinData);
+            _skinPreviewUI.SpawnPlayerMesh(_playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId]);
         }
 
         public void Resume()
-        {
-            _skinPreviewUI.Show();
+        {            
+            _skinPreviewUI.Show(-325f, 250f);
         }
 
         private void UpdatePlayerNameText(string name)
         {
             playerName.text = name;
-        }
-
-        private void UpdateMoneyText(int money)
-        {
-            moneyText.text = money.ToString();
         }
 
         private void UpdateLevelText(int points, int level)
@@ -100,7 +90,6 @@ namespace NonameGame
             if (_gameModel != null)
             {
                 _gameModel.OnLevelChanged -= UpdateLevelText;
-                _gameModel.OnMoneyChanged -= UpdateMoneyText;
                 _gameModel.OnPlayerNameChanged -= UpdatePlayerNameText;
             }
         }
@@ -125,7 +114,7 @@ namespace NonameGame
 
         private void OnPlayButtonClicked()
         {
-            _skinPreviewUI.ClearCurrentSkin();
+            _skinPreviewUI.Hide();
             fusionNetworkManager.OnQuickJoinPressed();
         }
     }

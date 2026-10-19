@@ -10,7 +10,7 @@ namespace NonameGame
     public class FinishPlayUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI levelText;
-        [SerializeField] private RewardPanel rewardPanel;
+        [SerializeField] private RewardUI rewardPanel;
         [SerializeField] private Button claimButton;
         [SerializeField] private MainMenuUI mainMenuUI;
         [SerializeField] private Image skinImage;
@@ -59,8 +59,8 @@ namespace NonameGame
             claimButton.onClick.RemoveAllListeners();
             claimButton.onClick.AddListener(() =>
             {
-                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); Hide();  mainMenuUI.SpawnPlayerMesh(); mainMenuUI.Resume();},
-                    () => { _gameModel.ClaimBattlePassMoney(reward * 2); Hide();  mainMenuUI.SpawnPlayerMesh(); mainMenuUI.Resume();},
+                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); Hide();  mainMenuUI.Resume(); },
+                    () => { _gameModel.ClaimBattlePassMoney(reward * 2); Hide(); mainMenuUI.Resume(); },
                     reward);
             });
 

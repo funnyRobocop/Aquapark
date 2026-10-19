@@ -10,19 +10,25 @@ namespace NonameGame
         [SerializeField] private Animator _animator;
 
         private GameObject _currentSpawnedSkinMesh;
+        private PlayerSkin playerSkin;
 
         public void Hide()
         {
             _currentSpawnedSkinMesh?.SetActive(false);
         }
 
-        public void Show()
+        public void Show(float yPos, float scale)
         {
             _currentSpawnedSkinMesh?.SetActive(true);
+            spawnPoint.localPosition = new Vector3(0f, yPos, -100f);
+            spawnPoint.localScale = Vector3.one * scale;
         }
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData)
         {
+            if (activeSkinData.SkinId == playerSkin)
+                return;
+
             ClearCurrentSkin();
 
             activeSkinData.PrefabReference.InstantiateAsync(spawnPoint).Completed += handle =>
@@ -34,6 +40,7 @@ namespace NonameGame
                     _animator.avatar = skinAnimator.avatar;
                     //_animator.SetTrigger("Preview");
                     skinAnimator.enabled = false;
+                    playerSkin = activeSkinData.SkinId;
                 }
             };
         }
@@ -50,7 +57,7 @@ namespace NonameGame
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             ClearCurrentSkin();
         }

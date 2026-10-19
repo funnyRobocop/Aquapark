@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace NonameGame
 {
-    public class RewardPanel : MonoBehaviour
+    public class RewardUI : MonoBehaviour
     {
 
         public Action OnClaim;

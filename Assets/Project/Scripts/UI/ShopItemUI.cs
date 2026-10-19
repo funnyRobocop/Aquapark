@@ -9,37 +9,31 @@ namespace NonameGame
 {
     public class ShopItemUI : MonoBehaviour
     {
-        [SerializeField] private Button selectButton;
-        [SerializeField] private GameObject selectedIndicator;
-        [SerializeField] private GameObject choosedIndicator;
-        [SerializeField] private Image skinImage;
-        [SerializeField] private float maxIconSize = 512f;
-
-        public Button SelectButton => selectButton;
-
-        private PlayerSkin _playerSkin;
-        private PlayerSkinData _skinData;
-
-        private IPlayerSkinLoader _playerSkinLoader;
-
-        // Храним хэндл загрузки, чтобы выгрузить из памяти при удалении объекта
         private AsyncOperationHandle<Sprite> _spriteLoadHandle;
 
-        public event Action<PlayerSkinData, ShopItemUI> OnSkinSelected;
+        [SerializeField] private Button clickButton;
+        [SerializeField] private GameObject clickedIndicator;
+        [SerializeField] private GameObject purchasedIndicator;
+        [SerializeField] private Image skinImage;
+        [SerializeField] private TMP_Text priceLabel;
+        [SerializeField] private float maxIconSize = 512f;
 
-        public PlayerSkin PlayerSkin => _playerSkin;
+        public Button ClickButton => clickButton;
+        public PlayerSkinData SkinData { get; private set; }
+
+        public event Action<PlayerSkinData, ShopItemUI> OnSkinClicked;
 
         public void Initialize(PlayerSkin skinType, IPlayerSkinLoader playerSkinLoader)
         {
-            _playerSkin = skinType;
-            _playerSkinLoader = playerSkinLoader;
-            _skinData = _playerSkinLoader.PlayerSkinAll[skinType];
+            var _playerSkinLoader = playerSkinLoader;
+            SkinData = _playerSkinLoader.PlayerSkinAll[skinType];
 
-            selectButton.onClick.AddListener(OnSelectButtonClicked);
+            clickButton.onClick.AddListener(OnClickButtonClicked);
+            priceLabel.text = SkinData.Price.ToString() + "$";
 
-            if (_skinData.SpriteReference != null)
+            if (SkinData.SpriteReference != null)
             {
-                _skinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
+                SkinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
             }
         }
 
@@ -63,24 +57,24 @@ namespace NonameGame
             }
         }
 
-        private void OnSelectButtonClicked()
+        private void OnClickButtonClicked()
         {
-            OnSkinSelected?.Invoke(_skinData, this);
+            OnSkinClicked?.Invoke(SkinData, this);
         }
 
-        public void SetSelected(bool isSelected)
+        public void SetClicked(bool isClicked)
         {
-            selectedIndicator.SetActive(isSelected);
+            clickedIndicator.SetActive(isClicked);
         }
 
-        public void SetChoosed(bool isChoosed)
+        public void SetPurchased(bool isPurchased)
         {
-            choosedIndicator.SetActive(isChoosed);
+            purchasedIndicator.SetActive(isPurchased);
         }
 
         private void OnDestroy()
         {
-            selectButton.onClick.RemoveListener(OnSelectButtonClicked);
+            clickButton.onClick.RemoveListener(OnClickButtonClicked);
 
             if (_spriteLoadHandle.IsValid())
             {

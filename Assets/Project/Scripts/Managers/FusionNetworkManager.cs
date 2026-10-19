@@ -79,7 +79,6 @@ namespace NonameGame
                 }
                 else
                 {
-                    mainMenuUI.SpawnPlayerMesh();
                     mainMenuUI.Resume();
                     _gameModel.ClearSessionData();
                 }

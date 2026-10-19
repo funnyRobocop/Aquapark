@@ -8,148 +8,145 @@ using VContainer;
 
 namespace NonameGame
 {
-    // MainMenu only. Wire each skin button to SelectSkin(int) in the Inspector.
     public class ShopUI : MonoBehaviour
     {
 
         [SerializeField] private ScrollRect scroll;
-        [SerializeField] private Button chooseButton;
-        [SerializeField] private Button purchaseButton;
-        [SerializeField] private Button confirmPurchaseButton;
-        [SerializeField] private TMP_Text purchaseButtonText;
-        [SerializeField] private TMP_Text confirmPurchaseButtonText;
+        [SerializeField] private Button buyButton;
+        [SerializeField] private GameObject blockedButton;
+        [SerializeField] private Button selectButton;
+        [SerializeField] private GameObject selectedButton;
         [SerializeField] private Transform itemContainer;
-        [SerializeField] private TMP_Text selectedSkinNameText;
-        [SerializeField] private TMP_Text selectedSkinTypeText;
-
+        [SerializeField] private TMP_Text[] nameLabel;
+        [SerializeField] private TMP_Text[] typeLabel;
+        [SerializeField] private GameObject previewPanel;
         [SerializeField] private GameObject itemPrefab;
-        [SerializeField] private GameObject confirmPanel;
 
         private List<ShopItemUI> _shopItems = new List<ShopItemUI>();
 
-        [Inject] private IPlayerSkinLoader playerSkinLoader;
+        [Inject] private IPlayerSkinLoader _playerSkinLoader;
         [Inject] private GameModel _gameModel;
         [Inject] private SkinPreviewUI _skinPreviewUI;
 
-        private PlayerSkinData _selectedSkinData;
-        private ShopItemUI _selectedItem;
-
+        private ShopItemUI _klickedItem;
 
 
         private void Awake()
         {
-            chooseButton.onClick.AddListener(ChooseSkin);
-            purchaseButton.onClick.AddListener(PurchaseSkin);
-            confirmPurchaseButton.onClick.AddListener(ConfirmPurchase);
+            selectButton.onClick.AddListener(SelectSkin);
+            buyButton.onClick.AddListener(PurchaseSkin);
 
-            foreach (var item in playerSkinLoader.PlayerSkinAll)
+            foreach (var item in _playerSkinLoader.PlayerSkinAll)
             {
                 var skinType = item.Key;
 
                 var itemUI = Instantiate(itemPrefab, itemContainer).GetComponent<ShopItemUI>();
-                itemUI.Initialize(skinType, playerSkinLoader);
+                itemUI.Initialize(skinType, _playerSkinLoader);
 
-                itemUI.OnSkinSelected += SelectSkin;
+                itemUI.OnSkinClicked += SelectSkin;
                 _shopItems.Add(itemUI);
             }
-
         }
-        
+
         private void OnEnable()
         {
             UpdateButtonsView();
-            HideConfirmPanel();
 
-            _shopItems[0].SelectButton.onClick?.Invoke();
+            _shopItems[0].ClickButton.onClick?.Invoke();
+            
+            /*foreach (var item in _shopItems)
+                if ((int)item.SkinData.SkinId == _gameModel.SelectedSkinId)
+                    item.ClickButton.onClick?.Invoke();*/
+
             scroll.verticalNormalizedPosition = 1f; // Scroll to top
-
-            foreach (var item in _shopItems)
-                item.SetChoosed(_gameModel.SelectedSkinId == (int)item.PlayerSkin);
         }
 
         private void OnDestroy()
         {
-            chooseButton.onClick.RemoveListener(ChooseSkin);
-            purchaseButton.onClick.RemoveListener(PurchaseSkin);
-            confirmPurchaseButton.onClick.RemoveListener(ConfirmPurchase);
+            selectButton.onClick.RemoveListener(SelectSkin);
+            buyButton.onClick.RemoveListener(PurchaseSkin);
         }
-
 
         private void UpdateButtonsView()
         {
-            chooseButton.gameObject.SetActive(false);
-            purchaseButton.gameObject.SetActive(false);
+            foreach(var item in _shopItems)
+                item.SetPurchased(_gameModel.IsSkinPurchased((int)item.SkinData.SkinId));
 
-            if (_selectedSkinData != null)
+            selectButton.gameObject.SetActive(false);
+            buyButton.gameObject.SetActive(false);
+            selectedButton.SetActive(false);
+            blockedButton.SetActive(false);
+
+            if (_klickedItem != null)
             {
-                if (_gameModel.IsSkinPurchased((int)_selectedSkinData.SkinId))
+                if (_gameModel.IsSkinPurchased((int)_klickedItem.SkinData.SkinId))
                 {
-                    chooseButton.gameObject.SetActive(_gameModel.SelectedSkinId != (int)_selectedSkinData.SkinId);
-                    purchaseButton.gameObject.SetActive(false);
+                    if (_gameModel.SelectedSkinId == (int)_klickedItem.SkinData.SkinId)
+                        selectedButton.SetActive(true);
+                    else
+                        selectButton.gameObject.SetActive(true);
                 }
                 else
                 {
-                    chooseButton.gameObject.SetActive(false);
-                    purchaseButton.gameObject.SetActive(true);
-
-                    purchaseButtonText.text = _selectedSkinData.Price.ToString();
-                    confirmPurchaseButtonText.text = _selectedSkinData.Price.ToString();
-                    purchaseButton.interactable = _gameModel.Money >= _selectedSkinData.Price;
+                    buyButton.gameObject.SetActive(true);
+                    buyButton.interactable = _gameModel.Money >= _klickedItem.SkinData.Price;
+                    if (_gameModel.Money < _klickedItem.SkinData.Price)
+                        blockedButton.SetActive(true);
                 }
             }
         }
-
-        private void ChooseSkin()
+        
+        public void ShowPreview()
         {
-            if (_selectedSkinData == null)
+            previewPanel.SetActive(true);
+            _skinPreviewUI.Show(-450f, 400f);
+            _skinPreviewUI.SpawnPlayerMesh(_klickedItem.SkinData);
+        }
+
+        public void HidePreview()
+        {
+            previewPanel.SetActive(false);
+            _skinPreviewUI.Hide();
+        }
+
+        private void SelectSkin()
+        {
+            if (_klickedItem == null)
                 return;
 
-            _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
+            _gameModel.SelectSkin((int)_klickedItem.SkinData.SkinId);
             UpdateButtonsView();
-
-            foreach (var item in _shopItems)
-                item.SetChoosed(false);
-
-            _selectedItem?.SetChoosed(true);
-            _skinPreviewUI.SpawnPlayerMesh(_selectedSkinData);
-            Hide();
         }
 
         private void PurchaseSkin()
         {
-            if (_selectedSkinData == null)
+            if (_klickedItem.SkinData == null)
                 return;
 
-            ShowConfirmPanel();
+            //ShowConfirmPanel();
         }
 
         private void ConfirmPurchase()
         {
-            if (_selectedSkinData == null)
+            if (_klickedItem == null)
                 return;
 
-            _gameModel.PurchaseSkin((int)_selectedSkinData.SkinId, _selectedSkinData.Price);
-            _gameModel.SelectSkin((int)_selectedSkinData.SkinId);
-            //ChooseSkin();
-            //HideConfirmPanel();
-            //UpdateButtonsView();
-            _skinPreviewUI.SpawnPlayerMesh(_selectedSkinData);
-            Hide();
+            _gameModel.PurchaseSkin((int)_klickedItem.SkinData.SkinId, _klickedItem.SkinData.Price);
+            UpdateButtonsView();
         }
 
         private void SelectSkin(PlayerSkinData skinData, ShopItemUI shopItem)
         {
-            _selectedSkinData = skinData;
-            _selectedItem = shopItem;
+            _klickedItem = shopItem;
 
             foreach (var item in _shopItems)
-                item.SetSelected(false);
+                item.SetClicked(false);
 
-            if (_selectedItem != null)
-                _selectedItem.SetSelected(true);
+            if (_klickedItem != null)
+                _klickedItem.SetClicked(true);
 
-            selectedSkinNameText.text = skinData.GetNameString();
-            selectedSkinTypeText.text = skinData.GetSkinTypeString();
+            foreach (var item in nameLabel) item.text = skinData.GetNameString();
+            foreach (var item in typeLabel) item.text = skinData.GetSkinTypeString();
 
             UpdateButtonsView();
         }
@@ -161,17 +158,8 @@ namespace NonameGame
 
         public void Hide()
         {
+            _skinPreviewUI.SpawnPlayerMesh(_playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId]);
             gameObject.SetActive(false);
-        }
-
-        public void ShowConfirmPanel()
-        {
-            confirmPanel.SetActive(true);
-        }
-
-        public void HideConfirmPanel()
-        {
-            confirmPanel.SetActive(false);
         }
     }
 }
