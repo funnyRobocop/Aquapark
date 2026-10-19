@@ -11,6 +11,12 @@ namespace NonameGame
 
         private GameObject _currentSpawnedSkinMesh;
         private PlayerSkin playerSkin;
+        private Quaternion defaultRotate;
+
+        void Awake()
+        {
+            defaultRotate = spawnPoint.localRotation;
+        }
 
         public void Hide()
         {
@@ -22,6 +28,7 @@ namespace NonameGame
             _currentSpawnedSkinMesh?.SetActive(true);
             spawnPoint.localPosition = new Vector3(0f, yPos, -100f);
             spawnPoint.localScale = Vector3.one * scale;
+            spawnPoint.localRotation = defaultRotate;
         }
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData)
