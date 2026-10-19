@@ -10,7 +10,6 @@ namespace NonameGame
 {
     public class ShopUI : MonoBehaviour
     {
-
         [SerializeField] private ScrollRect scroll;
         [SerializeField] private Button buyButton;
         [SerializeField] private GameObject blockedButton;
@@ -29,20 +28,27 @@ namespace NonameGame
         [Inject] private SkinPreviewUI _skinPreviewUI;
 
         private ShopItemUI _klickedItem;
-
+        private HoldButton _buyHoldButton; // Ссылка на наш новый компонент
 
         private void Awake()
         {
             selectButton.onClick.AddListener(SelectSkin);
-            buyButton.onClick.AddListener(PurchaseSkin);
+
+            // Находим компонент HoldButton на кнопке покупки и подписываемся
+            if (buyButton != null)
+            {
+                _buyHoldButton = buyButton.GetComponent<HoldButton>();
+                if (_buyHoldButton != null)
+                {
+                    _buyHoldButton.OnHoldComplete += ConfirmPurchase;
+                }
+            }
 
             foreach (var item in _playerSkinLoader.PlayerSkinAll)
             {
                 var skinType = item.Key;
-
                 var itemUI = Instantiate(itemPrefab, itemContainer).GetComponent<ShopItemUI>();
                 itemUI.Initialize(skinType, _playerSkinLoader);
-
                 itemUI.OnSkinClicked += SelectSkin;
                 _shopItems.Add(itemUI);
             }
@@ -51,25 +57,26 @@ namespace NonameGame
         private void OnEnable()
         {
             UpdateButtonsView();
+            if (_buyHoldButton != null) _buyHoldButton.ResetHold();
 
-            _shopItems[0].ClickButton.onClick?.Invoke();
-            
-            /*foreach (var item in _shopItems)
-                if ((int)item.SkinData.SkinId == _gameModel.SelectedSkinId)
-                    item.ClickButton.onClick?.Invoke();*/
+            if (_shopItems.Count > 0 && _shopItems[0].ClickButton != null)
+                _shopItems[0].ClickButton.onClick?.Invoke();
 
-            scroll.verticalNormalizedPosition = 1f; // Scroll to top
+            scroll.verticalNormalizedPosition = 1f;
         }
 
         private void OnDestroy()
         {
             selectButton.onClick.RemoveListener(SelectSkin);
-            buyButton.onClick.RemoveListener(PurchaseSkin);
+            if (_buyHoldButton != null)
+            {
+                _buyHoldButton.OnHoldComplete -= ConfirmPurchase;
+            }
         }
 
         private void UpdateButtonsView()
         {
-            foreach(var item in _shopItems)
+            foreach (var item in _shopItems)
                 item.SetPurchased(_gameModel.IsSkinPurchased((int)item.SkinData.SkinId));
 
             selectButton.gameObject.SetActive(false);
@@ -95,7 +102,7 @@ namespace NonameGame
                 }
             }
         }
-        
+
         public void ShowPreview()
         {
             previewPanel.SetActive(true);
@@ -116,14 +123,6 @@ namespace NonameGame
 
             _gameModel.SelectSkin((int)_klickedItem.SkinData.SkinId);
             UpdateButtonsView();
-        }
-
-        private void PurchaseSkin()
-        {
-            if (_klickedItem.SkinData == null)
-                return;
-
-            //ShowConfirmPanel();
         }
 
         private void ConfirmPurchase()
@@ -149,6 +148,7 @@ namespace NonameGame
             foreach (var item in typeLabel) item.text = skinData.GetSkinTypeString();
 
             UpdateButtonsView();
+            if (_buyHoldButton != null) _buyHoldButton.ResetHold();
         }
 
         public void Show()
