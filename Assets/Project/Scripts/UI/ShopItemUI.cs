@@ -72,7 +72,7 @@ namespace NonameGame
             purchasedIndicator.SetActive(isPurchased);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             clickButton.onClick.RemoveListener(OnClickButtonClicked);
 

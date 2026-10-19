@@ -19,8 +19,9 @@ namespace NonameGame
 
         void OnEnable()
         {
-            bg.color = bgColorList[UnityEngine.Random.Range(0, bgColorList.Length - 1)].bgColor;
-            gradient.color = bgColorList[UnityEngine.Random.Range(0, bgColorList.Length - 1)].gradientColor;
+            int index = UnityEngine.Random.Range(0, bgColorList.Length);
+            bg.color = bgColorList[index].bgColor;
+            gradient.color = bgColorList[index].gradientColor;
         }
     }
 }
