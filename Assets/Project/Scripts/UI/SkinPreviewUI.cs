@@ -31,6 +31,11 @@ namespace NonameGame
             spawnPoint.localRotation = defaultRotate;
         }
 
+        public void ResetRotation()
+        {
+            spawnPoint.localRotation = defaultRotate;
+        }
+
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData)
         {
             if (activeSkinData.SkinId == playerSkin)

@@ -80,6 +80,7 @@ namespace NonameGame
             if (leftIndex < 0) leftIndex = _shopItems.Count - 1;
             _shopItems[leftIndex].ClickButton.onClick?.Invoke();
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
+            _skinPreviewUI.ResetRotation();
         }
 
         public void ClickRight()
@@ -88,6 +89,7 @@ namespace NonameGame
             if (rightIndex > _shopItems.Count - 1) rightIndex = 0;
             _shopItems[rightIndex].ClickButton.onClick?.Invoke();
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
+            _skinPreviewUI.ResetRotation();
         }
 
         private void UpdateButtonsView()
