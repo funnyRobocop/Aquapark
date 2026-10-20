@@ -97,7 +97,7 @@ namespace NonameGame
                 .ThenBy(a => a.Id)
                 .ToList();
 
-            foreach (var ach in sorted)
+            foreach (var ach in _gameModel.Achievements)
             {
                 _achievementsConfig.AchievementsAll.TryGetValue(ach.Id, out AchievementDefinition def);
                 if (def == null) continue;
@@ -120,7 +120,7 @@ namespace NonameGame
                 bool alreadyClaimed = _gameModel.ClaimedBattlePassRewards.Contains(btnData.rewardId);
 
                 // Если уже забрали — полностью скрываем
-                if (alreadyClaimed)
+                if (alreadyClaimed || !canClaim)
                 {
                     btnData.root.SetActive(false);
                     continue;
@@ -148,13 +148,24 @@ namespace NonameGame
         {
             DateTime now = DateTime.UtcNow;
 
+            // Вычисляем, сколько дней осталось до ПОНЕДЕЛЬНИКА
             int daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-            if (daysUntilMonday == 0) daysUntilMonday = 7;
 
+            // Если сегодня ПОНЕДЕЛЬНИК, то целевой день сброса — это следующий понедельник (через 7 дней)
+            if (daysUntilMonday == 0)
+            {
+                daysUntilMonday = 7;
+            }
+
+            // Устанавливаем точку сброса: понедельник, 00:00:00 UTC
             DateTime nextResetTime = now.Date.AddDays(daysUntilMonday);
+
+            // Считаем точную разницу во времени
             TimeSpan timeRemaining = nextResetTime - now;
 
-            timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours}h {timeRemaining.Minutes}m";
+            // Выводим в формате: Xd XXh XXm (секунды по желанию можно добавить через :D2)
+            timerText.text = $"осталось {timeRemaining.Days}д {timeRemaining.Hours:D2}ч {timeRemaining.Minutes:D2}м";
+            //timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours:D2}h {timeRemaining.Minutes:D2}m remaining";
 
             if (timeRemaining.TotalSeconds <= 0)
             {

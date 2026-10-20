@@ -7,10 +7,12 @@ namespace NonameGame
 {
     public class AchievementItemUI : MonoBehaviour
     {
+        [SerializeField] private Image iconImage;
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private TextMeshProUGUI progressText;
         [SerializeField] private Slider progressSlider;
+        [SerializeField] private Button lockButton;
         [SerializeField] private Button claimButton;
         [SerializeField] private GameObject completedMark; // галочка "награда получена"
 
@@ -22,6 +24,7 @@ namespace NonameGame
             _achievementId = data.Id;
             _onClaim = onClaim;
 
+            iconImage.sprite = def.Sprite;
             titleText.text = def.Title[0];
             descriptionText.text = def.Description[0];
             progressText.text = $"{data.Current} / {data.Goal}";
@@ -30,14 +33,24 @@ namespace NonameGame
             bool canClaim = data.CanClaim;
             bool taken = data.RewardTaken;
 
-            claimButton.gameObject.SetActive(canClaim);
-            claimButton.interactable = canClaim;
-            if (completedMark != null)
-                completedMark.SetActive(taken);
+            lockButton.gameObject.SetActive(false);
+            claimButton.gameObject.SetActive(false);
+            completedMark.SetActive(false);
 
-            claimButton.onClick.RemoveAllListeners();
+            if (taken)
+            {
+                completedMark.SetActive(true);
+                return;
+            }
+
             if (canClaim)
+            {
+                claimButton.gameObject.SetActive(true);
+                claimButton.onClick.RemoveAllListeners();
                 claimButton.onClick.AddListener(() => _onClaim?.Invoke(_achievementId));
+            }
+
+            lockButton.gameObject.SetActive(true);
         }
     }
 }
