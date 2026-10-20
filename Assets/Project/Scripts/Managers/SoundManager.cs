@@ -8,6 +8,9 @@ namespace NonameGame
         [Header("Настройки аудио")]
         public AudioSource audioSource1;
         public AudioSource audioSource2;
+        public AudioSource sfxSource;
+        [SerializeField] private AudioClip[] popClips;
+        [SerializeField] private AudioClip wispClip;
 
         [Header("Количество повторов")]
         public int clip1RepeatCount = 10;
@@ -30,6 +33,20 @@ namespace NonameGame
 
             // Запускаем музыку в самый первый миг жизни игры
             audioSource1.Play();
+        }
+
+        public void PlayPopSound()
+        {
+            if (popClips == null || popClips.Length == 0) return;
+
+            int randomIndex = Random.Range(0, popClips.Length);
+
+            sfxSource.PlayOneShot(popClips[randomIndex]);
+        }
+
+        public void PlayWispSound()
+        {
+            sfxSource.PlayOneShot(wispClip);
         }
 
         void Update()

@@ -44,6 +44,7 @@ namespace NonameGame
         [SerializeField] private float fallYThreshold = -1.5f;
 
         [Inject] private VFXManager _vfxManager;
+        [Inject] private SoundManager _soundManager;
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
 
         // ── Networked: непрерывные состояния ──────────────────────────────────
@@ -223,6 +224,8 @@ namespace NonameGame
         {
             if (!HasStateAuthority) return;
             NetPush++;
+
+            _soundManager.PlayWispSound();
         }
 
         public void PlayThrow()
@@ -240,6 +243,7 @@ namespace NonameGame
         public void PlayStunVFX()
         {
             _vfxManager.PlayStunVFX(stunVFXPoint.position);
+            _soundManager.PlayPopSound();
         }
 
         public void SetFlying(bool value)
