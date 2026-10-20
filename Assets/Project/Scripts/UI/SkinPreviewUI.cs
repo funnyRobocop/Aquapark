@@ -26,7 +26,7 @@ namespace NonameGame
         public void Show(float yPos, float scale)
         {
             _currentSpawnedSkinMesh?.SetActive(true);
-            spawnPoint.localPosition = new Vector3(0f, yPos, -100f);
+            spawnPoint.localPosition = new Vector3(0f, yPos, -200f);
             spawnPoint.localScale = Vector3.one * scale;
             spawnPoint.localRotation = defaultRotate;
         }

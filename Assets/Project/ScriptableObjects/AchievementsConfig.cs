@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace NonameGame
 {
@@ -21,6 +22,7 @@ namespace NonameGame
         public int RewardMoney;         // сколько денег даём при клейме
         public string[] Title;
         public string[] Description;           // текст для UI
+        public Sprite Sprite;
     }
 
     [Serializable]
