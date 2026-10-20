@@ -23,18 +23,37 @@ namespace NonameGame
 
         public event Action<PlayerSkinData, ShopItemUI> OnSkinClicked;
 
-        public void Initialize(PlayerSkin skinType, IPlayerSkinLoader playerSkinLoader)
+        public void Initialize(PlayerSkinData skinData)
         {
-            var _playerSkinLoader = playerSkinLoader;
-            SkinData = _playerSkinLoader.PlayerSkinAll[skinType];
+            SkinData = skinData;
+            skinImage.enabled = false;
+            TryLoadSprite();
+        }
 
-            clickButton.onClick.AddListener(OnClickButtonClicked);
+        private void OnEnable()
+        {
+            if (clickButton != null)
+                clickButton.onClick.AddListener(OnClickButtonClicked);
+
+            skinImage.enabled = false;
+            TryLoadSprite();
+        }
+
+        private void TryLoadSprite()
+        {
+            if (SkinData == null || SkinData.SpriteReference == null)
+                return;
+
+            // Если спрайт уже стоит — ничего не делаем
+            if (skinImage.sprite != null)
+                return;
+
+            // Если handle уже в процессе загрузки — тоже выходим
+            if (_spriteLoadHandle.IsValid())
+                return;
+
             priceLabel.text = SkinData.Price.ToString() + "$";
-
-            if (SkinData.SpriteReference != null)
-            {
-                SkinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
-            }
+            SkinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
         }
 
         private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
@@ -54,6 +73,7 @@ namespace NonameGame
 
                 // Применяем сжатый пропорциональный размер на UI
                 skinImage.rectTransform.sizeDelta = new Vector2(originalWidth * scale, originalHeight * scale);
+                skinImage.enabled = true;
             }
         }
 
@@ -74,11 +94,16 @@ namespace NonameGame
 
         private void OnDisable()
         {
-            clickButton.onClick.RemoveListener(OnClickButtonClicked);
+            if (clickButton != null)
+                clickButton.onClick.RemoveListener(OnClickButtonClicked);
+
+            if (skinImage != null)
+                skinImage.sprite = null;
 
             if (_spriteLoadHandle.IsValid())
             {
                 Addressables.Release(_spriteLoadHandle);
+                _spriteLoadHandle = default;
             }
         }
     }

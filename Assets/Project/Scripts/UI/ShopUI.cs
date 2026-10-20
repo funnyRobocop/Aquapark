@@ -48,7 +48,7 @@ namespace NonameGame
             {
                 var skinType = item.Key;
                 var itemUI = Instantiate(itemPrefab, itemContainer).GetComponent<ShopItemUI>();
-                itemUI.Initialize(skinType, _playerSkinLoader);
+                itemUI.Initialize(_playerSkinLoader.PlayerSkinAll[skinType]);
                 itemUI.OnSkinClicked += SelectSkin;
                 _shopItems.Add(itemUI);
             }

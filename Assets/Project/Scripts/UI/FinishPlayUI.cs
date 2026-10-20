@@ -15,31 +15,12 @@ namespace NonameGame
         [SerializeField] private MainMenuUI mainMenuUI;
         [SerializeField] private Image skinImage;
         [SerializeField] private float maxIconSize = 512f;
+
         private AsyncOperationHandle<Sprite> _spriteLoadHandle;
+        private PlayerSkinData _skinData;
 
         [Inject] private GameModel _gameModel;
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
-
-        
-        private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                _spriteLoadHandle = handle;
-                Sprite loadedSprite = handle.Result;
-                skinImage.sprite = loadedSprite;
-
-                float originalWidth = loadedSprite.rect.width;
-                float originalHeight = loadedSprite.rect.height;
-
-                // Вычисляем коэф. масштабирования, чтобы картинка пропорционально вписалась в рамки магазина (maxIconSize)
-                float scale = Mathf.Min(maxIconSize / originalWidth, maxIconSize / originalHeight);
-                scale = Mathf.Min(scale, 1f); // Не растягиваем мелкие картинки, если они меньше лимита
-
-                // Применяем сжатый пропорциональный размер на UI
-                skinImage.rectTransform.sizeDelta = new Vector2(originalWidth * scale, originalHeight * scale);
-            }
-        }
 
         public void Show()
         {
@@ -59,29 +40,72 @@ namespace NonameGame
             claimButton.onClick.RemoveAllListeners();
             claimButton.onClick.AddListener(() =>
             {
-                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); Hide();  mainMenuUI.Resume(); },
+                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); Hide(); mainMenuUI.Resume(); },
                     () => { _gameModel.ClaimBattlePassMoney(reward * 2); Hide(); mainMenuUI.Resume(); },
                     reward);
             });
 
             _gameModel.ClearSessionData();
 
-            var _skinData = _playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId];
+            _skinData = _playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId];
 
-            if (_skinData.SpriteReference != null)
+            skinImage.enabled = false;
+            TryLoadSprite();
+        }
+
+        private void TryLoadSprite()
+        {
+            if (_skinData == null || _skinData.SpriteReference == null)
+                return;
+
+            // Уже загружен
+            if (skinImage.sprite != null)
             {
-                _skinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
+                skinImage.enabled = true;
+                return;
+            }
+
+            // Уже идёт загрузка
+            if (_spriteLoadHandle.IsValid())
+                return;
+
+            _skinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
+        }
+
+        private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                _spriteLoadHandle = handle;
+                Sprite loadedSprite = handle.Result;
+                skinImage.sprite = loadedSprite;
+
+                float originalWidth = loadedSprite.rect.width;
+                float originalHeight = loadedSprite.rect.height;
+
+                float scale = Mathf.Min(maxIconSize / originalWidth, maxIconSize / originalHeight);
+                scale = Mathf.Min(scale, 1f);
+
+                skinImage.rectTransform.sizeDelta = new Vector2(originalWidth * scale, originalHeight * scale);
+                skinImage.enabled = true;
             }
         }
 
         private void Hide()
         {
-            gameObject.SetActive(false);
+            if (skinImage != null)
+            {
+                skinImage.sprite = null;
+                skinImage.enabled = false;
+            }
 
             if (_spriteLoadHandle.IsValid())
             {
                 Addressables.Release(_spriteLoadHandle);
+                _spriteLoadHandle = default;
             }
+
+            gameObject.SetActive(false);
         }
     }
 }
