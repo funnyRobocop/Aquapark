@@ -806,7 +806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &76899802
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1767,7 +1767,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &140183311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1869,7 +1869,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 140183312}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1907,7 +1907,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &148408688
 GameObject:
@@ -2275,7 +2275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &168350198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2377,7 +2377,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 168350199}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -2415,7 +2415,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &173946763
 GameObject:
@@ -4288,7 +4288,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 373566203}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -4315,6 +4315,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 5608718292975891175}
+        m_TargetAssemblyTypeName: NonameGame.SettingsUI, Assembly-CSharp
+        m_MethodName: OnChangeNotification
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1001 &373943996
 PrefabInstance:
@@ -5085,7 +5097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &499999511
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6526,7 +6538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &632576447
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7309,7 +7321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &664726361
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7411,7 +7423,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 664726362}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -7449,7 +7461,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &670035447
 GameObject:
@@ -8275,8 +8287,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2146588475}
-        m_TargetAssemblyTypeName: FusionNetworkManager, Assembly-CSharp
+      - m_Target: {fileID: 5608718292975891175}
+        m_TargetAssemblyTypeName: NonameGame.SettingsUI, Assembly-CSharp
         m_MethodName: OnChangeRegion
         m_Mode: 0
         m_Arguments:
@@ -17382,7 +17394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1505430794
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17484,7 +17496,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1505430795}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -17522,7 +17534,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &1516296969
 GameObject:
@@ -20352,6 +20364,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5608718292975891175}
+        m_TargetAssemblyTypeName: NonameGame.SettingsUI, Assembly-CSharp
+        m_MethodName: OnChangeNotification
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &1904747241
 GameObject:
@@ -27225,6 +27249,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.SettingsUI
   nameInputField: {fileID: 2069557586}
+  fusionNetworkManager: {fileID: 2146588475}
+  musicOn: {fileID: 168350197}
+  musicOff: {fileID: 664726360}
+  soundOn: {fileID: 140183310}
+  soundOff: {fileID: 1505430793}
+  notificationOn: {fileID: 373566201}
+  notificationOff: {fileID: 1874588593}
+  qualityLowOn: {fileID: 329033349}
+  qualityLowOff: {fileID: 499999510}
+  qualityMediumOn: {fileID: 893817215}
+  qualityMediumOff: {fileID: 76899801}
+  qualityHighOn: {fileID: 632620990}
+  qualityHighOff: {fileID: 632576446}
+  languageDropdown: {fileID: 700153438}
+  regionDropdown: {fileID: 733293117}
 --- !u!114 &5631240290289721663
 MonoBehaviour:
   m_ObjectHideFlags: 0
