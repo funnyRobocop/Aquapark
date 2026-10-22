@@ -1,5 +1,7 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings; // Добавлено пространство имен локализации
 using UnityEngine.UI;
 using VContainer;
 
@@ -7,15 +9,12 @@ namespace NonameGame
 {
     public class SettingsUI : MonoBehaviour
     {
-        public enum Quality { Low, Medium, High }
-
         [Inject] private GameModel _gameModel;
         [Inject] private SoundManager _soundManager;
 
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private FusionNetworkManager fusionNetworkManager;
 
-        // Опционально: ссылки на UI-элементы, чтобы синхронизировать состояние при открытии
         [SerializeField] private GameObject musicOn;
         [SerializeField] private GameObject musicOff;
         [SerializeField] private GameObject soundOn;
@@ -33,6 +32,7 @@ namespace NonameGame
         [SerializeField] private TMP_Dropdown regionDropdown;
 
         private SettingsData _settings;
+        private Coroutine _setLocaleCoroutine;
 
         void OnEnable()
         {
@@ -40,6 +40,9 @@ namespace NonameGame
 
             _settings = SettingsData.Load();
             ApplySettingsToUI();
+
+            // Принудительно применяем язык при открытии UI (на случай первого запуска)
+            SetLocale(_settings.Language);
         }
 
         private void ApplySettingsToUI()
@@ -50,13 +53,13 @@ namespace NonameGame
             soundOff.SetActive(!_settings.Sound);
             notificationOn.SetActive(_settings.Notification);
             notificationOff.SetActive(!_settings.Notification);
-            
-            qualityLowOn.SetActive(_settings.Quality == (int)Quality.Low);
-            qualityLowOff.SetActive(_settings.Quality != (int)Quality.Low);
-            qualityMediumOn.SetActive(_settings.Quality == (int)Quality.Medium);
-            qualityMediumOff.SetActive(_settings.Quality != (int)Quality.Medium);
-            qualityHighOn.SetActive(_settings.Quality == (int)Quality.High);
-            qualityHighOff.SetActive(_settings.Quality != (int)Quality.High);
+
+            qualityLowOn.SetActive(_settings.Quality == (int)QualityType.Low);
+            qualityLowOff.SetActive(_settings.Quality != (int)QualityType.Low);
+            qualityMediumOn.SetActive(_settings.Quality == (int)QualityType.Medium);
+            qualityMediumOff.SetActive(_settings.Quality != (int)QualityType.Medium);
+            qualityHighOn.SetActive(_settings.Quality == (int)QualityType.High);
+            qualityHighOff.SetActive(_settings.Quality != (int)QualityType.High);
 
             if (languageDropdown != null)
                 languageDropdown.SetValueWithoutNotify(_settings.Language);
@@ -65,13 +68,10 @@ namespace NonameGame
                 regionDropdown.SetValueWithoutNotify(_settings.Region);
         }
 
-        // Метод, который мы вызовем при нажатии на кнопку
         public void SavePlayerName()
         {
-            // Считываем текст из поля ввода и удаляем лишние пробелы по краям
             string enteredName = nameInputField.text.Trim();
 
-            // Проверяем, не оставил ли игрок поле пустым
             if (!string.IsNullOrEmpty(enteredName))
             {
                 _gameModel.ChangeName(enteredName);
@@ -99,7 +99,30 @@ namespace NonameGame
 
             _settings.Language = value;
             _settings.Save();
-            // Здесь можно добавить смену локализации, если она есть
+
+            SetLocale(value);
+        }
+
+        private void SetLocale(int localeIndex)
+        {
+            if (_setLocaleCoroutine != null)
+                StopCoroutine(_setLocaleCoroutine);
+
+            _setLocaleCoroutine = StartCoroutine(SetLocaleRoutine(localeIndex));
+        }
+
+        private IEnumerator SetLocaleRoutine(int localeIndex)
+        {
+            yield return LocalizationSettings.InitializationOperation;
+
+            if (localeIndex >= 0 && localeIndex < LocalizationSettings.AvailableLocales.Locales.Count)
+            {
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeIndex];
+            }
+            else
+            {
+                Debug.LogError($"Индекс локали {localeIndex} выходит за рамки доступных в LocalizationSettings!");
+            }
         }
 
         public void OnChangeRegion(int value)
@@ -149,7 +172,6 @@ namespace NonameGame
 
             _settings.Quality = value;
             _settings.Save();
-            // Здесь можно применить QualitySettings.SetQualityLevel(value);
         }
     }
 }

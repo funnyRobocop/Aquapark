@@ -32,6 +32,7 @@ namespace NonameGame
         public int SessionThrowCount { get; set; }
         public int SessionGoldCount { get; set; }
         public int SessionFinishCount { get; set; }
+        public int Quality { get; set; }
 
         public int Level => Mathf.FloorToInt(Points / 500f) + 1;
 
