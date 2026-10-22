@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using VContainer;
 
@@ -48,12 +49,13 @@ namespace NonameGame
         public GameObject playerLevelInfoPrefab;              // префаб плашки
 
         [Header("UI: HUD")]
+        public LevelUI levelUI;
         public TextMeshProUGUI gameStateText;
         public TextMeshProUGUI timerText;
+        public TextMeshProUGUI keepPlayingTimerText;
 
         [Header("UI: Results")]
         public TextMeshProUGUI resultsText;
-        public TextMeshProUGUI keepPlayingTimerText; // UI-текст обратного отсчёта до Keep Playing
         public CanvasGroup     resultsCanvasGroup;
 
         // ─── Networked ───────────────────────────────────────────────────────
@@ -87,7 +89,15 @@ namespace NonameGame
         private int?  _prevTimerSec;
         private int   _prevTotalPlayers = -1;
         private int   _prevReadyPlayers = -1;
-        private bool  _showResults;
+        private bool _showResults;
+
+        private string waitingText;
+        private string readyText;
+        private string allReadyText;
+        private string startText;
+        private string finishText;
+        private string keepPlayingText;
+        private string notFinishedText;
 
         // Карточки готовности (id → GO) — удаляются при снятии Ready
         private readonly Dictionary<NetworkBehaviourId, GameObject> _readyCards = new();
@@ -97,7 +107,6 @@ namespace NonameGame
         // нельзя использовать его как guard от дубль на хосте.
         private readonly HashSet<NetworkBehaviourId> _finishedSet = new();
 
-        [Inject] private IPlayerSkinLoader   _skinLoader;   // для выгрузки addressables
         [Inject] private GameModel _gameModel;
 
         public bool ShowResults
@@ -109,6 +118,17 @@ namespace NonameGame
                 if (resultsCanvasGroup != null)
                     resultsCanvasGroup.interactable = value;
             }
+        }
+
+        private void UpdateLocalizedStrings()
+        {
+            waitingText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "waiting");
+            readyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "readyToPlay");
+            allReadyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "allReady");
+            startText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "start");
+            finishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "finish");
+            keepPlayingText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "keepPlaying");
+            notFinishedText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "notFinished");
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -156,6 +176,8 @@ namespace NonameGame
             {
                 QualitySettings.lodBias = 0.8f;
             }
+
+            UpdateLocalizedStrings();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -321,9 +343,11 @@ namespace NonameGame
                 if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
                 p.RPC_ResetForNewRound();
             }
-            
+
             foreach (var item in checkpointTriggers)
                 item.Clear();
+
+            levelUI.ShowEscObj(false);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -425,7 +449,7 @@ namespace NonameGame
                 if (!_readyCards.ContainsKey(id))
                 {
                     var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
-                    go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is ready");
+                    go.GetComponent<PlayerLevelInfo>()?.ShowReady(name);
                     _readyCards[id] = go;
                 }
             }
@@ -444,10 +468,10 @@ namespace NonameGame
         {
             if (playerLevelInfoContent == null || playerLevelInfoPrefab == null) return;
             var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
-            go.GetComponent<PlayerLevelInfo>()?.Show($"Player {name} is finished");
+            go.GetComponent<PlayerLevelInfo>()?.ShowFinish(name);
         }
 
-        /// <summary>После Keep Playing возвращает камеру на локального иг����ока.</summary>
+        /// <summary>После Keep Playing возвращает камеру на локального.</summary>
         private void ReinitLocalPlayerCamera()
         {
             if (_cameraManager == null || Runner == null) return;
@@ -624,7 +648,7 @@ namespace NonameGame
             switch (gameState)
             {
                 case GameState.Waiting: RenderWaitingState(); break;
-                case GameState.Game:    RenderGameState();    break;
+                case GameState.Game: RenderGameState(); break;
             }
 
             if (resultsCanvasGroup != null)
@@ -647,11 +671,11 @@ namespace NonameGame
                 if (gameStateText != null)
                 {
                     if (TotalPlayers == 0)
-                        gameStateText.text = $"Waiting for players... (max {maxPlayersToAutoStart})";
+                        gameStateText.text = string.Format(waitingText, maxPlayersToAutoStart);
                     else if (ReadyPlayers < TotalPlayers)
-                        gameStateText.text = $"Ready: {ReadyPlayers} / {TotalPlayers}  [Press Enter to ready up]";
+                        gameStateText.text = string.Format(readyText, ReadyPlayers, TotalPlayers);
                     else
-                        gameStateText.text = "All players ready!";
+                        gameStateText.text = allReadyText;
                 }
             }
 
@@ -665,7 +689,7 @@ namespace NonameGame
             else if (LobbyTimerRunning && !lobbyTimer.ExpiredOrNotRunning(Runner))
             {
                 int s = Mathf.CeilToInt(lobbyTimer.RemainingTime(Runner) ?? 0f);
-                if (_prevTimerSec != s) { _prevTimerSec = s; timerText.text = $"Starting in {s}s"; }
+                if (_prevTimerSec != s) { _prevTimerSec = s; timerText.text = string.Format(startText, s); }
             }
             else if (_prevTimerSec != null)
             {
@@ -724,7 +748,7 @@ namespace NonameGame
                     break;
 
                 case GameState.EndGame:
-                    if (gameStateText != null) gameStateText.text = "Finish!";
+                    if (gameStateText != null) gameStateText.text = finishText;
                     break;
 
                 case GameState.ShowResults:
@@ -734,7 +758,7 @@ namespace NonameGame
                     {
                         float rem = keepPlayingTimer.RemainingTime(Runner) ?? 0f;                        
                         keepPlayingTimerText.text = rem > 0f
-                            ? $"Keep Playing in {Mathf.CeilToInt(rem)}s..."
+                            ? string.Format(keepPlayingText, Mathf.CeilToInt(rem))
                             : string.Empty;
                     }
                     break;
@@ -771,7 +795,7 @@ namespace NonameGame
 
             var sb = new System.Text.StringBuilder();
             foreach (var (p, place) in finished)    sb.AppendLine($"{place}. {p.DisplayName}");
-            foreach (var p in notFinished)          sb.AppendLine($"— {p.DisplayName} (Not Finished)");
+            foreach (var p in notFinished)          sb.AppendLine(string.Format(notFinishedText, p.DisplayName));
 
             if (resultsText != null) resultsText.text = sb.ToString();
 
@@ -797,6 +821,8 @@ namespace NonameGame
 
             ShowResults = true;
             Cursor.lockState = CursorLockMode.None;
+
+            levelUI.ShowEscObj(true);
         }
 
         void OnValidate()

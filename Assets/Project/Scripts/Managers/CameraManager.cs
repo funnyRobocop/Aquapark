@@ -11,6 +11,7 @@ namespace NonameGame
         [SerializeField] private CinemachineCamera        _playerCamera;
         [SerializeField] private CinemachineOrbitalFollow _playerCameraFollow;
         [SerializeField] private CinemachineCamera[]      _allRagdollCameras;
+        [SerializeField] private LevelUI _levelUI;
 
         // ─── Spectator ─────────────────────────────────────────────────────────────────
 
@@ -138,6 +139,9 @@ namespace NonameGame
             _isSpectating          = true;
             _playerCamera.Priority = 10;
             ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
+
+            _levelUI.ShowObjectiveObj(true);
+            _levelUI.ShowEscObj(true);
         }
 
         /// <summary>Выход из режима спектатора (например при Keep Playing).</summary>
@@ -145,6 +149,8 @@ namespace NonameGame
         {
             _isSpectating = false;
             _spectateTargets.Clear();
+
+            _levelUI.ShowObjectiveObj(false);
         }
 
         // ──────────────────────────────────────────────────────────────────────
