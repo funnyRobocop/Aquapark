@@ -29,6 +29,7 @@ namespace NonameGame
         [SerializeField] public StartingPointBehaviour[] startingPoints;
         [SerializeField] private CheckpointTrigger[] checkpointTriggers;
         [SerializeField] private CameraManager _cameraManager;
+        [SerializeField] private GameObject _airObjects;
 
         [Header("Lobby Settings")]
         [SerializeField] private int   maxPlayersToAutoStart  = 8;
@@ -138,6 +139,22 @@ namespace NonameGame
                         break;
                     }
                 }
+            }
+
+            //Настройки качества
+            if (_gameModel.Settings.Quality != (int)QualityType.High)
+            {
+                Destroy(_airObjects);
+            }
+
+            if (_gameModel.Settings.Quality == (int)QualityType.Low)
+            {
+                QualitySettings.lodBias = 0.35f;
+                //QualitySettings.maximumLODLevel = 2;
+            }
+            else
+            {
+                QualitySettings.lodBias = 0.8f;
             }
         }
 
