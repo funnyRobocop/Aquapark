@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using VContainer;
 using VContainer.Unity;
 
@@ -11,6 +12,7 @@ namespace NonameGame
     public class GameModel : IInitializable
     {
         private readonly SaveService _saveService;
+        private readonly SoundManager _soundManager; // Добавляем приватное поле для звука
 
         public event Action OnDataChanged;
         public event Action<int> OnMoneyChanged;
@@ -32,7 +34,8 @@ namespace NonameGame
         public int SessionThrowCount { get; set; }
         public int SessionGoldCount { get; set; }
         public int SessionFinishCount { get; set; }
-        public int Quality { get; set; }
+
+        public SettingsData Settings { get; private set; }
 
         public int Level => Mathf.FloorToInt(Points / 500f) + 1;
 
@@ -41,27 +44,51 @@ namespace NonameGame
             return (finish * 10) + (gold * 100) + kicks + throws;
         }
 
-        public GameModel(SaveService saveService)
+        // Внедряем SoundManager через конструктор
+        public GameModel(SaveService saveService, SoundManager soundManager)
         {
             _saveService = saveService;
+            _soundManager = soundManager;
         }
 
         public void Initialize()
         {
+            // 1. Загружаем локальные настройки PlayerPrefs
+            Settings = SettingsData.Load();
+            ApplyInitialLocale();
+            ApplyInitialSoundSettings();
+
+            // 2. Загружаем данные профиля игрока через SaveService
             GameModel savedData = _saveService.Load();
 
-            PlayerName = savedData.PlayerName;
-            SelectedSkinId = savedData.SelectedSkinId;
-            PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
-            Money = savedData.Money;
-            Points = savedData.Points;
-            StatsList = savedData.StatsList ?? new List<Stats>();
-            ClaimedBattlePassRewards = savedData.ClaimedBattlePassRewards ?? new List<string>();
-
-            // Инициализация / восстановление ачивок
-            if (savedData.Achievements == null || savedData.Achievements.Count == 0)
+            if (savedData != null)
             {
+                // Если сохранение есть — восстанавливаем данные
+                PlayerName = savedData.PlayerName;
+                SelectedSkinId = savedData.SelectedSkinId;
+                PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
+                Money = savedData.Money;
+                Points = savedData.Points;
+                StatsList = savedData.StatsList ?? new List<Stats>();
+                ClaimedBattlePassRewards = savedData.ClaimedBattlePassRewards ?? new List<string>();
+                Achievements = savedData.Achievements ?? new List<AchievementData>();
+            }
+            else
+            {
+                // Если сохранения НЕТ — задаем начальные дефолтные значения прямо здесь
+                PlayerName = "";
+                SelectedSkinId = -1;
+                PurchasedSkinIdList = new List<int>();
+                Money = 0;
+                Points = 0;
+                StatsList = new List<Stats>();
+                ClaimedBattlePassRewards = new List<string>();
                 Achievements = new List<AchievementData>();
+            }
+
+            // Инициализация / синхронизация ачивок с конфигом
+            if (Achievements.Count == 0)
+            {
                 if (_achievementsConfig != null)
                 {
                     foreach (var def in _achievementsConfig.AchievementsAll)
@@ -72,9 +99,30 @@ namespace NonameGame
             }
             else
             {
-                Achievements = savedData.Achievements;
-                // Синхронизация с конфигом (если добавили новые ачивки)
                 SyncAchievementsWithConfig();
+            }
+        }
+
+        private async void ApplyInitialLocale()
+        {
+            await LocalizationSettings.InitializationOperation.Task;
+
+            int localeIndex = Settings.Language;
+            if (localeIndex >= 0 && localeIndex < LocalizationSettings.AvailableLocales.Locales.Count)
+            {
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeIndex];
+            }
+        }
+
+        /// <summary>
+        /// Передает сохраненные флаги звука и музыки в SoundManager при старте
+        /// </summary>
+        private void ApplyInitialSoundSettings()
+        {
+            if (_soundManager != null)
+            {
+                _soundManager.SetMusicEnabled(Settings.Music);
+                _soundManager.SetSoundEnabled(Settings.Sound);
             }
         }
 

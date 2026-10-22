@@ -37,12 +37,9 @@ namespace NonameGame
         void OnEnable()
         {
             nameInputField.text = _gameModel.PlayerName;
+            _settings = _gameModel.Settings;
 
-            _settings = SettingsData.Load();
             ApplySettingsToUI();
-
-            // Принудительно применяем язык при открытии UI (на случай первого запуска)
-            SetLocale(_settings.Language);
         }
 
         private void ApplySettingsToUI()

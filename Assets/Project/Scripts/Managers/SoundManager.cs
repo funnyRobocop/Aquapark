@@ -25,7 +25,7 @@ namespace NonameGame
         public bool MusicEnabled => musicEnabled;
         public bool SoundEnabled => soundEnabled;
 
-        // Метод интерфейса IStartable, который вызовет сам VContainer на старте игры
+        // Метод интерфейса IStartable
         void IStartable.Start()
         {
             if (audioSource1 == null || audioSource2 == null)
@@ -37,12 +37,8 @@ namespace NonameGame
             audioSource1.loop = false;
             audioSource2.loop = false;
 
-            // Применяем сохранённые настройки
-            var settings = SettingsData.Load();
-            musicEnabled = settings.Music;
-            soundEnabled = settings.Sound;
-
-            // Запускаем музыку только если она включена
+            // УДАЛЕНО: Загрузка настроек переехала в GameModel.Initialize()
+            // Запускаем музыку только если она была включена при инициализации GameModel
             if (musicEnabled)
             {
                 audioSource1.Play();
