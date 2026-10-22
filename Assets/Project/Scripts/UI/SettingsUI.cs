@@ -46,29 +46,22 @@ namespace NonameGame
             gameObject.SetActive(false);
         }
 
-        public void OnLaguageChange(int value)
+        public void OnChangeLanguage(int value)
         {
-            if (value == 0)
-            {
-                Debug.Log("En");
-            }
-            else
-            {
-                Debug.Log("Ru");
-            }
+            Debug.Log(value);
         }
 
-        public void OnMusicChange(bool value)
+        public void OnChangeMusic(bool value)
         {
             Debug.Log("Music " + value);
         }
 
-        public void OnSoundFXChange(int value)
+        public void OnChangeSoundFX(bool value)
         {
             Debug.Log("Sound " + value);
         }
 
-        public void OnQualityChange(int value)
+        public void OnChangeQuality(int value)
         {
             Debug.Log("Quality " + (Quality) value);
         }
