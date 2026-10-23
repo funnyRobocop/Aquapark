@@ -36,6 +36,22 @@ namespace NonameGame
             }
         }
 
+        public void StopMusic()
+        {
+            if (musicEnabled)
+            {
+                audioSource.Stop();
+            }
+        }
+        public void PlayMusic()
+        {
+            if (musicEnabled)
+            {
+                if (!audioSource.isPlaying)
+                    audioSource.Play();
+            }
+        }
+
         /// <summary>
         /// Включить / выключить фоновую музыку.
         /// </summary>

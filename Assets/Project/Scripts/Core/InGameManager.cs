@@ -108,6 +108,7 @@ namespace NonameGame
         private readonly HashSet<NetworkBehaviourId> _finishedSet = new();
 
         [Inject] private GameModel _gameModel;
+        [Inject] private SoundManager _soundManager;
 
         public bool ShowResults
         {
@@ -346,8 +347,6 @@ namespace NonameGame
 
             foreach (var item in checkpointTriggers)
                 item.Clear();
-
-            levelUI.ShowEscObj(false);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -557,6 +556,7 @@ namespace NonameGame
                 Debug.Log($"[InGameManager] Session totals: Kick={_gameModel.SessionKickCount}, Throw={_gameModel.SessionThrowCount}, Gold={_gameModel.SessionGoldCount}, Finish={_gameModel.SessionFinishCount}");
             }
 
+            _soundManager?.PlayMusic();
             var scene = SceneManager.GetSceneByName("Level1");
             if (scene.isLoaded)
                 SceneManager.UnloadSceneAsync(scene);
@@ -649,6 +649,7 @@ namespace NonameGame
             {
                 case GameState.Waiting: RenderWaitingState(); break;
                 case GameState.Game: RenderGameState(); break;
+                case GameState.ShowResults: RenderShowResultsState(); break; // FIX3
             }
 
             if (resultsCanvasGroup != null)
@@ -701,10 +702,33 @@ namespace NonameGame
         private void RenderGameState()
         {
             if (timerText == null) return;
+
+            // FIX2: таймер виден только после первого финиша, не во время всей гонки
+            if (!FirstFinished)
+            {
+                if (_prevTimerSec != null) { _prevTimerSec = null; timerText.text = string.Empty; }
+                return;
+            }
+
             int s = Mathf.CeilToInt(gameplayTimer.RemainingTime(Runner) ?? 0f);
             if (_prevTimerSec == s) return;
             _prevTimerSec = s;
             timerText.text = $"{s / 60:00}:{s % 60:00}";
+        }
+
+        // FIX3: обновление таймера на экране результатов каждый кадр
+        private void RenderShowResultsState()
+        {
+            if (keepPlayingTimerText == null) return;
+            if (keepPlayingTimer.ExpiredOrNotRunning(Runner))
+            {
+                keepPlayingTimerText.text = string.Empty;
+                return;
+            }
+            float rem = keepPlayingTimer.RemainingTime(Runner) ?? 0f;
+            keepPlayingTimerText.text = rem > 0f
+                ? string.Format(keepPlayingText, Mathf.CeilToInt(rem))
+                : string.Empty;
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -720,9 +744,9 @@ namespace NonameGame
             switch (gameState)
             {
                 case GameState.Game:
-                    ClearAllMessages();                         // убираем все плашки Ready
-                    _cameraManager?.StopSpectating();           // сброс спектатора
-
+                    ClearAllMessages();
+                    _cameraManager?.StopSpectating();
+                    _soundManager.PlayMusic();
                     if (CrazyGames.CrazySDK.IsInitialized)
                     {
                         CrazyGames.CrazySDK.Game.GameplayStart();
@@ -737,6 +761,7 @@ namespace NonameGame
                     ClearAllMessages();
                     _cameraManager?.StopSpectating();
                     ReinitLocalPlayerCamera();
+                    _soundManager.StopMusic();
 
                     if (CrazyGames.CrazySDK.IsInitialized)
                     {
@@ -753,14 +778,6 @@ namespace NonameGame
 
                 case GameState.ShowResults:
                     BuildResults();
-                    // Обратный отсчёт до авто-KeepPlaying
-                    if (keepPlayingTimerText != null)
-                    {
-                        float rem = keepPlayingTimer.RemainingTime(Runner) ?? 0f;                        
-                        keepPlayingTimerText.text = rem > 0f
-                            ? string.Format(keepPlayingText, Mathf.CeilToInt(rem))
-                            : string.Empty;
-                    }
                     break;
             }
         }
@@ -821,8 +838,6 @@ namespace NonameGame
 
             ShowResults = true;
             Cursor.lockState = CursorLockMode.None;
-
-            levelUI.ShowEscObj(true);
         }
 
         void OnValidate()

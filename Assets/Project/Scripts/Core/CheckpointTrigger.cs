@@ -10,6 +10,7 @@ namespace NonameGame
         [SerializeField] private Transform spawnPoint; // куда ставить игрока (может быть этот же объект)
 
         [Inject] private VFXManager _vfxManager;
+        [Inject] private SoundManager _soundManager;
 
         private List<NetworkBehaviourId> _triggeredPlayers = new List<NetworkBehaviourId>();
 
@@ -40,6 +41,8 @@ namespace NonameGame
             _vfxManager?.PlaySalutVFX(new Vector3(player.transform.position.x,
                 player.transform.position.y + 1f,
                 player.transform.position.z));
+
+            _soundManager?.PlayPopSound();
 
             _triggeredPlayers.Add(player.Id);
         }

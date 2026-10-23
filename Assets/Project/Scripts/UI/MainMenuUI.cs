@@ -27,6 +27,7 @@ namespace NonameGame
         private AchievementsConfig _achievementsConfig;
         [Inject] private IPlayerSkinLoader _playerSkinLoader;
         [Inject] private SkinPreviewUI _skinPreviewUI;
+        [Inject] private SoundManager _soundManager;
 
         public Canvas Canvas { get { return canvas; } }
         public Camera Camera { get { return camera; } }
@@ -66,7 +67,7 @@ namespace NonameGame
         }
 
         public void Resume()
-        {            
+        {
             _skinPreviewUI.Show(-325f, 250f);
         }
 
@@ -116,6 +117,7 @@ namespace NonameGame
         {
             _skinPreviewUI.Hide();
             fusionNetworkManager.OnQuickJoinPressed();
+            _soundManager.StopMusic();
         }
     }
 }

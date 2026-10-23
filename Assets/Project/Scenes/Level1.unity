@@ -1525,6 +1525,7 @@ GameObject:
   - component: {fileID: 184556667}
   - component: {fileID: 184556666}
   - component: {fileID: 184556670}
+  - component: {fileID: 184556671}
   m_Layer: 5
   m_Name: 'Canvas: UI'
   m_TagString: Untagged
@@ -1634,9 +1635,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelUI
   objectiveObj: {fileID: 7514691974678166155}
-  escObj: {fileID: 1109642283}
-  countdownText: {fileID: 0}
-  startSeconds: 10
+--- !u!114 &184556671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184556665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac9a4e0b83da43489846dd1789b075d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.HoldEscToExit
+  holdDuration: 1
+  fillImage: {fileID: 572102068}
+  rootView: {fileID: 1109642283}
+  resetOnRelease: 1
 --- !u!1 &189196062
 GameObject:
   m_ObjectHideFlags: 0
@@ -9680,7 +9694,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1109642284}
-  - component: {fileID: 1109642286}
   - component: {fileID: 1109642285}
   - component: {fileID: 1109642287}
   m_Layer: 5
@@ -9738,21 +9751,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1109642286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1109642283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ac9a4e0b83da43489846dd1789b075d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.HoldEscToExit
-  holdDuration: 1
-  fillImage: {fileID: 572102068}
-  resetOnRelease: 1
 --- !u!114 &1109642287
 MonoBehaviour:
   m_ObjectHideFlags: 0

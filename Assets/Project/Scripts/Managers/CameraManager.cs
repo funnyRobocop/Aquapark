@@ -141,7 +141,6 @@ namespace NonameGame
             ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
 
             _levelUI.ShowObjectiveObj(true);
-            _levelUI.ShowEscObj(true);
         }
 
         /// <summary>Выход из режима спектатора (например при Keep Playing).</summary>

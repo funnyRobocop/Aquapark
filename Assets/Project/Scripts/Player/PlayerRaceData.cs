@@ -40,6 +40,7 @@ namespace NonameGame
         [Inject] private GameModel _gameModel;
         [Inject] private CameraManager _cameraManager;
         [Inject] private VFXManager    _vfxManager;
+        [Inject] private SoundManager _soundManager;
 
         // Кэш Renderer-ов для быстрого вкл/выкл видимости
         private Renderer[] _renderers;

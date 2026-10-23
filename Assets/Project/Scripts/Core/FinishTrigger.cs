@@ -6,6 +6,7 @@ namespace NonameGame
     public class FinishTrigger : MonoBehaviour
     {
         [Inject] private VFXManager _vfxManager;
+        [Inject] private SoundManager _soundManager;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -27,6 +28,8 @@ namespace NonameGame
                 player.transform.position.x,
                 player.transform.position.y + 1f,
                 player.transform.position.z));
+
+            _soundManager?.PlayPopSound();
         }
     }
 }

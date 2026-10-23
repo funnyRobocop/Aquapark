@@ -12,6 +12,8 @@ namespace NonameGame
         [SerializeField] private float holdDuration = 5f;          // Время удержания в секундах
         [SerializeField] private Image fillImage;                  // Image с Fill Amount (круг)
 
+        [SerializeField] private GameObject rootView;
+
         [Header("Optional")]
         [SerializeField] private bool resetOnRelease = true;       // Сбрасывать прогресс, если отпустили раньше
 
@@ -33,6 +35,7 @@ namespace NonameGame
                 {
                     isHolding = true;
                     hasTriggered = false;
+                    rootView.SetActive(true);
                 }
 
                 holdTimer += Time.unscaledDeltaTime; // unscaled, чтобы работало даже на паузе
@@ -56,6 +59,7 @@ namespace NonameGame
                 if (isHolding && resetOnRelease)
                 {
                     ResetProgress();
+                    rootView.SetActive(false);
                 }
 
                 isHolding = false;
@@ -64,15 +68,11 @@ namespace NonameGame
 
         private void TriggerExit()
         {
-            // Вызываем твою функцию выхода
             OnExit();
 
-            // Или через событие
             OnExitTriggered?.Invoke();
         }
 
-        // === ТВОЯ ФУНКЦИЯ ВЫХОДА ===
-        // Можешь просто дописать сюда нужный код
         private void OnExit()
         {
             Debug.Log("Выход из игры / меню");
@@ -89,7 +89,6 @@ namespace NonameGame
                 fillImage.fillAmount = 0f;
         }
 
-        // Можно вызвать извне, если нужно принудительно сбросить
         public void ForceReset()
         {
             ResetProgress();
