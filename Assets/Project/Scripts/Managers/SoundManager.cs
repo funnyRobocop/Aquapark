@@ -6,18 +6,10 @@ namespace NonameGame
     public class SoundManager : MonoBehaviour, IStartable
     {
         [Header("Настройки аудио")]
-        public AudioSource audioSource1;
-        public AudioSource audioSource2;
+        public AudioSource audioSource; // Оставили один источник для фоновой музыки
         public AudioSource sfxSource;
         [SerializeField] private AudioClip[] popClips;
         [SerializeField] private AudioClip wispClip;
-
-        [Header("Количество повторов")]
-        public int clip1RepeatCount = 10;
-        public int clip2RepeatCount = 4;
-
-        private int currentRepeat = 0;
-        private bool playingFirstClip = true;
 
         private bool musicEnabled = true;
         private bool soundEnabled = true;
@@ -28,20 +20,19 @@ namespace NonameGame
         // Метод интерфейса IStartable
         void IStartable.Start()
         {
-            if (audioSource1 == null || audioSource2 == null)
+            if (audioSource == null)
             {
                 Debug.LogError("Забыли настроить AudioSource в Инспекторе префаба SoundManager!");
                 return;
             }
 
-            audioSource1.loop = false;
-            audioSource2.loop = false;
+            // Включаем зацикливание средствами самого Unity
+            audioSource.loop = true;
 
-            // УДАЛЕНО: Загрузка настроек переехала в GameModel.Initialize()
             // Запускаем музыку только если она была включена при инициализации GameModel
             if (musicEnabled)
             {
-                audioSource1.Play();
+                audioSource.Play();
             }
         }
 
@@ -56,17 +47,14 @@ namespace NonameGame
 
             if (enabled)
             {
-                // Возобновляем с текущего трека
-                AudioSource activeSource = playingFirstClip ? audioSource1 : audioSource2;
-                if (!activeSource.isPlaying)
+                if (!audioSource.isPlaying)
                 {
-                    activeSource.Play();
+                    audioSource.Play();
                 }
             }
             else
             {
-                audioSource1.Stop();
-                audioSource2.Stop();
+                audioSource.Stop();
             }
         }
 
@@ -93,35 +81,6 @@ namespace NonameGame
             if (wispClip == null) return;
 
             sfxSource.PlayOneShot(wispClip);
-        }
-
-        void Update()
-        {
-            // Музыка выключена — ничего не делаем
-            if (!musicEnabled) return;
-
-            // Берем тот источник, который должен играть прямо сейчас
-            AudioSource activeSource = playingFirstClip ? audioSource1 : audioSource2;
-
-            // Как только активный сэмпл ПОЛНОСТЬЮ закончил играть
-            if (!activeSource.isPlaying)
-            {
-                currentRepeat++;
-
-                if (playingFirstClip && currentRepeat >= clip1RepeatCount)
-                {
-                    playingFirstClip = false;
-                    currentRepeat = 0;
-                }
-                else if (!playingFirstClip && currentRepeat >= clip2RepeatCount)
-                {
-                    playingFirstClip = true;
-                    currentRepeat = 0;
-                }
-
-                AudioSource nextSource = playingFirstClip ? audioSource1 : audioSource2;
-                nextSource.Play();
-            }
         }
     }
 }
