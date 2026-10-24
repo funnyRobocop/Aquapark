@@ -198,8 +198,8 @@ namespace NonameGame
             item.Throw(dir * throwForce);
             ClearHold();
 
-            /*if (_view != null)
-                _view.PlayPush();*/
+            if (_view != null)
+                _view.PlayThrow();
         }
 
         public void DropHeldItem()

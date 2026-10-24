@@ -350,6 +350,7 @@ namespace NonameGame
 
             _cameraManager?.ResetPlayerCameraPos();
             _vfxManager?.PlaySalutVFX(pos + Vector3.up);
+            _soundManager?.PlayWispSound();
         }
 
         // ─────────────────────────────────────────────────────────────────────

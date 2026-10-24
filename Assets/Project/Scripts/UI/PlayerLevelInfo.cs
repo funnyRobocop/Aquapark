@@ -3,30 +3,51 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
 
 namespace NonameGame
 {
     public class PlayerLevelInfo : MonoBehaviour
     {
         public TextMeshProUGUI playerNameLabel;
-        private string readyText;
-        private string finishText;
+        private string playerReadyText;
+        private string playerFinishText;
+        [SerializeField] private Image iconImage;
+        [SerializeField] private Sprite firstSprite;
+        [SerializeField] private Sprite finishedSprite;
+        [SerializeField] private Sprite readySprite;
 
         void Start()
         {
-            readyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "ready");
-            finishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "finish");
+            playerReadyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "playerReady");
+            playerFinishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "playerFinish");
+
+            iconImage.gameObject.SetActive(false);
         }
 
         public void ShowReady(string message)
         {
-            if (readyText!= null)
-                playerNameLabel.text = string.Format(readyText, name);
+            if (playerReadyText != null)
+                playerNameLabel.text = string.Format(playerReadyText, message);
+
+            iconImage.gameObject.SetActive(true);
+            iconImage.sprite = readySprite;
         }
-        public void ShowFinish(string message)
+        
+        public void ShowFinish(string message, bool isFirst = false)
         {
-            if (finishText != null)
-                playerNameLabel.text = string.Format(finishText, name);
+            if (playerFinishText != null)
+                playerNameLabel.text = string.Format(playerFinishText, message);
+
+            iconImage.gameObject.SetActive(true);
+            if (isFirst)
+            {
+                iconImage.sprite = firstSprite;
+            }
+            else
+            {
+                iconImage.sprite = finishedSprite;
+            }
         }
     }
 }

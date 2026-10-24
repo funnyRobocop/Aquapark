@@ -140,7 +140,7 @@ namespace NonameGame
             _playerCamera.Priority = 10;
             ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
 
-            _levelUI.ShowObjectiveObj(true);
+            _levelUI.ShowObjectiveObj(_spectateTargets[_spectateIndex].DisplayName);
         }
 
         /// <summary>Выход из режима спектатора (например при Keep Playing).</summary>
@@ -149,7 +149,7 @@ namespace NonameGame
             _isSpectating = false;
             _spectateTargets.Clear();
 
-            _levelUI.ShowObjectiveObj(false);
+            _levelUI.HideObjectiveObj();
         }
 
         // ──────────────────────────────────────────────────────────────────────

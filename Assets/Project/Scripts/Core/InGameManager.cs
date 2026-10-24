@@ -92,7 +92,7 @@ namespace NonameGame
         private bool _showResults;
 
         private string waitingText;
-        private string readyText;
+        private string readyToPlayText;
         private string allReadyText;
         private string startText;
         private string finishText;
@@ -124,7 +124,7 @@ namespace NonameGame
         private void UpdateLocalizedStrings()
         {
             waitingText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "waiting");
-            readyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "readyToPlay");
+            readyToPlayText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "readyToPlay");
             allReadyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "allReady");
             startText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "start");
             finishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "finish");
@@ -674,7 +674,7 @@ namespace NonameGame
                     if (TotalPlayers == 0)
                         gameStateText.text = string.Format(waitingText, maxPlayersToAutoStart);
                     else if (ReadyPlayers < TotalPlayers)
-                        gameStateText.text = string.Format(readyText, ReadyPlayers, TotalPlayers);
+                        gameStateText.text = string.Format(readyToPlayText, ReadyPlayers, TotalPlayers);
                     else
                         gameStateText.text = allReadyText;
                 }

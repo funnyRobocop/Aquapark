@@ -232,6 +232,8 @@ namespace NonameGame
         {
             if (!HasStateAuthority) return;
             NetThrow++;
+            
+            _soundManager.PlayWispSound();
         }
 
         public void PlayShoot()

@@ -8,10 +8,16 @@ namespace NonameGame
     public class LevelUI : MonoBehaviour
     {
         public GameObject objectiveObj;
+        public TextMeshProUGUI playerNameLabel;
 
-        public void ShowObjectiveObj(bool value)
+        public void ShowObjectiveObj(string playerName)
         {
-            objectiveObj.SetActive(value);
+            objectiveObj.SetActive(true);
+            playerNameLabel.text = playerName;
+        }
+        public void HideObjectiveObj()
+        {
+            objectiveObj.SetActive(false);
         }
     }
 }
