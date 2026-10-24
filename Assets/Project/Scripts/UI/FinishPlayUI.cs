@@ -9,6 +9,7 @@ namespace NonameGame
 {
     public class FinishPlayUI : MonoBehaviour
     {
+        [SerializeField] private TextMeshProUGUI crownsText;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private RewardUI rewardPanel;
         [SerializeField] private Button claimButton;
@@ -27,6 +28,10 @@ namespace NonameGame
             gameObject.SetActive(true);
 
             int levelId = 0;
+
+            var crowns = _gameModel.CalculatePoints(_gameModel.SessionFinishCount,
+                _gameModel.SessionGoldCount, _gameModel.SessionKickCount, _gameModel.SessionThrowCount);
+            crownsText.text = "+" + crowns;
 
             levelText.text = string.Format(levelText.text, _gameModel.SessionFinishCount,
                 _gameModel.SessionGoldCount, _gameModel.SessionKickCount, _gameModel.SessionThrowCount);
