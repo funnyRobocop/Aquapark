@@ -199,7 +199,7 @@ namespace NonameGame
             if (!HasFinished) return; // срабатываем только при true (не при сбросе в false)
 
             // Плашка "is finished" для всех
-            InGameManager.Instance?.OnPlayerFinishedUI(DisplayName);
+            InGameManager.Instance?.OnPlayerFinishedUI(DisplayName, FinishPlace == 1);
 
             // Локальный игрок — переключаем камеру и считаем статистику
             if (HasInputAuthority)

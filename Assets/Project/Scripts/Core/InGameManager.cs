@@ -467,11 +467,11 @@ namespace NonameGame
         }
 
         /// <summary>Спавнить плашку "игрок X is finished". Вызывается на всех клиентах.</summary>
-        public void OnPlayerFinishedUI(string name)
+        public void OnPlayerFinishedUI(string name, bool isFirst)
         {
             if (playerLevelInfoContent == null || playerLevelInfoPrefab == null) return;
             var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
-            go.GetComponent<PlayerLevelInfo>()?.ShowFinish(string.Format(playerFinishText, name));
+            go.GetComponent<PlayerLevelInfo>()?.ShowFinish(string.Format(playerFinishText, name), isFirst);
         }
 
         /// <summary>После Keep Playing возвращает камеру на локального.</summary>

@@ -34,6 +34,14 @@ namespace NonameGame
             {
                 iconImage.sprite = finishedSprite;
             }
+
+            StartCoroutine(HideCrtn());
+        }
+
+        private IEnumerator HideCrtn()
+        {
+            yield return new WaitForSeconds(1f);
+            Destroy(gameObject);
         }
     }
 }
