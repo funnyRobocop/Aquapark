@@ -98,6 +98,8 @@ namespace NonameGame
         private string finishText;
         private string keepPlayingText;
         private string notFinishedText;
+        private string playerReadyText;
+        private string playerFinishText;
 
         // Карточки готовности (id → GO) — удаляются при снятии Ready
         private readonly Dictionary<NetworkBehaviourId, GameObject> _readyCards = new();
@@ -130,6 +132,8 @@ namespace NonameGame
             finishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "finish");
             keepPlayingText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "keepPlaying");
             notFinishedText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "notFinished");
+            playerReadyText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "playerReady");
+            playerFinishText = LocalizationSettings.StringDatabase.GetLocalizedString("MyStrings", "playerFinish");
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -448,7 +452,7 @@ namespace NonameGame
                 if (!_readyCards.ContainsKey(id))
                 {
                     var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
-                    go.GetComponent<PlayerLevelInfo>()?.ShowReady(name);
+                    go.GetComponent<PlayerLevelInfo>()?.ShowReady(string.Format(playerReadyText, name));
                     _readyCards[id] = go;
                 }
             }
@@ -467,7 +471,7 @@ namespace NonameGame
         {
             if (playerLevelInfoContent == null || playerLevelInfoPrefab == null) return;
             var go = Instantiate(playerLevelInfoPrefab, playerLevelInfoContent);
-            go.GetComponent<PlayerLevelInfo>()?.ShowFinish(name);
+            go.GetComponent<PlayerLevelInfo>()?.ShowFinish(string.Format(playerFinishText, name));
         }
 
         /// <summary>После Keep Playing возвращает камеру на локального.</summary>
@@ -489,7 +493,12 @@ namespace NonameGame
 
             if (playerLevelInfoContent == null) return;
             foreach (Transform child in playerLevelInfoContent)
-                Destroy(child.gameObject);
+            {
+                if (child.GetComponent<PlayerLevelInfo>() != null)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
