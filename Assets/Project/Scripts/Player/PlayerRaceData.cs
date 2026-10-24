@@ -246,7 +246,7 @@ namespace NonameGame
 
         private IEnumerator FlyCameraCrtn()
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(8f);
             _cameraManager?.InitForPlayer(_cameraTarget);
         }
 
