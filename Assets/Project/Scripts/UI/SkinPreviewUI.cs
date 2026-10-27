@@ -10,7 +10,7 @@ namespace NonameGame
         [SerializeField] private Animator _animator;
 
         private GameObject _currentSpawnedSkinMesh;
-        private PlayerSkin playerSkin;
+        private PlayerSkin playerSkin = PlayerSkin.None;
         private Quaternion defaultRotate;
 
         void Awake()

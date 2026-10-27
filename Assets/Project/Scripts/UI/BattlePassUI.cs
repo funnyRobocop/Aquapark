@@ -103,7 +103,7 @@ namespace NonameGame
                 if (def == null) continue;
 
                 var item = Instantiate(achievementItemPrefab, achievementsContainer);
-                item.Setup(ach, def, OnClaimClicked);
+                item.Setup(_gameModel, ach, def, OnClaimClicked);
             }
 
             RefreshLevelRewardButtons();
@@ -163,9 +163,11 @@ namespace NonameGame
             // Считаем точную разницу во времени
             TimeSpan timeRemaining = nextResetTime - now;
 
-            // Выводим в формате: Xd XXh XXm (секунды по желанию можно добавить через :D2)
-            timerText.text = $"осталось {timeRemaining.Days}д {timeRemaining.Hours:D2}ч {timeRemaining.Minutes:D2}м";
-            //timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours:D2}h {timeRemaining.Minutes:D2}m remaining";
+            int lang = _gameModel.Settings.Language == 0 ? 0 : 1;
+            if (lang == 1)
+                timerText.text = $"осталось {timeRemaining.Days}д {timeRemaining.Hours:D2}ч {timeRemaining.Minutes:D2}м";
+            else
+                timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours:D2}h {timeRemaining.Minutes:D2}m remaining";
 
             if (timeRemaining.TotalSeconds <= 0)
             {

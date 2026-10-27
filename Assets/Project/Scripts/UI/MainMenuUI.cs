@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace NonameGame
         [SerializeField] private Canvas canvas;
         [SerializeField] private Camera camera;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private GameObject tutorArrow;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -58,22 +60,24 @@ namespace NonameGame
 
         void OnEnable()
         {
+            if (_gameModel.SelectedSkinId < 0)
+            {
+                OnShopButtonClicked();
+                tutorArrow?.SetActive(true);
+                return;
+            }
             SpawnPlayerMesh();
         }
 
         public void SpawnPlayerMesh()
         {
-            if (_gameModel.SelectedSkinId < 0)
-            {
-                OnShopButtonClicked();
-                return;
-            }
             _skinPreviewUI.SpawnPlayerMesh(_playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId]);
         }
 
         public void Resume()
         {
             _skinPreviewUI.Show(-325f, 250f);
+            tutorArrow?.SetActive(false);
         }
 
         private void UpdatePlayerNameText(string name)

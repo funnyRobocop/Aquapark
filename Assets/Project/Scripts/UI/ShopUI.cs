@@ -29,13 +29,12 @@ namespace NonameGame
         [Inject] private SkinPreviewUI _skinPreviewUI;
 
         private ShopItemUI _clickedItem;
-        private HoldButton _buyHoldButton; // Ссылка на наш новый компонент
+        private HoldButton _buyHoldButton;
 
         private void Awake()
         {
             selectButton.onClick.AddListener(SelectSkin);
 
-            // Находим компонент HoldButton на кнопке покупки и подписываемся
             if (buyButton != null)
             {
                 _buyHoldButton = buyButton.GetComponent<HoldButton>();
@@ -57,9 +56,13 @@ namespace NonameGame
 
         private void OnEnable()
         {
-            UpdateButtonsView();
-            if (_buyHoldButton != null) _buyHoldButton.ResetHold();
+            Load();
+        }
 
+        public void Load()
+        {
+            UpdateButtonsView();
+            if (_buyHoldButton != null) _buyHoldButton.ResetHold();            
             if (_shopItems.Count > 0 && _shopItems[0].ClickButton != null)
                 _shopItems[0].ClickButton.onClick?.Invoke();
 
@@ -148,9 +151,18 @@ namespace NonameGame
         {
             if (_clickedItem == null)
                 return;
-
+            
             _gameModel.PurchaseSkin((int)_clickedItem.SkinData.SkinId, _clickedItem.SkinData.Price);
             UpdateButtonsView();
+
+            if (_gameModel.SelectedSkinId < 0)
+            {
+                SelectSkin();
+                gameObject.SetActive(false);
+                var menu = FindAnyObjectByType<MainMenuUI>();
+                menu.SpawnPlayerMesh();
+                menu.Resume();
+            }
         }
 
         private void SelectSkin(PlayerSkinData skinData, ShopItemUI shopItem)
@@ -163,8 +175,9 @@ namespace NonameGame
             if (_clickedItem != null)
                 _clickedItem.SetClicked(true);
 
-            foreach (var item in nameLabel) item.text = skinData.GetNameString();
-            foreach (var item in typeLabel) item.text = skinData.GetSkinTypeString();
+            int lang = _gameModel.Settings.Language == 0 ? 0 : 1;
+            foreach (var item in nameLabel) item.text = skinData.GetNameString(lang);
+            foreach (var item in typeLabel) item.text = skinData.GetSkinTypeString(lang);
             priceLabel.text = skinData.Price.ToString() + "$";
 
             UpdateButtonsView();

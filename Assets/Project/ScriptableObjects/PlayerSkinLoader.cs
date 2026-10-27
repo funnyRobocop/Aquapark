@@ -51,8 +51,32 @@ namespace NonameGame
         public AssetReferenceSprite SpriteReference;
         public AssetReference PrefabReference;
 
-        public string GetSkinTypeString() => SkinType == PlayerSkinType.Rare ? "Rare" : "Common";
-        public string GetNameString() => NameEn;
+        public string GetSkinTypeString(int lang)
+        {
+            if (SkinType == PlayerSkinType.Rare)
+            {
+                if (lang == 1)
+                    return "Редкий";
+                else
+                    return "Rare";
+            }
+            else
+            {
+                if (lang == 1)
+                    return "Обычный";
+                else
+                    return "Regular";
+            };
+        }
+
+        public string GetNameString(int lang)
+        {
+            if (lang == 1)
+                return NameRu;
+            else
+                return NameEn;
+        }
+        
         public int Price => SkinType == PlayerSkinType.Rare ? 5000 : 1000;
     }
 
@@ -78,6 +102,7 @@ namespace NonameGame
         Rooster,
         Strawberry,
         Terminator,
-        Tomato
+        Tomato,
+        None
     }
 }
