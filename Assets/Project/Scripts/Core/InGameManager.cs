@@ -50,6 +50,7 @@ namespace NonameGame
 
         [Header("UI: HUD")]
         public LevelUI levelUI;
+        public HoldEscToExit escPanel;
         public TextMeshProUGUI gameStateText;
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI keepPlayingTimerText;
@@ -712,7 +713,7 @@ namespace NonameGame
         {
             if (timerText == null) return;
 
-            // FIX2: таймер виден только после первого финиша, не во время всей гонки
+            // таймер виден только после первого финиша, не во время всей гонки
             if (!FirstFinished)
             {
                 if (_prevTimerSec != null) { _prevTimerSec = null; timerText.text = string.Empty; }
@@ -725,7 +726,7 @@ namespace NonameGame
             timerText.text = $"{s / 60:00}:{s % 60:00}";
         }
 
-        // FIX3: обновление таймера на экране результатов каждый кадр
+        // обновление таймера на экране результатов каждый кадр
         private void RenderShowResultsState()
         {
             if (keepPlayingTimerText == null) return;
@@ -771,6 +772,7 @@ namespace NonameGame
                     _cameraManager?.StopSpectating();
                     ReinitLocalPlayerCamera();
                     _soundManager.StopMusic();
+                    escPanel?.Hide();
 
                     if (CrazyGames.CrazySDK.IsInitialized)
                     {
@@ -787,6 +789,8 @@ namespace NonameGame
 
                 case GameState.ShowResults:
                     BuildResults();
+                    escPanel?.Show();
+                    ClearAllMessages();
                     break;
             }
         }

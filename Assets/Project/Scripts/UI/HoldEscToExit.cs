@@ -59,7 +59,9 @@ namespace NonameGame
                 if (isHolding && resetOnRelease)
                 {
                     ResetProgress();
-                    rootView.SetActive(false);
+                    if (InGameManager.Instance != null &&
+                        InGameManager.Instance.gameState != InGameManager.GameState.ShowResults)
+                            rootView.SetActive(false);
                 }
 
                 isHolding = false;
@@ -93,6 +95,16 @@ namespace NonameGame
         {
             ResetProgress();
             isHolding = false;
+        }
+
+        public void Show()
+        {
+            rootView.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            rootView.SetActive(false);
         }
     }
 }
