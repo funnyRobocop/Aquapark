@@ -79,7 +79,7 @@ namespace NonameGame
                 PlayerName = "";
                 SelectedSkinId = -1;
                 PurchasedSkinIdList = new List<int>();
-                Money = 0;
+                Money = 1000;
                 Points = 0;
                 StatsList = new List<Stats>();
                 ClaimedBattlePassRewards = new List<string>();

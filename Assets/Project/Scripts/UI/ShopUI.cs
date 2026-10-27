@@ -18,6 +18,7 @@ namespace NonameGame
         [SerializeField] private Transform itemContainer;
         [SerializeField] private TMP_Text[] nameLabel;
         [SerializeField] private TMP_Text[] typeLabel;
+        [SerializeField] private TMP_Text priceLabel;
         [SerializeField] private GameObject previewPanel;
         [SerializeField] private GameObject itemPrefab;
 
@@ -164,6 +165,7 @@ namespace NonameGame
 
             foreach (var item in nameLabel) item.text = skinData.GetNameString();
             foreach (var item in typeLabel) item.text = skinData.GetSkinTypeString();
+            priceLabel.text = skinData.Price.ToString() + "$";
 
             UpdateButtonsView();
             if (_buyHoldButton != null) _buyHoldButton.ResetHold();

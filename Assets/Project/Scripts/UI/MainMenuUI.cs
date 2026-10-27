@@ -63,6 +63,11 @@ namespace NonameGame
 
         public void SpawnPlayerMesh()
         {
+            if (_gameModel.SelectedSkinId < 0)
+            {
+                OnShopButtonClicked();
+                return;
+            }
             _skinPreviewUI.SpawnPlayerMesh(_playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId]);
         }
 

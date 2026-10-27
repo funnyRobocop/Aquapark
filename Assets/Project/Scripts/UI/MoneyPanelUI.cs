@@ -29,7 +29,7 @@ namespace NonameGame
 
         private void UpdateMoneyText(int money)
         {
-            moneyText.text = money.ToString();
+            moneyText.text = money.ToString() + "$";
         }
     }
 }
