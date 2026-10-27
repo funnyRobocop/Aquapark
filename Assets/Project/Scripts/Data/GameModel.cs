@@ -210,8 +210,8 @@ namespace NonameGame
             else
             {
                 var existingStats = StatsList.Find(s => s.Id == newStats.Id);
-                existingStats.GoldCount += newStats.GoldCount;
                 existingStats.FinishCount += newStats.FinishCount;
+                existingStats.GoldCount += newStats.GoldCount;
                 existingStats.KickCount += newStats.KickCount;
                 existingStats.ThrowCount += newStats.ThrowCount;
             }
@@ -228,18 +228,18 @@ namespace NonameGame
 
         public void ClearSessionData()
         {
+            SessionFinishCount = 0;
+            SessionGoldCount = 0;
             SessionKickCount = 0;
             SessionThrowCount = 0;
-            SessionGoldCount = 0;
-            SessionFinishCount = 0;
         }
 
         public void UpdateAchievementsProgress()
         {
             if (Achievements == null || _achievementsConfig == null) return;
 
-            int totalGold = StatsList?.Sum(s => s.GoldCount) ?? 0;
             int totalFinish = StatsList?.Sum(s => s.FinishCount) ?? 0;
+            int totalGold = StatsList?.Sum(s => s.GoldCount) ?? 0;
             int totalThrow = StatsList?.Sum(s => s.ThrowCount) ?? 0;
             int totalKick = StatsList?.Sum(s => s.KickCount) ?? 0;
 
@@ -250,8 +250,8 @@ namespace NonameGame
 
                 int value = def.Type switch
                 {
-                    AchievementType.Gold => totalGold,
                     AchievementType.Finish => totalFinish,
+                    AchievementType.Gold => totalGold,
                     AchievementType.Throw => totalThrow,
                     AchievementType.Kick => totalKick,
                     _ => 0
@@ -310,16 +310,16 @@ namespace NonameGame
         public class Stats
         {
             public int Id;
-            public int GoldCount;
             public int FinishCount;
+            public int GoldCount;
             public int KickCount;
             public int ThrowCount;
 
-            public Stats(int id, int goldCount, int finishCount, int kickCount, int throwCount)
+            public Stats(int id, int finishCount, int goldCount, int kickCount, int throwCount)
             {
                 Id = id;
-                GoldCount = goldCount;
                 FinishCount = finishCount;
+                GoldCount = goldCount;
                 KickCount = kickCount;
                 ThrowCount = throwCount;
             }

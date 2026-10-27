@@ -35,7 +35,7 @@ namespace NonameGame
 
             levelText.text = string.Format(levelText.text, _gameModel.SessionFinishCount,
                 _gameModel.SessionGoldCount, _gameModel.SessionKickCount, _gameModel.SessionThrowCount);
-
+                
             _gameModel.UpdateStatsAndProgress(new GameModel.Stats(levelId, _gameModel.SessionFinishCount,
                 _gameModel.SessionGoldCount, _gameModel.SessionKickCount, _gameModel.SessionThrowCount));
 
