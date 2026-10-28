@@ -41,7 +41,8 @@ namespace NonameGame
         [Header("Tuning")]
         [SerializeField] private float speedDamp = 0.1f;
         [SerializeField] private float runSpeedThreshold = 0.5f;
-        [SerializeField] private float fallYThreshold = -1.5f;
+        [SerializeField] private float fallYThreshold  = -2.5f;  // увеличен порог — меньше ложных срабатываний
+        [SerializeField] private int   fallDebounce     = 4;      // тиков подряд с vy < порога чтобы IsFalling стал true
 
         [Inject] private VFXManager _vfxManager;
         [Inject] private SoundManager _soundManager;
@@ -69,6 +70,9 @@ namespace NonameGame
 
         // ── Локальные зеркала счётчиков для Render() ─────────────────────────
         private int _prevJump, _prevDash, _prevPush, _prevThrow, _prevShoot;
+
+        // ── Дебаунс для IsFalling ─────────────────────────────────────────────
+        private int _fallingTicks = 0;
 
         // ── Хэши параметров Animator ──────────────────────────────────────────
         private static readonly int SpeedHash      = Animator.StringToHash("Speed");
@@ -110,7 +114,7 @@ namespace NonameGame
             InitSkin();
         }
 
-        // ── Скин ─────────────────────────────────────────────────────────────
+        // ── Скин ─���───────────────────────────────────────────────────────────
         private void OnSkinChanged() => InitSkin();
 
         public void InitSkin()
@@ -165,7 +169,14 @@ namespace NonameGame
             bool armed   = weapon != null && weapon.IsArmed;
 
             float vy      = rb != null ? rb.linearVelocity.y : 0f;
-            bool falling  = !flying && !grounded && vy < fallYThreshold;
+            // Дебаунс: IsFalling включается только если N тиков подряд vy < threshold.
+            // Убирает дёргание при осцилляции скорости около порога и ранние
+            // срабатывания сразу после пика прыжка.
+            if (!flying && !grounded && vy < fallYThreshold)
+                _fallingTicks++;
+            else
+                _fallingTicks = 0;
+            bool falling = _fallingTicks >= fallDebounce;
 
             float speedNorm = 0f;
             if (!flying && GetInput(out NetworkInputData data) && data.Move.sqrMagnitude > 0.01f && grounded)
@@ -251,7 +262,7 @@ namespace NonameGame
         public void SetFlying(bool value)
         {
             // Если нужен мгновенный отклик до следующего FixedUpdateNetwork,
-            // пишем напрямую; FixedUpdateNetwork всё равно перезапишет.
+            // пишем напрямую; FixedUpdateNetwork всё равно ��ерезапишет.
             if (!HasStateAuthority) return;
             NetFlying = value;
             if (value)
