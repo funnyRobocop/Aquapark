@@ -636,6 +636,7 @@ MonoBehaviour:
   dashDuration: 0.22
   dashUpBoost: 0.2
   fallMultiplier: 2.8
+  coyoteTime: 0.12
   groundCheck: {fileID: 2458623582212189551}
   groundCheckRadius: 0.28
   groundMask:
@@ -643,12 +644,37 @@ MonoBehaviour:
     m_Bits: 12480
   stepCheckerThreshold: 0.65
   maxStepHeight: 0.45
-  slopeCheckerThreshold: 0.45
   maxClimbableSlopeAngle: 55
+  slopeCheckerThreshold: 0.45
   gravityMultiplier: 2.2
-  gravityMultiplierOnSlideChange: 2.5
+  gravityMultiplierOnSlideChange: 1.5
   gravityMultiplierIfUnclimbableSlope: 20
-  lockOnSlope: 1
+  lockOnSlope: 0
+  speedMultiplierOnAngle:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  slopeSpeedMultiplier: 0.06
   frictionAgainstFloor: 0.95
   cameraTarget: {fileID: 8687073919806671688}
   _view: {fileID: 2137247441811218386}
@@ -667,8 +693,6 @@ MonoBehaviour:
   _StartingPointIndex: -1
   _OnStartPoint:
     RawValue: 0
-  _HasFinished:
-    RawValue: 0
   _FinishPlace: 0
   _PlayerName:
     _length: 3
@@ -678,7 +702,7 @@ MonoBehaviour:
   _CheckpointRotation: {x: 0, y: 0, z: 0, w: 0}
   _IsReady:
     RawValue: 0
-  _HasFinishedRendered:
+  _HasFinished:
     RawValue: 0
   _IsVisible:
     RawValue: 1
@@ -748,7 +772,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.PlayerView
   animator: {fileID: 7420484192698730146}
-  networkAnimator: {fileID: 0}
   controller: {fileID: 7187583196042404613}
   grab: {fileID: 6363781521094476151}
   weapon: {fileID: 2485695873283258591}
