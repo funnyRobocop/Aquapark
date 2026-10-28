@@ -195,7 +195,7 @@ namespace NonameGame
             dir += Vector3.up * (throwUpForce / Mathf.Max(throwForce, 0.01f));
             dir.Normalize();
 
-            item.Throw(dir * throwForce);
+            item.Throw(dir * throwForce, Object.InputAuthority);
             ClearHold();
 
             if (_view != null)

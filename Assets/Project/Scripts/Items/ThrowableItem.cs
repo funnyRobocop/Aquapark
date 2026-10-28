@@ -69,11 +69,12 @@ namespace NonameGame
             IsHeld = true;
             IsAirborneThrown = false;
             HeldBy = player;
+            ThrownBy = default;
         }
 
-        public void Throw(Vector3 force)
+        public void Throw(Vector3 force, PlayerRef throwner)
         {
-            ThrownBy = HeldBy;       // запомнить до сброса
+            ThrownBy = throwner;       // запомнить до сброса
             IsHeld = false;
             IsAirborneThrown = true;
             HeldBy = default;
@@ -108,15 +109,16 @@ namespace NonameGame
         {
             if (Runner.LocalPlayer != thrower) return;
 
+            var local = PlayerRaceData.LocalInstance;
+            if (local == null)
+                return;
+                
+            local.PlayHitFeedback(hitPosition);   // ← эффект + звук у кидавшего
+
             if (InGameManager.Instance != null &&
                 InGameManager.Instance.gameState == InGameManager.GameState.Game)
             {
-                var local = PlayerRaceData.LocalInstance;
-                if (local != null)
-                {
-                    local.ThrowCount++;
-                    local.PlayHitFeedback(hitPosition);   // ← эффект + звук у кидавшего
-                }
+                local.ThrowCount++;
             }
         }
 
