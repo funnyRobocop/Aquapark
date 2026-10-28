@@ -44,6 +44,8 @@ namespace NonameGame
         [Header("Race Settings")]
         [SerializeField] private float raceDurationSeconds    = 300f;
         [SerializeField] private float afterFirstFinishSeconds = 60f;   // таймер после первого финиша
+        [SerializeField] private float matchForcedTimerAfter   = 120f;  // через сколько секунд без финиша включить таймер
+        [SerializeField] private float matchForcedTimerSeconds = 60f;   // длина принудительного таймера
         [SerializeField] private float endGameDelay           = 0f;
         [SerializeField] private float resultsDelay           = 10f;
 
@@ -80,6 +82,7 @@ namespace NonameGame
         [Networked] public NetworkBool   AllPlayersReady   { get; set; }
         [Networked] public int           FinishedCount     { get; set; }
         [Networked] public NetworkBool   FirstFinished     { get; set; } // сработал первый финиш
+        [Networked] public NetworkBool   ForcedCountdown   { get; set; } // принудительный таймер по истечении matchForcedTimerAfter
         //[Networked] public NetworkBool   MovementLocked    { get; set; } // заблок движения во время отсчёта 3-2-1
         [Networked] public TickTimer     keepPlayingTimer  { get; set; } // авто-KeepPlaying на экране результатов
 
@@ -258,6 +261,16 @@ namespace NonameGame
                 case GameState.Waiting: UpdateWaitingState(); break;
 
                 case GameState.Game:
+                    // Принудительный таймер: если никто не финишировал за matchForcedTimerAfter секунд
+                    if (!FirstFinished && !ForcedCountdown)
+                    {
+                        float elapsed = raceDurationSeconds - (gameplayTimer.RemainingTime(Runner) ?? raceDurationSeconds);
+                        if (elapsed >= matchForcedTimerAfter)
+                        {
+                            ForcedCountdown = true;
+                            gameplayTimer   = TickTimer.CreateFromSeconds(Runner, matchForcedTimerSeconds);
+                        }
+                    }
                     if (gameplayTimer.Expired(Runner))
                     {
                         gameState     = GameState.EndGame;
@@ -323,7 +336,7 @@ namespace NonameGame
             }
             else
             {
-                // Если не все готовы — сбрасываем отсчёт и разблокируем движение
+                // Если не все готовы — сбрасываем отсчёт и раз��локируем движение
                 if (AllPlayersReady) { AllPlayersReady = false; /*MovementLocked = false;*/ countdownTimer = default; }
             }
         }
@@ -343,6 +356,7 @@ namespace NonameGame
             //MovementLocked    = false; // разблокировать с стартом гонки
             FinishedCount     = 0;
             FirstFinished     = false;
+            ForcedCountdown   = false;
             keepPlayingTimer  = default;
             _finishedSet.Clear();
             for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
@@ -614,7 +628,8 @@ namespace NonameGame
             FinishedCount = 0;
             TotalPlayers = 0;
             ReadyPlayers = 0;
-            FirstFinished = false;
+            FirstFinished   = false;
+            ForcedCountdown = false;
             //MovementLocked    = false;
             keepPlayingTimer = default;
             _finishedSet.Clear();
@@ -731,8 +746,8 @@ namespace NonameGame
         {
             if (timerText == null) return;
 
-            // таймер виден только после первого финиша, не во время всей гонки
-            if (!FirstFinished)
+            // таймер виден после первого финиша ИЛИ когда включился принудительный таймер
+            if (!FirstFinished && !ForcedCountdown)
             {
                 if (_prevTimerSec != null) { _prevTimerSec = null; timerText.text = string.Empty; }
                 return;
@@ -809,6 +824,7 @@ namespace NonameGame
                     BuildResults();
                     escPanel?.Show();
                     ClearAllMessages();
+                    if (timerText != null) timerText.text = string.Empty;  // убираем застывший таймер
                     break;
             }
         }
