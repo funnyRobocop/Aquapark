@@ -30,7 +30,10 @@ namespace NonameGame
         [SerializeField] public StartingPointBehaviour[] startingPoints;
         [SerializeField] private CheckpointTrigger[] checkpointTriggers;
         [SerializeField] private CameraManager _cameraManager;
-        [SerializeField] private GameObject _airObjects;
+        [SerializeField] private GameObject _airObjects; 
+        
+        [Header("Throwable Items")]
+        [SerializeField] private ThrowableItem[] _throwableItems;
 
         [Header("Lobby Settings")]
         [SerializeField] private int   maxPlayersToAutoStart  = 8;
@@ -602,23 +605,38 @@ namespace NonameGame
                 p.RPC_ResetForNewRound();
             }
 
-            gameState         = GameState.Waiting;
-            gameplayTimer     = default;
-            countdownTimer    = default;
-            lobbyTimer        = default;
+            gameState = GameState.Waiting;
+            gameplayTimer = default;
+            countdownTimer = default;
+            lobbyTimer = default;
             LobbyTimerRunning = false;
-            AllPlayersReady   = false;
-            FinishedCount     = 0;
-            TotalPlayers      = 0;
-            ReadyPlayers      = 0;
-            FirstFinished     = false;
+            AllPlayersReady = false;
+            FinishedCount = 0;
+            TotalPlayers = 0;
+            ReadyPlayers = 0;
+            FirstFinished = false;
             //MovementLocked    = false;
-            keepPlayingTimer  = default;
+            keepPlayingTimer = default;
             _finishedSet.Clear();
             for (int i = 0; i < SlotFinishPlace.Length; i++) SlotFinishPlace.Set(i, 0);
 
+            ResetThrowableItems();
             // Дорегистрировать опоздавших, которых не было в playerList
             RegisterPendingPlayers();
+        }
+
+        private void ResetThrowableItems()
+        {
+            if (_throwableItems == null) return;
+            foreach (var item in _throwableItems)
+            {
+                if (item == null) continue;
+
+                if (item.Object.HasStateAuthority)
+                    item.ResetToInitial();
+                else
+                    item.RPC_ResetToInitial(); // нужен RPC к authority
+            }
         }
 
         /// <summary>

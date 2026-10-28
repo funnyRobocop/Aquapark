@@ -22,11 +22,26 @@ namespace NonameGame
 
         private Rigidbody _rb;
         private Collider _col;
+        private NetworkTransform _nt;
+
+        private Vector3 _initialPosition;
 
         public override void Spawned()
         {
             _rb = GetComponent<Rigidbody>();
             _col = GetComponent<Collider>();
+            _nt = GetComponent<NetworkTransform>();
+            _initialPosition = transform.position;
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void RPC_ResetToInitial() => ResetToInitial();
+
+        public void ResetToInitial()
+        {
+            _nt.Teleport(_initialPosition);
+            var rb = GetComponent<Rigidbody>();
+            if (rb != null) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
         }
 
         public override void FixedUpdateNetwork()
