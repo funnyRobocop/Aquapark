@@ -101,16 +101,22 @@ namespace NonameGame
         }
 
         /// <summary>
-        /// Рассылается всем; каждый клиент проверяет — он ли бросал — и прибавляет ThrowCount.
+        /// Рассылается всем; каждый клиент проверяет — он ли бросал — и прибавляет ThrowCount + проигрывает эффект.
         /// </summary>
         [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
-        private void RPC_NotifyThrowHit(PlayerRef thrower)
+        private void RPC_NotifyThrowHit(PlayerRef thrower, Vector3 hitPosition)
         {
             if (Runner.LocalPlayer != thrower) return;
-            if (InGameManager.Instance != null && InGameManager.Instance.gameState == InGameManager.GameState.Game)
+
+            if (InGameManager.Instance != null &&
+                InGameManager.Instance.gameState == InGameManager.GameState.Game)
             {
                 var local = PlayerRaceData.LocalInstance;
-                if (local != null) local.ThrowCount++;                
+                if (local != null)
+                {
+                    local.ThrowCount++;
+                    local.PlayHitFeedback(hitPosition);   // ← эффект + звук у кидавшего
+                }
             }
         }
 
@@ -155,9 +161,9 @@ namespace NonameGame
                     if (collision.collider.TryGetComponent<PlayerController>(out var playerController))
                         playerController.SetStunTimer(stunTime);
 
-                    // Уведомляем бросавшего — он локально прибавит ThrowCount
+                    // Уведомляем бросавшего — он локально прибавит ThrowCount и проиграет эффект
                     if (ThrownBy != default)
-                        RPC_NotifyThrowHit(ThrownBy);
+                        RPC_NotifyThrowHit(ThrownBy, player.transform.position);
                 }
             }
 

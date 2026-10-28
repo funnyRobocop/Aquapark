@@ -87,6 +87,7 @@ namespace NonameGame
 
                 target.RPC_ApplyPush(dir * pushForce);
                 pushedAnyone = true;
+                playerRaceData.PlayHitFeedback(target.transform.position);
                 if (InGameManager.Instance != null && InGameManager.Instance.gameState == InGameManager.GameState.Game)
                     playerRaceData.KickCount++; // локально — StateAuthority игрока = его машина
 

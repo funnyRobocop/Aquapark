@@ -285,7 +285,6 @@ namespace NonameGame
             if (rb == null) return;
             rb.AddForce(force, ForceMode.Impulse);
             _playerView.PlayStunVFX();
-            Debug.Log(gameObject.transform.position.z);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -367,6 +366,15 @@ namespace NonameGame
             if (_renderers == null) return;
             foreach (var r in _renderers)
                 if (r != null) r.enabled = visible;
+        }
+
+        /// <summary>
+        /// Проиграть stun-эффект и звук в указанной точке (вызывается у бросавшего при попадании).
+        /// </summary>
+        public void PlayHitFeedback(Vector3 position)
+        {
+            _vfxManager?.PlayStunVFX(position);
+            _soundManager?.PlayPopSound();
         }
     }
 }
