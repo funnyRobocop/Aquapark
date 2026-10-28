@@ -210,7 +210,17 @@ namespace NonameGame
             if (CrazyGames.CrazySDK.IsInitialized && gameState != GameState.Game)
                 CrazyManager.ShowInviteButton();
 
-            if (!Object.HasStateAuthority) return;
+            // Если мы не StateAuthority но гонка идёт и все игроки ушли — запрашиваем authority
+            if (!Object.HasStateAuthority)
+            {
+                Debug.Log($"[InGameManager] PlayerLeft fired on non-authority, gameState={gameState}, requesting authority if needed.");
+                if (gameState == GameState.Game && TotalPlayers > 0 && AllRegisteredPlayersGone())
+                {
+                    Debug.Log("[InGameManager] All players gone, requesting StateAuthority.");
+                    Object.RequestStateAuthority();
+                }
+                return;
+            }
 
             // Удаляем ушедшего из playerList и добавляем в _finishedSet,
             // чтобы он не считался в TotalPlayers и FinishedCount
@@ -233,6 +243,83 @@ namespace NonameGame
         /// Считает активных (невышедших) игроков во время гонки.
         /// Если все оставшиеся финишировали / вышли — заканчивает гонку.
         /// </summary>
+        /// <summary>
+        /// Возвращает true если в сессии есть подключённые игроки,
+        /// которые НЕ зарегистрированы в playerList (наблюдатели).
+        /// </summary>
+        /// <summary>
+        /// Каждый тик во время гонки проверяет, не отключился ли кто из playerList.
+        /// Надёжнее чем PlayerLeft, который может не сработать если уходящий — StateAuthority.
+        /// </summary>
+        private void CheckDisconnectedPlayers()
+        {
+            bool anyNew = false;
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                if (_finishedSet.Contains(p.Id)) continue; // уже учтён
+
+                PlayerRef auth = p.Object.InputAuthority;
+
+                // Проверка 1: InputAuthority стал None — игрок ушёл
+                bool gone = !auth.IsValid;
+
+                // Проверка 2: если authority ещё валиден — проверим по ActivePlayers
+                if (!gone)
+                {
+                    gone = true;
+                    foreach (var ap in Runner.ActivePlayers)
+                        if (ap == auth) { gone = false; break; }
+                }
+
+                if (gone)
+                {
+                    Debug.Log($"[InGameManager] CheckDisconnectedPlayers: player {auth} gone, marking left.");
+                    _finishedSet.Add(p.Id);
+                    SlotFinishPlace.Set(i, -1);
+                    anyNew = true;
+                }
+            }
+
+            // Доп. проверка: если объект в playerList вообще не находится (despawned) — тоже ушёл
+            // Этот случай обрабатывается в CheckRaceOver (который тоже скипает ненайденные)
+
+            if (anyNew) CheckRaceOver();
+
+            // На случай если объекты despawned и аctive=0 — вызываем CheckRaceOver в любом случае
+            if (!anyNew) CheckRaceOver();
+        }
+
+        /// <summary>
+        /// true — если ни один игрок из playerList больше не подключён.
+        /// Используется спектатором чтобы понять, надо ли захватить StateAuthority.
+        /// </summary>
+        private bool AllRegisteredPlayersGone()
+        {
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                foreach (var ap in Runner.ActivePlayers)
+                    if (ap == p.Object.InputAuthority) return false; // хоть один ещё онлайн
+            }
+            return true;
+        }
+
+        private bool HasSpectators()
+        {
+            foreach (var pr in Runner.ActivePlayers)
+            {
+                bool found = false;
+                for (int i = 0; i < playerList.Length; i++)
+                {
+                    if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                    if (p.Object.InputAuthority == pr) { found = true; break; }
+                }
+                if (!found) return true; // есть хотя бы один наблюдатель
+            }
+            return false;
+        }
+
         private void CheckRaceOver()
         {
             int active = 0;
@@ -243,6 +330,13 @@ namespace NonameGame
             }
             if (active == 0 && TotalPlayers > 0)
             {
+                // Если есть наблюдатели — сбрасываем в ожидание
+                if (HasSpectators())
+                {
+                    ResetToWaiting();
+                    return;
+                }
+
                 gameState     = GameState.EndGame;
                 gameplayTimer = TickTimer.CreateFromSeconds(Runner, endGameDelay);
             }
@@ -250,18 +344,49 @@ namespace NonameGame
 
         // ─────────────────────────────────────────────────────────────────────
         // FixedUpdateNetwork
-        // ─────────────────────────────────────────────────────────────────────
+        // ───────────────────────────────────────────────────���─────────────────
+
+        // Диагностика: логи каждые 3 секунды
+        private float _diagTimer;
 
         public override void FixedUpdateNetwork()
         {
-            if (!Object.HasStateAuthority) return;
+            // === ДИАГНОСТИКА: лог каждые 3 сек пока Game ===
+            if (gameState == GameState.Game)
+            {
+                _diagTimer -= Runner.DeltaTime;
+                if (_diagTimer <= 0f)
+                {
+                    _diagTimer = 3f;
+                    int activePlayers = 0;
+                    foreach (var _ in Runner.ActivePlayers) activePlayers++;
+                    Debug.Log($"[DIAG] HasAuth={Object.HasStateAuthority} TotalPlayers={TotalPlayers} ActivePlayers={activePlayers} state={gameState}");
+                    for (int di = 0; di < playerList.Length; di++)
+                    {
+                        bool found = Runner.TryFindBehaviour(playerList[di], out PlayerRaceData dp);
+                        if (!found && playerList[di] == default) continue;
+                        Debug.Log($"[DIAG]   slot[{di}] found={found} " + (found ? $"auth={dp.Object.InputAuthority} authValid={dp.Object.InputAuthority.IsValid}" : ""));
+                    }
+                }
+            }
+            // ============================================================
+
+            if (!Object.HasStateAuthority)
+            {
+                // Спектатор: если гонка идёт и все зарегистрированные игроки ушли — забираем StateAuthority
+                if (gameState == GameState.Game && TotalPlayers > 0 && AllRegisteredPlayersGone())
+                    Object.RequestStateAuthority();
+                return;
+            }
 
             switch (gameState)
             {
                 case GameState.Waiting: UpdateWaitingState(); break;
 
                 case GameState.Game:
-                    // Принудительный таймер: если никто не финишировал за matchForcedTimerAfter секунд
+                    // Проверяем отключившихся игроков (надёжнее чем PlayerLeft)
+                    CheckDisconnectedPlayers();
+                    // Принудительный т��ймер: если никто не финишировал за matchForcedTimerAfter секунд
                     if (!FirstFinished && !ForcedCountdown)
                     {
                         float elapsed = raceDurationSeconds - (gameplayTimer.RemainingTime(Runner) ?? raceDurationSeconds);
@@ -294,7 +419,7 @@ namespace NonameGame
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
+        // ───────────��─────────────────────────────────────────────────────────
         // Waiting
         // ─────────────────────────────────────────────────────────────────────
 
@@ -592,7 +717,40 @@ namespace NonameGame
             foreach (var view in Runner.GetAllBehaviours<PlayerView>())
                 view.ReleaseSkin();
 
+            // Уведомляем StateAuthority до отключения, чтобы он мог сбросить состояние
+            // (PlayerLeft может не вызваться если уходящий сам является StateAuthority)
+            RPC_NotifyPlayerLeaving(Runner.LocalPlayer);
+
             Runner.Shutdown();
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        private void RPC_NotifyPlayerLeaving(PlayerRef leavingPlayer)
+        {
+            if (!Object.HasStateAuthority) return;
+            if (gameState != GameState.Game) return;
+
+            // Ищем PlayerRaceData уходящего игрока по переданному PlayerRef
+            var sender = leavingPlayer;
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                if (p.Object.InputAuthority != sender) continue;
+
+                _finishedSet.Add(p.Id);
+                SlotFinishPlace.Set(i, -1);
+                break;
+            }
+
+            // Если остались только наблюдатели — сбрасываем в ожидание
+            int active = 0;
+            for (int i = 0; i < playerList.Length; i++)
+            {
+                if (!Runner.TryFindBehaviour(playerList[i], out PlayerRaceData p)) continue;
+                if (!_finishedSet.Contains(p.Id)) active++;
+            }
+            if (active == 0)
+                ResetToWaiting();
         }
 
         /// <summary>UI: кнопка "Keep Playing" — сброс в Waiting без выхода из сессии.</summary>
@@ -646,11 +804,12 @@ namespace NonameGame
             foreach (var item in _throwableItems)
             {
                 if (item == null) continue;
+                if (item.Object == null || !item.Object.IsValid) continue; // объект уже уничтожен
 
                 if (item.Object.HasStateAuthority)
                     item.ResetToInitial();
-                else
-                    item.RPC_ResetToInitial(); // нужен RPC к authority
+                else if (Runner != null && Runner.IsRunning)
+                    item.RPC_ResetToInitial(); // RPC только если раннер ещё жив
             }
         }
 
