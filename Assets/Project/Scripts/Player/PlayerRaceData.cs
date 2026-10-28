@@ -285,6 +285,7 @@ namespace NonameGame
             if (rb == null) return;
             rb.AddForce(force, ForceMode.Impulse);
             _playerView.PlayStunVFX();
+            Debug.Log(gameObject.transform.position.z);
         }
 
         // ─────────────────────────────────────────────────────────────────────
