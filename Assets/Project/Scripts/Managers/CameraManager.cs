@@ -28,9 +28,20 @@ namespace NonameGame
             if (!_isSpectating || _spectateTargets.Count == 0) return;
 
             // При выходе из сессии объекты могут быть уже деспавнены — очищаем список
+            int countBefore = _spectateTargets.Count;
             _spectateTargets.RemoveAll(p => !IsValid(p));
-            if (!_isSpectating || _spectateTargets.Count == 0) return;
+
+            if (_spectateTargets.Count == 0) { StopSpectating(); return; }
+
+            // Индекс вышел за пределы после удаления — сбрасываем
             if (_spectateIndex >= _spectateTargets.Count) _spectateIndex = 0;
+
+            // Если кто-то был удалён — сразу переключаем камеру на текущего в списке
+            if (_spectateTargets.Count != countBefore)
+            {
+                ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
+                _levelUI?.ShowObjectiveObj(_spectateTargets[_spectateIndex].DisplayName);
+            }
 
             // Авто-переключение: текущий таргет финишировал — найти следующего активного
             var current = CurrentTarget;
@@ -41,10 +52,11 @@ namespace NonameGame
                 {
                     _spectateIndex = next;
                     ApplySpectateTarget(_spectateTargets[_spectateIndex].CameraTarget);
+                    _levelUI?.ShowObjectiveObj(_spectateTargets[_spectateIndex].DisplayName);
                 }
-                // если все финишировали — остаёмся на последнем
             }
 
+            // Q/E переключение
             if (_spectateTargets.Count <= 1) return;
 
             var kb = Keyboard.current;
