@@ -87,8 +87,9 @@ namespace NonameGame
 
         // После прыжка/даша принудительно держим IsGrounded=false N тиков,
         // чтобы Animator успел запустить анимацию до перехода в Grounded.
-        private int _airForceTicks = 0;
+        private int  _airForceTicks    = 0;
         private const int AirForceTicksAfterJump = 10;
+        private bool _wasPhysGrounded  = false;
 
         private NetworkBool  _hasDashedInAir { get; set; }
         private TickTimer    _dashTimer      { get; set; }
@@ -143,6 +144,13 @@ namespace NonameGame
             CheckSlopeAndDirections();
 
             if (_airForceTicks > 0) _airForceTicks--;
+
+            // Как только игрок коснулся земли (_physGrounded стал true),
+            // сразу сбрасываем таймер — Animator сразу получает IsGrounded=true.
+            if (_physGrounded && !_wasPhysGrounded)
+                _airForceTicks = 0;
+            _wasPhysGrounded = _physGrounded;
+
             if (_isGrounded) _hasDashedInAir = false;
 
             if (!_stunTimer.ExpiredOrNotRunning(Runner))
@@ -230,11 +238,11 @@ namespace NonameGame
             if (!data.SpacePressed) return;
 
             // === TEMP DEBUG — убрать после диагностики ===
-            /*Debug.Log($"[JUMP] physGrounded={_physGrounded} coyote={_coyoteTimer:F3} " +
+            Debug.Log($"[JUMP] physGrounded={_physGrounded} coyote={_coyoteTimer:F3} " +
                       $"isGrounded={_isGrounded} slope={_isTouchingSlope} " +
                       $"slopeAngle={_currentSurfaceAngle:F1} velY={_rb.linearVelocity.y:F2} " +
                       $"stunOk={_stunTimer.ExpiredOrNotRunning(Runner)} " +
-                      $"dashOk={_dashTimer.ExpiredOrNotRunning(Runner)}");*/
+                      $"dashOk={_dashTimer.ExpiredOrNotRunning(Runner)}");
             // ====================================================
 
             // FIX: SphereCast с большим радиусом ловит вертикальное ребро

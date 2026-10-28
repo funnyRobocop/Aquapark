@@ -151,7 +151,11 @@ namespace NonameGame
             if (kb == null) return;
 
             if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame)
-                RPC_SetReady(!IsReady);
+            {
+                StopAllCoroutines();
+                _cameraManager?.InitForPlayer(_cameraTarget);
+                RPC_SetReady(!IsReady);                
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
