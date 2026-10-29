@@ -62,6 +62,7 @@ namespace NonameGame
 
         [Header("UI: Results")]
         public GameObject resultsPanel;
+        public GameObject finishMessage;
         public Transform resultsList;
         public GameObject resultsListItemPrefab;
 
@@ -867,6 +868,7 @@ namespace NonameGame
 
                 if (gameStateText != null)
                 {
+                    gameStateText.transform.parent.gameObject.SetActive(true);
                     if (TotalPlayers == 0)
                         gameStateText.text = string.Format(waitingText, maxPlayersToAutoStart);
                     else if (ReadyPlayers < TotalPlayers)
@@ -948,7 +950,11 @@ namespace NonameGame
                         CrazyGames.CrazySDK.Game.GameplayStart();
                         CrazyGames.CrazySDK.Game.HideInviteButton();
                     }
-                    if (gameStateText != null) gameStateText.text = string.Empty;
+                    if (gameStateText != null)
+                    {
+                        gameStateText.transform.parent.gameObject.SetActive(false);
+                        gameStateText.text = string.Empty; 
+                    }
                     if (timerText     != null) timerText.text     = string.Empty;
                     ShowResults = false;
                     break;
@@ -970,7 +976,11 @@ namespace NonameGame
                     break;
 
                 case GameState.EndGame:
-                    if (gameStateText != null) gameStateText.text = finishText;
+                    if (gameStateText != null)
+                    {
+                        gameStateText.transform.parent.gameObject.SetActive(true);
+                        gameStateText.text = finishText;
+                    }
                     break;
 
                 case GameState.ShowResults:
@@ -1010,7 +1020,10 @@ namespace NonameGame
             }
             finished.Sort((a, b) => a.place.CompareTo(b.place));
 
-            resultsList.gameObject.SetActive(false);
+            var playerCount = finished.Count + notFinished.Count;
+
+            finishMessage.SetActive(playerCount < 2);
+
             foreach (Transform child in resultsList)
             {
                 Destroy(child.gameObject);
@@ -1018,14 +1031,13 @@ namespace NonameGame
             foreach (var (p, place) in finished)
             {
                 var go = Instantiate(resultsListItemPrefab, resultsList);
-                go.GetComponent<LevelResultsItem>()?.Load(p, place);
+                go.GetComponent<LevelResultsItem>()?.Load(p, place, playerCount);
             }
             foreach (var p in notFinished)
             {
                 var go = Instantiate(resultsListItemPrefab, resultsList);
-                go.GetComponent<LevelResultsItem>()?.Load(p);
-            }
-            resultsList.gameObject.SetActive(true);
+                go.GetComponent<LevelResultsItem>()?.Load(p, 0, playerCount);
+            }            
 
             var localObj    = Runner.GetPlayerObject(Runner.LocalPlayer);
             var localPlayer = localObj?.GetBehaviour<PlayerRaceData>();

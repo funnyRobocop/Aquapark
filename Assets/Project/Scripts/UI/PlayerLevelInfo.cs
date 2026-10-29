@@ -11,15 +11,15 @@ namespace NonameGame
     {
         public TextMeshProUGUI playerNameLabel;
         [SerializeField] private Image iconImage;
+        [SerializeField] private Image lightImage;
         [SerializeField] private Sprite firstSprite;
         [SerializeField] private Sprite finishedSprite;
-        [SerializeField] private Sprite readySprite;
 
         public void ShowReady(string message)
         {
             playerNameLabel.text = message;
 
-            iconImage.sprite = readySprite;
+            lightImage.enabled = true;
         }
 
         public void ShowFinish(string message, bool isFirst = false)
@@ -28,10 +28,12 @@ namespace NonameGame
 
             if (isFirst)
             {
+                iconImage.enabled = true;
                 iconImage.sprite = firstSprite;
             }
             else
             {
+                iconImage.enabled = true;
                 iconImage.sprite = finishedSprite;
             }
 

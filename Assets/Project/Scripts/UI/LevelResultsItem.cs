@@ -15,7 +15,7 @@ namespace NonameGame
         [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightColor;
 
-        public void Load(PlayerRaceData data, int place = 0)
+        public void Load(PlayerRaceData data, int place, int playerCount)
         {
             var isLocal = PlayerRaceData.LocalInstance == data;
             if (isLocal)
@@ -28,21 +28,38 @@ namespace NonameGame
             }
 
             iconImage.enabled = false;
-            if (place == 1)
+
+            if (playerCount > 1)
             {
-                playerNameLabel.text = $"{place}. {data.DisplayName}";
-                iconImage.enabled = true;
-                iconImage.sprite = firstSprite;
-            }
-            else if (place > 0)
-            {
-                playerNameLabel.text = $"{place}. {data.DisplayName}";
-                iconImage.enabled = true;
-                iconImage.sprite = finishedSprite;
+                if (place == 1)
+                {
+                    playerNameLabel.text = $"{place}. {data.DisplayName}";
+                    iconImage.enabled = true;
+                    iconImage.sprite = firstSprite;
+                }
+                else if (place > 0)
+                {
+                    playerNameLabel.text = $"{place}. {data.DisplayName}";
+                    iconImage.enabled = true;
+                    iconImage.sprite = finishedSprite;
+                }
+                else
+                {
+                    playerNameLabel.text = string.Format(data.DisplayName);
+                }
             }
             else
             {
-                playerNameLabel.text = string.Format(data.DisplayName);
+                if (place > 0)
+                {
+                    playerNameLabel.text = $"{place}. {data.DisplayName}";
+                    iconImage.enabled = true;
+                    iconImage.sprite = finishedSprite;
+                }
+                else
+                {
+                    playerNameLabel.text = string.Format(data.DisplayName);
+                }
             }
         }
     }
