@@ -20,6 +20,7 @@ namespace NonameGame
         // Метод интерфейса IStartable
         void IStartable.Start()
         {
+            return;
             if (audioSource == null)
             {
                 Debug.LogError("Забыли настроить AudioSource в Инспекторе префаба SoundManager!");
@@ -38,6 +39,7 @@ namespace NonameGame
 
         public void StopMusic()
         {
+            return;
             if (musicEnabled)
             {
                 audioSource.Stop();
@@ -45,6 +47,7 @@ namespace NonameGame
         }
         public void PlayMusic()
         {
+            return;
             if (musicEnabled)
             {
                 if (!audioSource.isPlaying)
@@ -57,6 +60,7 @@ namespace NonameGame
         /// </summary>
         public void SetMusicEnabled(bool enabled)
         {
+            return;
             if (musicEnabled == enabled) return;
 
             musicEnabled = enabled;
@@ -84,6 +88,7 @@ namespace NonameGame
 
         public void PlayPopSound()
         {
+            return;
             if (!soundEnabled) return;
             if (popClips == null || popClips.Length == 0) return;
 
@@ -93,6 +98,7 @@ namespace NonameGame
 
         public void PlayWispSound()
         {
+            return; //todo пока не найду звук нормальный
             if (!soundEnabled) return;
             if (wispClip == null) return;
 
