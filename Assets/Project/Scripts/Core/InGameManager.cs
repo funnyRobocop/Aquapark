@@ -61,8 +61,9 @@ namespace NonameGame
         public TextMeshProUGUI keepPlayingTimerText;
 
         [Header("UI: Results")]
-        public TextMeshProUGUI resultsText;
-        public CanvasGroup     resultsCanvasGroup;
+        public GameObject resultsPanel;
+        public Transform resultsList;
+        public GameObject resultsListItemPrefab;
 
         // ─── Networked ───────────────────────────────────────────────────────
 
@@ -125,8 +126,7 @@ namespace NonameGame
             set
             {
                 _showResults = value;
-                if (resultsCanvasGroup != null)
-                    resultsCanvasGroup.interactable = value;
+                resultsPanel.SetActive(value);
             }
         }
 
@@ -851,13 +851,7 @@ namespace NonameGame
             {
                 case GameState.Waiting: RenderWaitingState(); break;
                 case GameState.Game: RenderGameState(); break;
-                case GameState.ShowResults: RenderShowResultsState(); break; // FIX3
-            }
-
-            if (resultsCanvasGroup != null)
-            {
-                float speed = ShowResults ? Runner.DeltaTime : -Runner.DeltaTime * 2f;
-                resultsCanvasGroup.alpha = Mathf.Clamp01(resultsCanvasGroup.alpha + speed);
+                case GameState.ShowResults: RenderShowResultsState(); break;
             }
 
             Cursor.lockState = ShowResults ? CursorLockMode.None : CursorLockMode.Locked;
@@ -1016,11 +1010,22 @@ namespace NonameGame
             }
             finished.Sort((a, b) => a.place.CompareTo(b.place));
 
-            var sb = new System.Text.StringBuilder();
-            foreach (var (p, place) in finished)    sb.AppendLine($"{place}. {p.DisplayName}");
-            foreach (var p in notFinished)          sb.AppendLine(string.Format(notFinishedText, p.DisplayName));
-
-            if (resultsText != null) resultsText.text = sb.ToString();
+            resultsList.gameObject.SetActive(false);
+            foreach (Transform child in resultsList)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach (var (p, place) in finished)
+            {
+                var go = Instantiate(resultsListItemPrefab, resultsList);
+                go.GetComponent<LevelResultsItem>()?.Load(p, place);
+            }
+            foreach (var p in notFinished)
+            {
+                var go = Instantiate(resultsListItemPrefab, resultsList);
+                go.GetComponent<LevelResultsItem>()?.Load(p);
+            }
+            resultsList.gameObject.SetActive(true);
 
             var localObj    = Runner.GetPlayerObject(Runner.LocalPlayer);
             var localPlayer = localObj?.GetBehaviour<PlayerRaceData>();
