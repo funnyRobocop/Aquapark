@@ -180,7 +180,6 @@ namespace NonameGame
                 var menu = FindAnyObjectByType<MainMenuUI>();
                 if (menu != null)
                 {
-                    menu.SpawnPlayerMesh();
                     menu.Resume();
                 }
             }
