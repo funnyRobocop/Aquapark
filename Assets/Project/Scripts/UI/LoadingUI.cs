@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class LoadingUI : MonoBehaviour
 {
-    [SerializeField] private GameObject _root;
+    [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject[] _hints;
     [SerializeField] private Slider _slider;
 
 
     public void Show()
     {
-        _root.SetActive(true);
+        canvas.enabled = true;
         _slider.value = 0f;
 
         foreach (var item in _hints)
@@ -22,7 +22,7 @@ public class LoadingUI : MonoBehaviour
 
     public void Hide()
     {
-        _root.SetActive(false);
+        canvas.enabled = false;
     }
 
     public void SetProgress(float value) // 0..1

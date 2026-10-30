@@ -57,8 +57,6 @@ namespace NonameGame
         {
             mainMenuUI.Canvas.enabled = true;
             mainMenuUI.Camera.gameObject.SetActive(true);
-            mainMenuUI.CanvasGroup.alpha = 1f;
-            mainMenuUI.CanvasGroup.interactable = true;
 
             if (shutdownReason == ShutdownReason.Ok)
             {
@@ -76,8 +74,6 @@ namespace NonameGame
             {
                 mainMenuUI.Canvas.enabled = true;
                 mainMenuUI.Camera.gameObject.SetActive(true);
-                mainMenuUI.CanvasGroup.alpha = 1f;
-                mainMenuUI.CanvasGroup.interactable = true;
             }
             _loadingUI?.Hide();
             Cursor.lockState = CursorLockMode.None;
@@ -105,7 +101,6 @@ namespace NonameGame
             _loadingUI?.Show();
             _loadingUI?.SetProgress(0f);
 
-            mainMenuUI.CanvasGroup.interactable = false;
             EventSystem.current.SetSelectedGameObject(null);
 
             Runner = Instantiate(networkRunnerPrefab);
@@ -148,7 +143,6 @@ namespace NonameGame
             {
                 mainMenuUI.Canvas.enabled = false;
                 mainMenuUI.Camera.gameObject.SetActive(false);
-                mainMenuUI.CanvasGroup.alpha = 0f;
             }
             else
             {

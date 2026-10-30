@@ -22,8 +22,8 @@ namespace NonameGame
         [SerializeField] private FusionNetworkManager fusionNetworkManager;
         [SerializeField] private Canvas canvas;
         [SerializeField] private Camera camera;
-        [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private GameObject tutorArrow;
+        [SerializeField] private GameObject titleObj;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -33,7 +33,6 @@ namespace NonameGame
 
         public Canvas Canvas { get { return canvas; } }
         public Camera Camera { get { return camera; } }
-        public CanvasGroup CanvasGroup { get { return canvasGroup; } }
 
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
@@ -78,6 +77,7 @@ namespace NonameGame
         {
             _skinPreviewUI.Show(-325f, 250f);
             tutorArrow?.SetActive(false);
+            titleObj?.SetActive(true);
         }
 
         private void UpdatePlayerNameText(string name)
@@ -108,18 +108,21 @@ namespace NonameGame
         {
             _skinPreviewUI.Hide();
             battlePassUI.Show();
+            titleObj?.SetActive(false);
         }
 
         private void OnSettingsButtonClicked()
         {
             _skinPreviewUI.Hide();
             settingsUI.Show();
+            titleObj?.SetActive(false);
         }
 
         private void OnShopButtonClicked()
         {
             _skinPreviewUI.Hide();
             shopUI.Show();
+            titleObj?.SetActive(false);
         }
 
         private void OnPlayButtonClicked()
@@ -127,6 +130,7 @@ namespace NonameGame
             _skinPreviewUI.Hide();
             fusionNetworkManager.OnQuickJoinPressed();
             _soundManager.StopMusic();
+            titleObj?.SetActive(false);
         }
     }
 }
