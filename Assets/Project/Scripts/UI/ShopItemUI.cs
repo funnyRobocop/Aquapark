@@ -27,54 +27,75 @@ namespace NonameGame
         {
             SkinData = skinData;
             skinImage.enabled = false;
-            //TryLoadSprite();
+            skinImage.sprite = null;
+            priceLabel.text = SkinData.Price.ToString() + "$";
         }
 
         private void OnEnable()
         {
             if (clickButton != null)
                 clickButton.onClick.AddListener(OnClickButtonClicked);
-
-            skinImage.enabled = false;
-            //TryLoadSprite();
         }
 
-        private void TryLoadSprite()
+        public void LoadSprite()
         {
             if (SkinData == null || SkinData.SpriteReference == null)
                 return;
 
-            // Если спрайт уже стоит — ничего не делаем
+            // Уже загружен
             if (skinImage.sprite != null)
                 return;
 
-            // Если handle уже в процессе загрузки — тоже выходим
+            // Уже идёт загрузка
             if (_spriteLoadHandle.IsValid())
                 return;
 
-            priceLabel.text = SkinData.Price.ToString() + "$";
-            SkinData.SpriteReference.LoadAssetAsync().Completed += OnSpriteLoaded;
+            // Сохраняем handle СРАЗУ, а не в колбэке
+            _spriteLoadHandle = SkinData.SpriteReference.LoadAssetAsync();
+            _spriteLoadHandle.Completed += OnSpriteLoaded;
+        }
+
+        public void UnloadSprite()
+        {
+            if (skinImage != null)
+            {
+                skinImage.sprite = null;
+                skinImage.enabled = false;
+            }
+
+            if (_spriteLoadHandle.IsValid())
+            {
+                // Отписываемся, чтобы колбэк не прилетел после выгрузки
+                _spriteLoadHandle.Completed -= OnSpriteLoaded;
+                Addressables.Release(_spriteLoadHandle);
+                _spriteLoadHandle = default;
+            }
         }
 
         private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
         {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                _spriteLoadHandle = handle;
-                Sprite loadedSprite = handle.Result;
-                skinImage.sprite = loadedSprite;
+            // Защита от устаревших колбэков
+            if (!handle.IsValid() || handle.Status != AsyncOperationStatus.Succeeded)
+                return;
 
-                float originalWidth = loadedSprite.rect.width;
-                float originalHeight = loadedSprite.rect.height;
+            // Если уже выгрузили — игнорируем
+            if (!_spriteLoadHandle.IsValid())
+                return;
 
-                // Вычисляем коэф. масштабирования, чтобы картинка пропорционально вписалась в рамки магазина (maxIconSize)
-                float scale = Mathf.Min(maxIconSize / originalWidth, maxIconSize / originalHeight);
-                scale = Mathf.Min(scale, 1f); // Не растягиваем мелкие картинки, если они меньше лимита
+            Sprite loadedSprite = handle.Result;
+            if (loadedSprite == null || skinImage == null)
+                return;
 
-                // Применяем сжатый пропорциональный размер на UI
-                skinImage.rectTransform.sizeDelta = new Vector2(originalWidth * scale, originalHeight * scale);
-                skinImage.enabled = true;
-            }
+            skinImage.sprite = loadedSprite;
+
+            float originalWidth = loadedSprite.rect.width;
+            float originalHeight = loadedSprite.rect.height;
+
+            float scale = Mathf.Min(maxIconSize / originalWidth, maxIconSize / originalHeight);
+            scale = Mathf.Min(scale, 1f);
+
+            skinImage.rectTransform.sizeDelta = new Vector2(originalWidth * scale, originalHeight * scale);
+            skinImage.enabled = true;
         }
 
         private void OnClickButtonClicked()
@@ -84,12 +105,14 @@ namespace NonameGame
 
         public void SetClicked(bool isClicked)
         {
-            clickedIndicator.SetActive(isClicked);
+            if (clickedIndicator != null)
+                clickedIndicator.SetActive(isClicked);
         }
 
         public void SetPurchased(bool isPurchased)
         {
-            purchasedIndicator.SetActive(isPurchased);
+            if (purchasedIndicator != null)
+                purchasedIndicator.SetActive(isPurchased);
         }
 
         private void OnDisable()
@@ -97,14 +120,13 @@ namespace NonameGame
             if (clickButton != null)
                 clickButton.onClick.RemoveListener(OnClickButtonClicked);
 
-            if (skinImage != null)
-                skinImage.sprite = null;
+            // На всякий случай чистим при любом выключении
+            UnloadSprite();
+        }
 
-            if (_spriteLoadHandle.IsValid())
-            {
-                Addressables.Release(_spriteLoadHandle);
-                _spriteLoadHandle = default;
-            }
+        private void OnDestroy()
+        {
+            UnloadSprite();
         }
     }
 }

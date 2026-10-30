@@ -44,11 +44,11 @@ namespace NonameGame
                 }
             }
 
-            foreach (var item in _playerSkinLoader.PlayerSkinAll)
+            // Создаём айтемы один раз (родитель может быть выключен — это нормально)
+            foreach (var kvp in _playerSkinLoader.PlayerSkinAll)
             {
-                var skinType = item.Key;
                 var itemUI = Instantiate(itemPrefab, itemContainer).GetComponent<ShopItemUI>();
-                itemUI.Initialize(_playerSkinLoader.PlayerSkinAll[skinType]);
+                itemUI.Initialize(kvp.Value);
                 itemUI.OnSkinClicked += SelectSkin;
                 _shopItems.Add(itemUI);
             }
@@ -56,13 +56,21 @@ namespace NonameGame
 
         private void OnEnable()
         {
+            // На всякий случай, если Show вызвали через SetActive
             Load();
         }
 
         public void Load()
         {
+            // Явно грузим все иконки
+            foreach (var item in _shopItems)
+                item.LoadSprite();
+
             UpdateButtonsView();
-            if (_buyHoldButton != null) _buyHoldButton.ResetHold();            
+
+            if (_buyHoldButton != null)
+                _buyHoldButton.ResetHold();
+
             if (_shopItems.Count > 0 && _shopItems[0].ClickButton != null)
                 _shopItems[0].ClickButton.onClick?.Invoke();
 
@@ -80,8 +88,11 @@ namespace NonameGame
 
         public void ClickLeft()
         {
+            if (_clickedItem == null || _shopItems.Count == 0) return;
+
             var leftIndex = _shopItems.IndexOf(_clickedItem) - 1;
             if (leftIndex < 0) leftIndex = _shopItems.Count - 1;
+
             _shopItems[leftIndex].ClickButton.onClick?.Invoke();
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
             _skinPreviewUI.ResetRotation();
@@ -89,8 +100,11 @@ namespace NonameGame
 
         public void ClickRight()
         {
+            if (_clickedItem == null || _shopItems.Count == 0) return;
+
             var rightIndex = _shopItems.IndexOf(_clickedItem) + 1;
             if (rightIndex > _shopItems.Count - 1) rightIndex = 0;
+
             _shopItems[rightIndex].ClickButton.onClick?.Invoke();
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
             _skinPreviewUI.ResetRotation();
@@ -127,6 +141,8 @@ namespace NonameGame
 
         public void ShowPreview()
         {
+            if (_clickedItem == null) return;
+
             previewPanel.SetActive(true);
             _skinPreviewUI.Show(-450f, 400f);
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
@@ -151,17 +167,22 @@ namespace NonameGame
         {
             if (_clickedItem == null)
                 return;
-            
+
             _gameModel.PurchaseSkin((int)_clickedItem.SkinData.SkinId, _clickedItem.SkinData.Price);
             UpdateButtonsView();
 
             if (_gameModel.SelectedSkinId < 0)
             {
                 SelectSkin();
-                gameObject.SetActive(false);
+                // Закрываем через Hide, чтобы корректно выгрузить спрайты
+                Hide();
+
                 var menu = FindAnyObjectByType<MainMenuUI>();
-                menu.SpawnPlayerMesh();
-                menu.Resume();
+                if (menu != null)
+                {
+                    menu.SpawnPlayerMesh();
+                    menu.Resume();
+                }
             }
         }
 
@@ -187,11 +208,23 @@ namespace NonameGame
         public void Show()
         {
             gameObject.SetActive(true);
+            // Явный вызов — не зависим от порядка OnEnable
+            Load();
         }
 
         public void Hide()
         {
-            _skinPreviewUI.SpawnPlayerMesh(_playerSkinLoader.PlayerSkinAll[(PlayerSkin)_gameModel.SelectedSkinId]);
+            // Явно выгружаем всё
+            foreach (var item in _shopItems)
+                item.UnloadSprite();
+
+            if (_skinPreviewUI != null && _playerSkinLoader != null && _gameModel != null)
+            {
+                var selected = (PlayerSkin)_gameModel.SelectedSkinId;
+                if (_playerSkinLoader.PlayerSkinAll.TryGetValue(selected, out var data))
+                    _skinPreviewUI.SpawnPlayerMesh(data);
+            }
+
             gameObject.SetActive(false);
         }
     }
