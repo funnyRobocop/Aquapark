@@ -27,7 +27,7 @@ namespace NonameGame
         {
             SkinData = skinData;
             skinImage.enabled = false;
-            TryLoadSprite();
+            //TryLoadSprite();
         }
 
         private void OnEnable()
@@ -36,7 +36,7 @@ namespace NonameGame
                 clickButton.onClick.AddListener(OnClickButtonClicked);
 
             skinImage.enabled = false;
-            TryLoadSprite();
+            //TryLoadSprite();
         }
 
         private void TryLoadSprite()
