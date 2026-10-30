@@ -331,8 +331,15 @@ namespace NonameGame
             }
             if (active == 0 && TotalPlayers > 0)
             {
-                // Если есть наблюдатели — сбрасываем в ожидание
-                if (HasSpectators())
+                // Проверяем: все вышли (SlotFinishPlace == -1) или все финишировали (положительное место)
+                bool anyActuallyFinished = false;
+                for (int i = 0; i < playerList.Length; i++)
+                {
+                    if (SlotFinishPlace[i] > 0) { anyActuallyFinished = true; break; }
+                }
+
+                // Если есть наблюдатели И никто не финишировал (все вышли) — сбрасываем в ожидание
+                if (HasSpectators() && !anyActuallyFinished)
                 {
                     ResetToWaiting();
                     return;
