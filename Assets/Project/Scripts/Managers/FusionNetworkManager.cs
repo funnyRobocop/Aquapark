@@ -15,7 +15,7 @@ namespace NonameGame
     {
         public static NetworkRunner Runner { get; private set; }
 
-        [SerializeField] CrazyManager crazyManager;
+        //[SerializeField] CrazyManager crazyManager;
         [SerializeField] NetworkRunner networkRunnerPrefab;
         [SerializeField] MainMenuUI mainMenuUI;
         [SerializeField] FinishPlayUI finishPlayUI;

@@ -2250,7 +2250,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects:
-  - {fileID: 1292277124}
+  - {fileID: 659161767}
   - {fileID: 2146588474}
   - {fileID: 812026322}
   - {fileID: 1428310890}
@@ -7181,6 +7181,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654463212}
   m_CullTransparentMesh: 1
+--- !u!1 &659161767
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 659161769}
+  - component: {fileID: 659161768}
+  m_Layer: 0
+  m_Name: YandexManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &659161768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659161767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f75a78b14f9ff44a8745f07e2056594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.YandexManager
+--- !u!4 &659161769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659161767}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &659639627
 GameObject:
   m_ObjectHideFlags: 0
@@ -16293,66 +16337,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291585388}
   m_CullTransparentMesh: 1
---- !u!1 &1292277124
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1292277126}
-  - component: {fileID: 1292277125}
-  m_Layer: 0
-  m_Name: CrazyManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1292277125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292277124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9f851e238353054b8f95c615467b6ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fusionNetworkManager: {fileID: 2146588475}
-  onInstantJoin:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!4 &1292277126
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292277124}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.078386486, y: 0.53416574, z: 0.16788024}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1303365391
 GameObject:
   m_ObjectHideFlags: 0
@@ -25227,7 +25211,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5224d3a92eb5cf40bf271931531d985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crazyManager: {fileID: 1292277125}
   networkRunnerPrefab: {fileID: 3912109610250543481, guid: e9584fff0fe661948a230254bc61f4b8, type: 3}
   mainMenuUI: {fileID: 812026328}
   finishPlayUI: {fileID: 790316570352097329}
@@ -33822,6 +33805,6 @@ SceneRoots:
   - {fileID: 812026326}
   - {fileID: 1742639392}
   - {fileID: 1735654291}
-  - {fileID: 1292277126}
+  - {fileID: 659161769}
   - {fileID: 2146588476}
   - {fileID: 1618476860}
