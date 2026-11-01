@@ -28,6 +28,7 @@ namespace NonameGame
             gameObject.SetActive(true);
             OnClaim += claim;
             OnAdClaim += adClaim;
+            YandexManager.Instance.ShowInterstitial();
         }
 
         public void Hide()
@@ -45,8 +46,10 @@ namespace NonameGame
 
         private void OnAdClaimClick()
         {
-            OnAdClaim?.Invoke();
-            Hide();
+            YandexManager.Instance.ShowRewarded("Rewarded", ()=> {
+                OnAdClaim?.Invoke();
+                Hide();
+            });
         }
     }
 }
