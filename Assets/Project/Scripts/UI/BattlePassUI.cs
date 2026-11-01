@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using YG;
 
 namespace NonameGame
 {
@@ -146,34 +147,43 @@ namespace NonameGame
 
         private void UpdateWeeklyTimer()
         {
-            DateTime now = DateTime.UtcNow;
+            // Серверное время Яндекса
+            long serverTimeMs = YG2.ServerTime();
+            if (serverTimeMs <= 0)
+                serverTimeMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            // Вычисляем, сколько дней осталось до ПОНЕДЕЛЬНИКА
-            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
+            // Переводим в московское время (UTC+3)
+            DateTime utcNow = DateTimeOffset.FromUnixTimeMilliseconds(serverTimeMs).UtcDateTime;
+            DateTime moscowNow = utcNow.AddHours(3);
 
-            // Если сегодня ПОНЕДЕЛЬНИК, то целевой день сброса — это следующий понедельник (через 7 дней)
-            if (daysUntilMonday == 0)
+            // Находим следующий понедельник 00:00 по Москве
+            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)moscowNow.DayOfWeek + 7) % 7;
+            if (daysUntilMonday == 0 && moscowNow.TimeOfDay > TimeSpan.Zero)
             {
+                // Если сегодня понедельник, но уже не 00:00 — берём следующий
                 daysUntilMonday = 7;
             }
 
-            // Устанавливаем точку сброса: понедельник, 00:00:00 UTC
-            DateTime nextResetTime = now.Date.AddDays(daysUntilMonday);
+            DateTime nextResetMoscow = moscowNow.Date.AddDays(daysUntilMonday);
+            TimeSpan timeRemaining = nextResetMoscow - moscowNow;
 
-            // Считаем точную разницу во времени
-            TimeSpan timeRemaining = nextResetTime - now;
+            // Если вдруг ушли в минус — сбрасываем
+            if (timeRemaining.TotalSeconds <= 0)
+            {
+                ResetWeeklyStats();
+                // После сброса пересчитываем на следующую неделю
+                nextResetMoscow = moscowNow.Date.AddDays(7);
+                timeRemaining = nextResetMoscow - moscowNow;
+            }
 
+            // Отображение
             int lang = _gameModel.Settings.Language == 0 ? 0 : 1;
             if (lang == 1)
                 timerText.text = $"осталось {timeRemaining.Days}д {timeRemaining.Hours:D2}ч {timeRemaining.Minutes:D2}м";
             else
                 timerText.text = $"{timeRemaining.Days}d {timeRemaining.Hours:D2}h {timeRemaining.Minutes:D2}m remaining";
 
-            if (timeRemaining.TotalSeconds <= 0)
-            {
-                ResetWeeklyStats();
-            }
-
+            // Подсветка текущего уровня
             foreach (var item in levelNumList)
                 item.SetActive(false);
 
