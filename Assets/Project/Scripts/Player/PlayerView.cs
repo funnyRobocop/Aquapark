@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -35,7 +36,7 @@ namespace NonameGame
         [SerializeField] private PlayerWeapon weapon;
         [SerializeField] private PlayerPipeSlide pipeSlide;
         [SerializeField] private Rigidbody rb;
-        [SerializeField] private Dictionary<PlayerSkin, Transform> holdPointsDict;
+        [SerializeField] private List<PlayerHoldPointData> holdPointsList;
         [SerializeField] private Transform stunVFXPoint;
 
         [Header("Tuning")]
@@ -91,6 +92,13 @@ namespace NonameGame
 
         private GameObject _spawnedSkinMesh; //ссылка для выгрузки
 
+        [System.Serializable]
+        public class PlayerHoldPointData
+        {
+            public PlayerSkin SkinType;
+            public Transform HoldPoint;
+        }
+
         public void InitializeBeforeSpawn(int requestedId)
         {
             SkinId = requestedId;
@@ -123,8 +131,9 @@ namespace NonameGame
             var skinData = _playerSkinLoader.PlayerSkinAll[skinType];
             SpawnPlayerMesh(skinData, transform.GetChild(0));
 
-            if (holdPointsDict.ContainsKey(skinType))
-                grab.SetHoldPoint(holdPointsDict[skinType]);
+            var holdPointData = holdPointsList.FirstOrDefault(hp => hp.SkinType == skinType);
+            if (holdPointData != null)
+                grab.SetHoldPoint(holdPointData.HoldPoint);
         }
 
         public void SpawnPlayerMesh(PlayerSkinData activeSkinData, Transform spawnPoint)
