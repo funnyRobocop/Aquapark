@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VContainer;
 
@@ -131,6 +132,19 @@ namespace NonameGame
             fusionNetworkManager.OnQuickJoinPressed();
             _soundManager.StopMusic();
             titleObj?.SetActive(false);
+        }
+
+        public void Reopen()
+        {
+            var levelScene = SceneManager.GetSceneByName("Level1");
+            if (levelScene.isLoaded)
+                SceneManager.UnloadSceneAsync(levelScene);
+            var menuScene = SceneManager.GetSceneByName("MainMenu");
+            if (menuScene.isLoaded)
+            {
+                SceneManager.UnloadSceneAsync(menuScene);
+                SceneManager.LoadSceneAsync(0);
+            }
         }
     }
 }
