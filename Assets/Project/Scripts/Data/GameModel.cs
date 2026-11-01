@@ -53,40 +53,19 @@ namespace NonameGame
 
         public void Initialize()
         {
-            // 1. Загружаем локальные настройки PlayerPrefs
+            // 1. Локальные настройки
             Settings = SettingsData.Load();
             ApplyInitialLocale();
             ApplyInitialSoundSettings();
 
-            // 2. Загружаем данные профиля игрока через SaveService
-            GameModel savedData = _saveService.Load();
+            // 2. Загружаем облачные сохранения
+            _saveService.LoadInto(this);
 
-            if (savedData != null)
-            {
-                // Если сохранение есть — восстанавливаем данные
-                PlayerName = savedData.PlayerName;
-                SelectedSkinId = savedData.SelectedSkinId;
-                PurchasedSkinIdList = savedData.PurchasedSkinIdList ?? new List<int>();
-                Money = savedData.Money;
-                Points = savedData.Points;
-                StatsList = savedData.StatsList ?? new List<Stats>();
-                ClaimedBattlePassRewards = savedData.ClaimedBattlePassRewards ?? new List<string>();
-                Achievements = savedData.Achievements ?? new List<AchievementData>();
-            }
-            else
-            {
-                // Если сохранения НЕТ — задаем начальные дефолтные значения прямо здесь
+            // Если имя пустое — потом YandexManager его заполнит
+            if (string.IsNullOrEmpty(PlayerName))
                 PlayerName = "";
-                SelectedSkinId = -1;
-                PurchasedSkinIdList = new List<int>();
-                Money = 1000;
-                Points = 0;
-                StatsList = new List<Stats>();
-                ClaimedBattlePassRewards = new List<string>();
-                Achievements = new List<AchievementData>();
-            }
 
-            // Инициализация / синхронизация ачивок с конфигом
+            // Инициализация ачивок (как было)
             if (Achievements.Count == 0)
             {
                 if (_achievementsConfig != null)
