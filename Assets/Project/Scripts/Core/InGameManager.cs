@@ -201,15 +201,15 @@ namespace NonameGame
 
         public void PlayerJoined(PlayerRef player)
         {
-            if (CrazyGames.CrazySDK.IsInitialized &&
+            /*if (CrazyGames.CrazySDK.IsInitialized &&
                 Runner.SessionInfo.PlayerCount == Runner.SessionInfo.MaxPlayers)
-                CrazyGames.CrazySDK.Game.HideInviteButton();
+                CrazyGames.CrazySDK.Game.HideInviteButton();*/
         }
 
         public void PlayerLeft(PlayerRef player)
         {
-            if (CrazyGames.CrazySDK.IsInitialized && gameState != GameState.Game)
-                CrazyManager.ShowInviteButton();
+            /*if (CrazyGames.CrazySDK.IsInitialized && gameState != GameState.Game)
+                CrazyManager.ShowInviteButton();*/
 
             // Если мы не StateAuthority но гонка идёт и все игроки ушли — запрашиваем authority
             if (!Object.HasStateAuthority)
@@ -703,8 +703,8 @@ namespace NonameGame
         {
             /*var _loadingUI = FindAnyObjectByType<LoadingUI>();
             _loadingUI?.Show();*/
-            if (CrazyGames.CrazySDK.IsInitialized)
-                CrazyGames.CrazySDK.Game.HideInviteButton();
+            /*if (CrazyGames.CrazySDK.IsInitialized)
+                CrazyGames.CrazySDK.Game.HideInviteButton();*/
 
             var localData = PlayerRaceData.LocalInstance;
             if (localData != null)
@@ -952,11 +952,11 @@ namespace NonameGame
                     ClearAllMessages();
                     _cameraManager?.StopSpectating();
                     _soundManager.PlayMusic();
-                    if (CrazyGames.CrazySDK.IsInitialized)
+                    /*if (CrazyGames.CrazySDK.IsInitialized)
                     {
                         CrazyGames.CrazySDK.Game.GameplayStart();
                         CrazyGames.CrazySDK.Game.HideInviteButton();
-                    }
+                    }*/
                     if (gameStateText != null)
                     {
                         gameStateText.transform.parent.gameObject.SetActive(false);
@@ -973,12 +973,12 @@ namespace NonameGame
                     _soundManager.StopMusic();
                     escPanel?.Hide();
 
-                    if (CrazyGames.CrazySDK.IsInitialized)
+                    /*if (CrazyGames.CrazySDK.IsInitialized)
                     {
                         if (Runner.SessionInfo.PlayerCount < Runner.SessionInfo.MaxPlayers)
                             CrazyManager.ShowInviteButton();
                         CrazyGames.CrazySDK.Game.GameplayStop();
-                    }
+                    }*/
                     ShowResults = false;
                     break;
 
@@ -1059,8 +1059,8 @@ namespace NonameGame
             }
             bool isWinner = localPlace == 1;
 
-            if (isWinner && CrazyGames.CrazySDK.IsInitialized)
-                CrazyGames.CrazySDK.Game.HappyTime();
+            /*if (isWinner && CrazyGames.CrazySDK.IsInitialized)
+                CrazyGames.CrazySDK.Game.HappyTime();*/
 
             // Авто-KeepPlaying через 10 секунд (только на StateAuthority)
             if (Object.HasStateAuthority)
