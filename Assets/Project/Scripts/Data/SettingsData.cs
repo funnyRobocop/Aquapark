@@ -10,11 +10,11 @@ namespace NonameGame
     /// </summary>
     public class SettingsData
     {
-        
+
+        public const string KeyLanguage = "Settings_Language";
         private const string KeyMusic = "Settings_Music";
         private const string KeySound = "Settings_Sound";
         private const string KeyNotification = "Settings_Notification";
-        private const string KeyLanguage = "Settings_Language";
         private const string KeyRegion = "Settings_Region";
         private const string KeyQuality = "Settings_Quality";
 

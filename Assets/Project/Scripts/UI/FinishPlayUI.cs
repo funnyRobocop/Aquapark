@@ -45,8 +45,9 @@ namespace NonameGame
             claimButton.onClick.RemoveAllListeners();
             claimButton.onClick.AddListener(() =>
             {
-                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); Hide(); mainMenuUI.Resume(); },
-                    () => { _gameModel.ClaimBattlePassMoney(reward * 2); Hide(); mainMenuUI.Resume(); },
+                Hide();
+                rewardPanel.Show(() => { _gameModel.ClaimBattlePassMoney(reward); mainMenuUI.Resume(); },
+                    () => { _gameModel.ClaimBattlePassMoney(reward * 2); mainMenuUI.Resume(); },
                     reward);
             });
 

@@ -214,7 +214,6 @@ namespace NonameGame
 
         private void HandleLevelChanged(int points, int newLevel)
         {
-            Debug.Log($"Поздравляем! Новый уровень боевого пропуска: {newLevel}");
         }
 
         // Вспомогательный класс для инспектора

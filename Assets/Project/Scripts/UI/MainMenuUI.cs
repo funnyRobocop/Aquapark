@@ -76,7 +76,7 @@ namespace NonameGame
 
         public void Resume()
         {
-            _skinPreviewUI.Show(-325f, 250f);
+            _skinPreviewUI.Show(-300f, 300f);
             tutorArrow?.SetActive(false);
             titleObj?.SetActive(true);
         }

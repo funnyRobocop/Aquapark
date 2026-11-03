@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Localization.Settings;
 using VContainer;
 using VContainer.Unity;
+using YG;
 
 namespace NonameGame
 {
@@ -87,6 +88,15 @@ namespace NonameGame
             await LocalizationSettings.InitializationOperation.Task;
 
             int localeIndex = Settings.Language;
+
+            // Если язык ещё не сохранялся — берём системный
+            if (!PlayerPrefs.HasKey("Settings_Language"))
+            {
+                localeIndex = SettingsData.DefaultLanguage;
+                Settings.Language = localeIndex;
+                Settings.Save();
+            }
+
             if (localeIndex >= 0 && localeIndex < LocalizationSettings.AvailableLocales.Locales.Count)
             {
                 LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeIndex];

@@ -144,7 +144,7 @@ namespace NonameGame
             if (_clickedItem == null) return;
 
             previewPanel.SetActive(true);
-            _skinPreviewUI.Show(-450f, 400f);
+            _skinPreviewUI.Show(-400f, 350f);
             _skinPreviewUI.SpawnPlayerMesh(_clickedItem.SkinData);
         }
 
