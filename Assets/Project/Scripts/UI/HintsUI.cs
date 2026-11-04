@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,17 +19,21 @@ namespace NonameGame
             }
 
             int randomIndex = Random.Range(0, hintsList.Count);
-            ShowHint(randomIndex);
+            if (gameObject.activeSelf)
+            {
+                StartCoroutine(ShowHint(randomIndex));
+            }
         }
 
-        public void ShowHint(int index)
+        public IEnumerator ShowHint(int index)
         {
-
             if (index < 0 || index >= hintsList.Count)
             {
                 Debug.LogWarning("Invalid hint index: " + index);
-                return;
+                yield break;
             }
+
+            yield return new WaitForSeconds(3f);
 
             hintCanvas.enabled = true; 
             hintsObject.SetActive(true);
@@ -43,6 +48,7 @@ namespace NonameGame
 
         public void HideHint()
         {
+            StopAllCoroutines();
             hintCanvas.enabled = false;
             hintsObject.SetActive(false);
 

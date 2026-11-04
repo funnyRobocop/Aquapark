@@ -69,8 +69,7 @@ namespace NonameGame
                 tutorArrow?.SetActive(true);
                 return;
             }
-            SpawnPlayerMesh(); 
-            hintsUI.ShowRandomHint();
+            SpawnPlayerMesh();
         }
 
         public void SpawnPlayerMesh()

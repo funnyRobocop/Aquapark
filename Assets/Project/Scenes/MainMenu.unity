@@ -3700,7 +3700,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -285, y: 0}
+  m_AnchoredPosition: {x: -310, y: 0}
   m_SizeDelta: {x: 124, y: 124}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &219104872
@@ -4266,6 +4266,7 @@ GameObject:
   - component: {fileID: 282191646}
   - component: {fileID: 282191648}
   - component: {fileID: 282191647}
+  - component: {fileID: 282191649}
   m_Layer: 5
   m_Name: 'Canvas: Overlay'
   m_TagString: Untagged
@@ -4357,6 +4358,26 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &282191649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282191644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6679f71fe7373fc4d92459f179036e0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.HintsUI
+  hintCanvas: {fileID: 282191646}
+  hintsObject: {fileID: 1046883466}
+  hintsList:
+  - {fileID: 928825579}
+  - {fileID: 1151044993}
+  - {fileID: 153881079}
+  - {fileID: 791162334}
+  - {fileID: 1090842958}
 --- !u!1 &282673254
 GameObject:
   m_ObjectHideFlags: 0
@@ -10465,7 +10486,7 @@ MonoBehaviour:
   overlayCanvas: {fileID: 282191646}
   tutorArrow: {fileID: 1580712093}
   titleObj: {fileID: 95814632}
-  hintsUI: {fileID: 1046883468}
+  hintsUI: {fileID: 282191649}
 --- !u!1 &816580959
 GameObject:
   m_ObjectHideFlags: 0
@@ -14264,7 +14285,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1046883467}
-  - component: {fileID: 1046883468}
   m_Layer: 5
   m_Name: Hint
   m_TagString: Untagged
@@ -14292,26 +14312,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 0}
---- !u!114 &1046883468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046883466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6679f71fe7373fc4d92459f179036e0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NonameGame.HintsUI
-  hintCanvas: {fileID: 282191646}
-  hintsObject: {fileID: 1046883466}
-  hintsList:
-  - {fileID: 928825579}
-  - {fileID: 1151044993}
-  - {fileID: 153881079}
-  - {fileID: 791162334}
-  - {fileID: 1090842958}
 --- !u!1 &1062724736
 GameObject:
   m_ObjectHideFlags: 0
