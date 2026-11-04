@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
+using YG;
 
 namespace NonameGame
 {
@@ -37,6 +38,12 @@ namespace NonameGame
             if (keyboard.numpad5Key.wasPressedThisFrame)
             {
                 _gameModel.ClearStatsAndProgress();
+            }
+
+            if (keyboard.numpad6Key.wasPressedThisFrame)
+            {
+                YG2.saves = new SavesYG();
+                YG2.SaveProgress();
             }
         }
     }

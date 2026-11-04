@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -44,11 +45,13 @@ namespace NonameGame
                 }
             }
 
+            var shuffle = _playerSkinLoader.PlayerSkinAll.Values.OrderBy(x => UnityEngine.Random.value).ToList();
+
             // Создаём айтемы один раз (родитель может быть выключен — это нормально)
-            foreach (var kvp in _playerSkinLoader.PlayerSkinAll)
+            foreach (var item in shuffle)
             {
                 var itemUI = Instantiate(itemPrefab, itemContainer).GetComponent<ShopItemUI>();
-                itemUI.Initialize(kvp.Value);
+                itemUI.Initialize(item);
                 itemUI.OnSkinClicked += SelectSkin;
                 _shopItems.Add(itemUI);
             }
