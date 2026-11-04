@@ -22,9 +22,11 @@ namespace NonameGame
         [SerializeField] private TextMeshProUGUI playerName;
         [SerializeField] private FusionNetworkManager fusionNetworkManager;
         [SerializeField] private Canvas canvas;
-        [SerializeField] private Camera camera;
+        [SerializeField] private Camera menuCamera;
+        [SerializeField] private Canvas overlayCanvas;
         [SerializeField] private GameObject tutorArrow;
         [SerializeField] private GameObject titleObj;
+        [SerializeField] private HintsUI hintsUI;
 
         private GameModel _gameModel;
         private AchievementsConfig _achievementsConfig;
@@ -33,7 +35,7 @@ namespace NonameGame
         [Inject] private SoundManager _soundManager;
 
         public Canvas Canvas { get { return canvas; } }
-        public Camera Camera { get { return camera; } }
+        public Camera Camera { get { return menuCamera; } }
 
         [Inject]
         public void Construct(GameModel gameModel, AchievementsConfig achievementsConfig)
@@ -63,10 +65,12 @@ namespace NonameGame
             if (_gameModel.SelectedSkinId < 0)
             {
                 OnShopButtonClicked();
+                if (overlayCanvas!= null) overlayCanvas.enabled = true;
                 tutorArrow?.SetActive(true);
                 return;
             }
-            SpawnPlayerMesh();
+            SpawnPlayerMesh(); 
+            hintsUI.ShowRandomHint();
         }
 
         public void SpawnPlayerMesh()
@@ -77,8 +81,10 @@ namespace NonameGame
         public void Resume()
         {
             _skinPreviewUI.Show(-300f, 300f);
+            if (overlayCanvas != null) overlayCanvas.enabled = false;
             tutorArrow?.SetActive(false);
             titleObj?.SetActive(true);
+            hintsUI.ShowRandomHint();
         }
 
         private void UpdatePlayerNameText(string name)
@@ -110,6 +116,7 @@ namespace NonameGame
             _skinPreviewUI.Hide();
             battlePassUI.Show();
             titleObj?.SetActive(false);
+            hintsUI.HideHint();
         }
 
         private void OnSettingsButtonClicked()
@@ -117,6 +124,7 @@ namespace NonameGame
             _skinPreviewUI.Hide();
             settingsUI.Show();
             titleObj?.SetActive(false);
+            hintsUI.HideHint();
         }
 
         private void OnShopButtonClicked()
@@ -124,6 +132,7 @@ namespace NonameGame
             _skinPreviewUI.Hide();
             shopUI.Show();
             titleObj?.SetActive(false);
+            hintsUI.HideHint();
         }
 
         private void OnPlayButtonClicked()
@@ -132,6 +141,7 @@ namespace NonameGame
             fusionNetworkManager.OnQuickJoinPressed();
             _soundManager.StopMusic();
             titleObj?.SetActive(false);
+            hintsUI.HideHint();
         }
 
         public void Reopen()
