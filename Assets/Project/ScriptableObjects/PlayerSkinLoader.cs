@@ -56,9 +56,9 @@ namespace NonameGame
             if (SkinType == PlayerSkinType.Rare)
             {
                 if (lang == 1)
-                    return "Редкий";
+                    return "Легендарный";
                 else
-                    return "Rare";
+                    return "Legendary";
             }
             else
             {

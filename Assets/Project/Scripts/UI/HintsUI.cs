@@ -44,6 +44,10 @@ namespace NonameGame
             }
 
             hintsList[index].SetActive(true);
+
+            yield return new WaitForSeconds(2f);
+
+            HideHint();
         }
 
         public void HideHint()
