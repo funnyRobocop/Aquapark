@@ -113,7 +113,7 @@ namespace NonameGame
             PhotonAppSettings.Global.AppSettings.AppVersion  = appVersion;
 
             NetworkSceneInfo sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(1), LoadSceneMode.Additive, activeOnLoad: true);
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(2), LoadSceneMode.Additive, activeOnLoad: true);
 
             var objectProvider = new VContainerFusionObjectProvider(() =>
             {
