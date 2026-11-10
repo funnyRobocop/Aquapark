@@ -7,38 +7,44 @@ namespace NonameGame
 {
     public class BarrelTrap : NetworkBehaviour
     {
-        [Header("Настройки движения")]
+        [Header("Объекты")]
+        [SerializeField] private Transform platform;
         [SerializeField] private Transform visual;
 
+        [Header("Настройки движения")]
         [SerializeField] private float sinkDistance = 3f;
 
         [Header("Тайминги (секунды)")]
         [SerializeField] private float activationDelay = 2f;
+        [SerializeField] private float shakeDuration = 0.3f;
         [SerializeField] private float sinkDuration = 0.5f;
         [SerializeField] private float underwaterDuration = 3f;
         [SerializeField] private float riseDuration = 0.5f;
 
+        [Header("Настройки тряски")]
+        [SerializeField] private float shakeAmountX = 0.04f;
+        [SerializeField] private float shakeAmountZ = 0.04f;
+        [SerializeField] private float shakeFrequency = 18f;
+
         [Header("Настройки игрока")]
         [SerializeField] private string playerTag = "Player";
 
-        // Время начала ожидания игрока
         [Networked]
         private float HoldStartTime { get; set; }
 
-        // Время начала движения бочки
         [Networked]
         private float CycleStartTime { get; set; }
 
-        private Vector3 _startLocalPosition;
-        private Vector3 _targetLocalPosition;
+        private Vector3 _platformStartPosition;
+        private Vector3 _platformTargetPosition;
+        private Vector3 _visualStartPosition;
 
-        // Локальный список коллайдеров игроков
-        // Используется только State Authority
         private readonly HashSet<Collider> _playerColliders =
             new HashSet<Collider>();
 
         private float TotalCycleDuration =>
-            sinkDuration + underwaterDuration + riseDuration;
+            shakeDuration + sinkDuration +
+            underwaterDuration + riseDuration;
 
         private float NetworkTime
         {
@@ -53,13 +59,16 @@ namespace NonameGame
 
         public override void Spawned()
         {
-            if (visual == null)
-                visual = transform;
+            if (platform == null)
+                platform = transform;
 
-            _startLocalPosition = visual.localPosition;
+            _platformStartPosition = platform.localPosition;
 
-            _targetLocalPosition =
-                _startLocalPosition + Vector3.down * sinkDistance;
+            _platformTargetPosition =
+                _platformStartPosition + Vector3.down * sinkDistance;
+
+            if (visual != null)
+                _visualStartPosition = visual.localPosition;
 
             if (HasStateAuthority)
             {
@@ -79,7 +88,6 @@ namespace NonameGame
             if (!_playerColliders.Add(other))
                 return;
 
-            // Первый игрок наступил на бочку
             if (_playerColliders.Count == 1 &&
                 CycleStartTime < 0f)
             {
@@ -94,7 +102,6 @@ namespace NonameGame
 
             _playerColliders.Remove(other);
 
-            // Все игроки покинули бочку до активации
             if (_playerColliders.Count == 0 &&
                 CycleStartTime < 0f)
             {
@@ -124,27 +131,24 @@ namespace NonameGame
 
             float now = NetworkTime;
 
-            // Проверяем, сколько игрок стоит на бочке
+            // Ожидание игрока
             if (CycleStartTime < 0f &&
                 HoldStartTime >= 0f &&
                 _playerColliders.Count > 0)
             {
                 if (now - HoldStartTime >= activationDelay)
                 {
-                    // Запускаем цикл падения
                     CycleStartTime = now;
                     HoldStartTime = -1f;
                 }
             }
 
-            // Цикл завершился
+            // Завершение полного цикла
             if (CycleStartTime >= 0f &&
                 now - CycleStartTime >= TotalCycleDuration)
             {
                 CycleStartTime = -1f;
 
-                // Если игрок всё ещё находится на бочке,
-                // запускаем новый отсчёт
                 if (_playerColliders.Count > 0)
                     HoldStartTime = now;
             }
@@ -152,45 +156,83 @@ namespace NonameGame
 
         public override void Render()
         {
-            if (visual == null)
-                return;
+            float elapsed = CycleStartTime >= 0f
+                ? NetworkTime - CycleStartTime
+                : -1f;
 
-            float progress = 0f;
+            float sinkProgress = 0f;
 
-            if (CycleStartTime >= 0f)
+            // 1. Тряска перед падением
+            if (visual != null)
             {
-                float elapsed = NetworkTime - CycleStartTime;
+                Vector3 shakeOffset = Vector3.zero;
 
-                // 1. Опускаем бочку
-                if (elapsed < sinkDuration)
+                if (elapsed >= 0f && elapsed < shakeDuration)
                 {
-                    float t = elapsed /
-                        Mathf.Max(sinkDuration, 0.0001f);
+                    float t = elapsed;
 
-                    progress = Mathf.SmoothStep(0f, 1f, t);
-                }
-                // 2. Бочка под водой
-                else if (elapsed <
-                         sinkDuration + underwaterDuration)
-                {
-                    progress = 1f;
-                }
-                // 3. Поднимаем бочку
-                else if (elapsed < TotalCycleDuration)
-                {
-                    float t =
-                        (elapsed - sinkDuration - underwaterDuration) /
-                        Mathf.Max(riseDuration, 0.0001f);
+                    // Плавное усиление тряски
+                    float envelope = Mathf.SmoothStep(
+                        0f, 1f,
+                        Mathf.Clamp01(t / 0.08f)
+                    );
 
-                    progress = 1f - Mathf.SmoothStep(0f, 1f, t);
+                    float waveX = Mathf.Sin(
+                        t * shakeFrequency * Mathf.PI * 2f
+                    );
+
+                    float waveZ = Mathf.Sin(
+                        t * shakeFrequency * Mathf.PI * 2f + 1.5f
+                    );
+
+                    shakeOffset.x =
+                        waveX * shakeAmountX * envelope;
+
+                    shakeOffset.z =
+                        waveZ * shakeAmountZ * envelope;
                 }
+
+                visual.localPosition =
+                    _visualStartPosition + shakeOffset;
             }
 
-            visual.localPosition = Vector3.Lerp(
-                _startLocalPosition,
-                _targetLocalPosition,
-                progress
-            );
+            // 2. Опускание платформы
+            if (elapsed >= shakeDuration &&
+                elapsed < shakeDuration + sinkDuration)
+            {
+                float t = (elapsed - shakeDuration) /
+                    Mathf.Max(sinkDuration, 0.0001f);
+
+                sinkProgress = Mathf.SmoothStep(0f, 1f, t);
+            }
+            // 3. Платформа под водой
+            else if (elapsed >= shakeDuration + sinkDuration &&
+                     elapsed < shakeDuration + sinkDuration +
+                     underwaterDuration)
+            {
+                sinkProgress = 1f;
+            }
+            // 4. Возвращение платформы
+            else if (elapsed >= shakeDuration + sinkDuration +
+                     underwaterDuration &&
+                     elapsed < TotalCycleDuration)
+            {
+                float t = (elapsed - shakeDuration -
+                    sinkDuration - underwaterDuration) /
+                    Mathf.Max(riseDuration, 0.0001f);
+
+                sinkProgress = 1f - Mathf.SmoothStep(0f, 1f, t);
+            }
+
+            // Применяем движение к платформе с коллайдером
+            if (platform != null)
+            {
+                platform.localPosition = Vector3.Lerp(
+                    _platformStartPosition,
+                    _platformTargetPosition,
+                    sinkProgress
+                );
+            }
         }
     }
 }
