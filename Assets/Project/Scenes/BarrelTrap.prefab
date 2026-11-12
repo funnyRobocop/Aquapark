@@ -197,11 +197,11 @@ MonoBehaviour:
   platform: {fileID: 4233482172873766837}
   visual: {fileID: 3305516729971269242}
   sinkDistance: 5
-  activationDelay: 1
-  shakeDuration: 0.3
-  sinkDuration: 0.5
-  underwaterDuration: 3
-  riseDuration: 0.5
+  activationDelay: 0.5
+  shakeDuration: 0.5
+  sinkDuration: 0.25
+  underwaterDuration: 2
+  riseDuration: 0.25
   shakeAmountX: 0.04
   shakeAmountZ: 0.04
   shakeFrequency: 18
@@ -272,7 +272,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.994917, y: 3.21194, z: 3.170432}
+  m_Size: {x: 2.994917, y: 6.63, z: 3.170432}
   m_Center: {x: 0, y: 3, z: -0.000000059604645}
 --- !u!1 &6560827072762641600
 GameObject:

@@ -11,7 +11,8 @@ namespace NonameGame
         [SerializeField] private float movementThreshold  = 0.15f;
         [SerializeField] private float dampSpeedUp        = 0.06f;
         [SerializeField] private float dampSpeedDown      = 0.04f;
-        [SerializeField] private float airControl         = 0.6f;
+        [SerializeField] private float airControl = 0.6f; 
+        private Vector3 _externalVelocity;
 
         [Header("Jump / Dash")]
         [SerializeField] private float jumpForce      = 9f;
@@ -105,6 +106,10 @@ namespace NonameGame
             if (!HasStateAuthority) return;
             _stunTimer = TickTimer.CreateFromSeconds(Runner, duration);
         }
+        public void SetExternalVelocity(Vector3 vel)
+        {
+            _externalVelocity = vel;
+        }
 
         public override void Spawned()
         {
@@ -173,7 +178,9 @@ namespace NonameGame
 
             Vector3 ang = _rb.angularVelocity;
             ang.y *= 0.5f;
-            _rb.angularVelocity = ang;
+            _rb.angularVelocity = ang; 
+            
+            _externalVelocity = Vector3.zero;
         }
 
         // ================================================================
@@ -204,7 +211,7 @@ namespace NonameGame
                 {
                     // Плоско, ступенька, воздух: сохраняем Y для прыжка/падения
                     Vector3 horizontal = _isTouchingSlope ? _globalForward : _moveDir;
-                    targetVel   = horizontal * speed;
+                    targetVel = horizontal * speed;
                     targetVel.y = _rb.linearVelocity.y;
                 }
 
@@ -213,9 +220,12 @@ namespace NonameGame
             }
             else
             {
-                targetVel   = Vector3.zero;
+                targetVel = Vector3.zero;
                 targetVel.y = _rb.linearVelocity.y;
             }
+            
+            // Добавляем скорость от конвейера/платформы
+            targetVel += _externalVelocity;
 
             float damp = _moveDir.sqrMagnitude > 0.001f ? dampSpeedUp : dampSpeedDown;
             _rb.linearVelocity = Vector3.SmoothDamp(_rb.linearVelocity, targetVel, ref _smoothVel, damp);
