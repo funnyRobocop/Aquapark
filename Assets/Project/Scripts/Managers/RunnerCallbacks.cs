@@ -47,21 +47,24 @@ namespace NonameGame
 
         public void OnSceneLoadDone(NetworkRunner runner)
         {
-            // После LoadScene(Single) все NetworkObject'ы предыдущей сцены despawn'нуты.
-            // Локальный игрок тоже — спавним заново, если его объекта нет.
             if (runner.GetPlayerObject(runner.LocalPlayer) == null)
             {
                 SpawnLocalPlayer(runner);
             }
 
-            // На всякий случай (если master сменился и MatchManager почему-то отсутствует)
-            TrySpawnMatchManager(runner);
+            TrySpawnMatchManager(runner); 
+            
+            _loadingUI?.SetProgress(1f);
+            _loadingUI?.Hide();
+            
+            if (MatchManager.Instance != null)
+                MatchManager.Instance.NotifySceneLoaded();
         }
 
         public void OnSceneLoadStart(NetworkRunner runner)
         {
-            // Можно показать loading UI здесь, если нужно
-            // _loadingUI?.Show();
+            _loadingUI?.Show();
+            _loadingUI?.SetProgress(0.3f);
         }
 
         // ─────────────────────────────────────────────────────────────────────

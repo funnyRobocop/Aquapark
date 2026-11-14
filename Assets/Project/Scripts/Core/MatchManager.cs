@@ -1,6 +1,7 @@
 using Fusion;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VContainer;
 
 namespace NonameGame
 {
@@ -11,14 +12,17 @@ namespace NonameGame
         [Networked] public int CurrentLevelIndex { get; set; }
         [Networked] public int RoundNumber { get; set; }
 
-        // Build indexes: 1, 2, 3 → циклически
         [SerializeField] private int[] levelBuildIndexes = { 1, 2, 3 };
+
+        [Inject] private GameModel _gameModel;
+        [Inject] private LoadingUI _loadingUI;
+        
+        private bool _isLoading;
 
         public override void Spawned()
         {
             if (Instance != null && Instance != this)
             {
-                // Уже есть — этот лишний
                 if (Object.HasStateAuthority)
                     Runner.Despawn(Object);
                 return;
@@ -27,21 +31,18 @@ namespace NonameGame
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // Если это самый первый спавн — можно инициализировать индекс
-            // (иначе берём уже зареплицированное значение)
-            if (Object.HasStateAuthority && RoundNumber == 0 && CurrentLevelIndex == 0)
+            // Синхронизируем индекс с реально загруженной сценой (первый спавн)
+            if (Object.HasStateAuthority && RoundNumber == 0)
             {
-                // Синхронизируем индекс с реально загруженной сценой
-                int loaded = SceneManager.GetActiveScene().buildIndex;
-                for (int i = 0; i < levelBuildIndexes.Length; i++)
-                {
-                    if (levelBuildIndexes[i] == loaded)
-                    {
-                        CurrentLevelIndex = i;
-                        break;
-                    }
-                }
+                SyncIndexWithLoadedScene();
             }
+
+            _isLoading = false;
+        }
+
+        public void NotifySceneLoaded()
+        {
+            _isLoading = false;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -50,12 +51,12 @@ namespace NonameGame
                 Instance = null;
         }
 
-        /// <summary>
-        /// Вызывается из InGameManager после результатов.
-        /// </summary>
         public void RequestNextLevel()
         {
             if (!Object.HasStateAuthority) return;
+            if (_isLoading) return;
+
+            _isLoading = true;
 
             CurrentLevelIndex = (CurrentLevelIndex + 1) % levelBuildIndexes.Length;
             RoundNumber++;
@@ -66,6 +67,9 @@ namespace NonameGame
         public void RequestSameLevelAgain()
         {
             if (!Object.HasStateAuthority) return;
+            if (_isLoading) return;
+
+            _isLoading = true;
             RoundNumber++;
             RPC_LoadLevel(CurrentLevelIndex);
         }
@@ -75,15 +79,46 @@ namespace NonameGame
         {
             int buildIndex = levelBuildIndexes[Mathf.Clamp(levelIndex, 0, levelBuildIndexes.Length - 1)];
 
-            // Опционально: показать loading UI перед сменой сцены
-            // LoadingUI.Instance?.Show();
+            if (_gameModel != null)
+                _gameModel.LevelIndex = buildIndex;
 
-            Runner.LoadScene(SceneRef.FromIndex(buildIndex), LoadSceneMode.Single);
+            _loadingUI?.Show();
+            _loadingUI?.SetProgress(0.15f);
+
+            // Выгружаем ВСЕ игровые уровни (buildIndex > 0), кроме MainMenu
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var s = SceneManager.GetSceneAt(i);
+                if (s.IsValid() && s.buildIndex > 0 && s.buildIndex != buildIndex)
+                {
+                    Runner.UnloadScene(SceneRef.FromIndex(s.buildIndex));
+                }
+            }
+
+            // Грузим новый
+            Runner.LoadScene(
+                SceneRef.FromIndex(buildIndex),
+                LoadSceneMode.Additive,
+                LocalPhysicsMode.None,
+                true
+            );
         }
 
-        /// <summary>
-        /// Удобный хелпер: какой build index сейчас активен.
-        /// </summary>
+        private void SyncIndexWithLoadedScene()
+        {
+            int loaded = SceneManager.GetActiveScene().buildIndex;
+            for (int i = 0; i < levelBuildIndexes.Length; i++)
+            {
+                if (levelBuildIndexes[i] == loaded)
+                {
+                    CurrentLevelIndex = i;
+                    if (_gameModel != null)
+                        _gameModel.LevelIndex = loaded;
+                    break;
+                }
+            }
+        }
+
         public int GetCurrentBuildIndex()
         {
             if (levelBuildIndexes == null || levelBuildIndexes.Length == 0)

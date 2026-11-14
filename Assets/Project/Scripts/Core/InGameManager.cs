@@ -98,7 +98,8 @@ namespace NonameGame
         private int?  _prevTimerSec;
         private int   _prevTotalPlayers = -1;
         private int   _prevReadyPlayers = -1;
-        private bool _showResults;
+        private bool _showResults; 
+        private bool _isLoadingNextLevel;
 
         private string waitingText;
         private string readyToPlayText;
@@ -420,9 +421,11 @@ namespace NonameGame
                     break;
 
                 case GameState.ShowResults:
-                    // Авто Keep Playing по истечении 10 секунд
-                    if (keepPlayingTimer.Expired(Runner))
-                        GoToNextLevelOrRestart();
+                    if (!_isLoadingNextLevel && keepPlayingTimer.Expired(Runner))
+                    {
+                        _isLoadingNextLevel = true;
+                        GoToNextLevelOrRestart();                        
+                    }
                     break;
             }
         }
@@ -771,6 +774,9 @@ namespace NonameGame
         private void RPC_RequestKeepPlaying()
         {
             if (gameState != GameState.ShowResults) return;
+            if (_isLoadingNextLevel) return;
+
+            _isLoadingNextLevel = true;
             GoToNextLevelOrRestart();
         }
 
@@ -778,13 +784,11 @@ namespace NonameGame
         {
             if (MatchManager.Instance != null)
             {
-                // Можно сделать выбор: следующий уровень или тот же
                 MatchManager.Instance.RequestNextLevel();
-                // или MatchManager.Instance.RequestSameLevelAgain();
             }
             else
             {
-                // fallback на старое поведение
+                _isLoadingNextLevel = false;
                 ResetToWaiting();
             }
         }
