@@ -717,7 +717,7 @@ namespace NonameGame
             }
 
             _soundManager?.PlayMusic();
-            var scene = SceneManager.GetSceneByName("Level1");
+            var scene = SceneManager.GetSceneByBuildIndex(_gameModel.LevelIndex);
             if (scene.isLoaded)
                 SceneManager.UnloadSceneAsync(scene);
                 
