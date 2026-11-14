@@ -422,7 +422,7 @@ namespace NonameGame
                 case GameState.ShowResults:
                     // Авто Keep Playing по истечении 10 секунд
                     if (keepPlayingTimer.Expired(Runner))
-                        ResetToWaiting();
+                        GoToNextLevelOrRestart();
                     break;
             }
         }
@@ -717,10 +717,10 @@ namespace NonameGame
             }
 
             _soundManager?.PlayMusic();
-            var scene = SceneManager.GetSceneByBuildIndex(_gameModel.LevelIndex);
-            if (scene.isLoaded)
+            var scene = SceneManager.GetActiveScene();
+            if (scene.IsValid() && scene.buildIndex > 0) // не MainMenu
                 SceneManager.UnloadSceneAsync(scene);
-                
+
             // Выгрузка Addressable-скинов всех игроков на этом клиенте
             foreach (var view in Runner.GetAllBehaviours<PlayerView>())
                 view.ReleaseSkin();
@@ -771,7 +771,22 @@ namespace NonameGame
         private void RPC_RequestKeepPlaying()
         {
             if (gameState != GameState.ShowResults) return;
-            ResetToWaiting();
+            GoToNextLevelOrRestart();
+        }
+
+        private void GoToNextLevelOrRestart()
+        {
+            if (MatchManager.Instance != null)
+            {
+                // Можно сделать выбор: следующий уровень или тот же
+                MatchManager.Instance.RequestNextLevel();
+                // или MatchManager.Instance.RequestSameLevelAgain();
+            }
+            else
+            {
+                // fallback на старое поведение
+                ResetToWaiting();
+            }
         }
 
         private void ResetToWaiting()

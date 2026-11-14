@@ -12,7 +12,10 @@ namespace NonameGame
     {
 
         [Tooltip("The Spawned on the Network when a player joins the room.")]
-        public NetworkObject playerPrefab;
+        public NetworkObject playerPrefab; 
+        
+        [Tooltip("MatchManager prefab (NetworkObject)")]
+        public NetworkObject matchManagerPrefab;
 
         [Inject] private GameModel _gameModel;
         [Inject] private LoadingUI _loadingUI;
@@ -37,10 +40,33 @@ namespace NonameGame
                 });
 
             runner.SetPlayerObject(player, newPlayer);
+
+            // Спавним MatchManager только один раз, только master'ом
+            if (runner.IsSharedModeMasterClient && MatchManager.Instance == null)
+            {
+                runner.Spawn(matchManagerPrefab);
+            }
         }
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        public void OnSceneLoadDone(NetworkRunner runner)
         {
+            // Если локальный игрок ещё не имеет объекта — спавним
+            if (runner.GetPlayerObject(runner.LocalPlayer) == null)
+            {
+                int selectedSkinId = _gameModel.SelectedSkinId;
+                var newPlayer = runner.Spawn(
+                    playerPrefab,
+                    position: Vector3.up,
+                    onBeforeSpawned: (spawnRunner, spawnedObject) =>
+                    {
+                        var skin = spawnedObject.GetComponent<PlayerView>();
+                        if (skin != null)
+                            skin.InitializeBeforeSpawn(selectedSkinId);
+                        else
+                            Debug.LogError("Add PlayerView to the Player prefab root.");
+                    });
+                runner.SetPlayerObject(runner.LocalPlayer, newPlayer);
+            }
         }
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
@@ -62,6 +88,11 @@ namespace NonameGame
         }
 
         #region Unused Callbacks
+
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        {
+        }
+        
         public void OnConnectedToServer(NetworkRunner runner)
         {
 
@@ -118,11 +149,6 @@ namespace NonameGame
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
-        {
-
-        }
-
-        public void OnSceneLoadDone(NetworkRunner runner)
         {
 
         }
