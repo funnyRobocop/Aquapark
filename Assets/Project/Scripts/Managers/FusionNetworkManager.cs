@@ -31,6 +31,7 @@ namespace NonameGame
 
         // Флаг: сцена загрузилась (ставится через SceneManager.sceneLoaded)
         private bool _levelSceneLoaded;
+        public int LevelIndex = 3; // Индекс сцены уровня (buildIndex 1)
 
         private void Awake()
         {
@@ -113,7 +114,7 @@ namespace NonameGame
             PhotonAppSettings.Global.AppSettings.AppVersion  = appVersion;
 
             NetworkSceneInfo sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(3), LoadSceneMode.Additive, activeOnLoad: true);
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(LevelIndex), LoadSceneMode.Additive, activeOnLoad: true);
 
             var objectProvider = new VContainerFusionObjectProvider(() =>
             {

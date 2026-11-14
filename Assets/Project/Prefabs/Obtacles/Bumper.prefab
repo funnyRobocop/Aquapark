@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4206079046571389182}
   - component: {fileID: 2757449783060465807}
   - component: {fileID: 1741660071543571296}
+  - component: {fileID: 4872918502629596399}
   m_Layer: 0
   m_Name: Bumper
   m_TagString: Untagged
@@ -128,9 +129,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab5ff35f9a55ca4d8a1551d421c2149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.Bumper
-  bounceForce: 18
-  upwardBoost: 0.45
-  cooldownTime: 0.5
+  bounceForce: 10
+  upwardBoost: 0
+  cooldownTime: 0.35
   playerTag: Player
 --- !u!136 &1741660071543571296
 CapsuleCollider:
@@ -155,3 +156,30 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &4872918502629596399
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2769308834441431155}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 0

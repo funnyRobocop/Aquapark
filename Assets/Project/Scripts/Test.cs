@@ -9,6 +9,13 @@ namespace NonameGame
     {
         [Inject] private GameModel _gameModel;
 
+        FusionNetworkManager _fusionNetworkManager;
+
+        void Awake()
+        {
+            _fusionNetworkManager = FindObjectOfType<FusionNetworkManager>();
+        }
+
         // Update is called once per frame
         void Update()
         {
@@ -44,6 +51,21 @@ namespace NonameGame
             {
                 YG2.saves = new SavesYG();
                 YG2.SaveProgress();
+            }
+
+            if (keyboard.numpad7Key.wasPressedThisFrame)
+            {
+                _fusionNetworkManager.LevelIndex = 1;
+            }
+
+            if (keyboard.numpad8Key.wasPressedThisFrame)
+            {
+                _fusionNetworkManager.LevelIndex = 2;
+            }
+
+            if (keyboard.numpad9Key.wasPressedThisFrame)
+            {
+                _fusionNetworkManager.LevelIndex = 3;
             }
         }
     }
