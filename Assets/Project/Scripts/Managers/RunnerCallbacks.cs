@@ -7,74 +7,74 @@ using VContainer;
 
 namespace NonameGame
 {
-    [Tooltip("Implements INetworkRunnerCallbacks so various events such as playings joining and leaving will trigger different actions.")]
+    [Tooltip("Implements INetworkRunnerCallbacks so various events such as players joining and leaving will trigger different actions.")]
     public class RunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
     {
+        [Tooltip("The NetworkObject spawned when a player joins the room.")]
+        public NetworkObject playerPrefab;
 
-        [Tooltip("The Spawned on the Network when a player joins the room.")]
-        public NetworkObject playerPrefab; 
-        
-        [Tooltip("MatchManager prefab (NetworkObject)")]
+        [Tooltip("MatchManager prefab (must have NetworkObject + MatchManager). Spawned once per session.")]
         public NetworkObject matchManagerPrefab;
 
         [Inject] private GameModel _gameModel;
         [Inject] private LoadingUI _loadingUI;
 
+        // ─────────────────────────────────────────────────────────────────────
+        // Player join / leave
+        // ─────────────────────────────────────────────────────────────────────
+
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
-            if (runner.LocalPlayer != player)
-                return;
-
-            int selectedSkinId = _gameModel.SelectedSkinId;
-            var newPlayer = runner.Spawn(
-                playerPrefab,
-                position: Vector3.up,
-                inputAuthority: player,
-                onBeforeSpawned: (spawnRunner, spawnedObject) =>
-                {
-                    var skin = spawnedObject.GetComponent<PlayerView>();
-                    if (skin != null)
-                        skin.InitializeBeforeSpawn(selectedSkinId);
-                    else
-                        Debug.LogError("Add PlayerView to the Player prefab root.");
-                });
-
-            runner.SetPlayerObject(player, newPlayer);
-
-            // Спавним MatchManager только один раз, только master'ом
-            if (runner.IsSharedModeMasterClient && MatchManager.Instance == null)
+            // Спавним только локального игрока
+            if (runner.LocalPlayer == player)
             {
-                runner.Spawn(matchManagerPrefab);
+                SpawnLocalPlayer(runner);
             }
+
+            // MatchManager спавним один раз — только Shared Mode Master
+            TrySpawnMatchManager(runner);
         }
+
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        {
+            // Ничего особенного не делаем.
+            // MatchManager остаётся жить, StateAuthority мигрирует автоматически.
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Scene load
+        // ─────────────────────────────────────────────────────────────────────
 
         public void OnSceneLoadDone(NetworkRunner runner)
         {
-            // Если локальный игрок ещё не имеет объекта — спавним
+            // После LoadScene(Single) все NetworkObject'ы предыдущей сцены despawn'нуты.
+            // Локальный игрок тоже — спавним заново, если его объекта нет.
             if (runner.GetPlayerObject(runner.LocalPlayer) == null)
             {
-                int selectedSkinId = _gameModel.SelectedSkinId;
-                var newPlayer = runner.Spawn(
-                    playerPrefab,
-                    position: Vector3.up,
-                    onBeforeSpawned: (spawnRunner, spawnedObject) =>
-                    {
-                        var skin = spawnedObject.GetComponent<PlayerView>();
-                        if (skin != null)
-                            skin.InitializeBeforeSpawn(selectedSkinId);
-                        else
-                            Debug.LogError("Add PlayerView to the Player prefab root.");
-                    });
-                runner.SetPlayerObject(runner.LocalPlayer, newPlayer);
+                SpawnLocalPlayer(runner);
             }
+
+            // На всякий случай (если master сменился и MatchManager почему-то отсутствует)
+            TrySpawnMatchManager(runner);
         }
+
+        public void OnSceneLoadStart(NetworkRunner runner)
+        {
+            // Можно показать loading UI здесь, если нужно
+            // _loadingUI?.Show();
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Shutdown
+        // ─────────────────────────────────────────────────────────────────────
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            // Attempts to unload the gameplay scene.
-            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("GameplayScene");
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             _loadingUI?.Show();
-            if (scene.IsValid())
+
+            // Выгружаем игровую сцену (не MainMenu)
+            if (scene.IsValid() && scene.buildIndex > 0)
             {
                 UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
             }
@@ -87,94 +87,91 @@ namespace NonameGame
             }
         }
 
-        #region Unused Callbacks
+        // ─────────────────────────────────────────────────────────────────────
+        // Helpers
+        // ─────────────────────────────────────────────────────────────────────
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        private void SpawnLocalPlayer(NetworkRunner runner)
         {
-        }
-        
-        public void OnConnectedToServer(NetworkRunner runner)
-        {
+            if (playerPrefab == null)
+            {
+                Debug.LogError("[RunnerCallbacks] playerPrefab is not assigned!");
+                return;
+            }
 
-        }
+            // Уже есть объект — ничего не делаем
+            if (runner.GetPlayerObject(runner.LocalPlayer) != null)
+                return;
 
-        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
-        {
+            int selectedSkinId = _gameModel != null ? _gameModel.SelectedSkinId : 0;
 
-        }
+            var newPlayer = runner.Spawn(
+                playerPrefab,
+                position: Vector3.up,
+                inputAuthority: runner.LocalPlayer,
+                onBeforeSpawned: (spawnRunner, spawnedObject) =>
+                {
+                    var skin = spawnedObject.GetComponent<PlayerView>();
+                    if (skin != null)
+                        skin.InitializeBeforeSpawn(selectedSkinId);
+                    else
+                        Debug.LogError("[RunnerCallbacks] Add PlayerView to the Player prefab root.");
+                });
 
-        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
-        {
-
-        }
-
-        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
-        {
-
-        }
-
-        public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
-        {
-
-        }
-
-        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
-        {
-
+            runner.SetPlayerObject(runner.LocalPlayer, newPlayer);
         }
 
-        public void OnInput(NetworkRunner runner, NetworkInput input)
+        private void TrySpawnMatchManager(NetworkRunner runner)
         {
+            if (matchManagerPrefab == null)
+            {
+                Debug.LogWarning("[RunnerCallbacks] matchManagerPrefab is not assigned!");
+                return;
+            }
 
+            // Уже есть
+            if (MatchManager.Instance != null)
+                return;
+
+            // Спавнить может только Shared Mode Master
+            if (!runner.IsSharedModeMasterClient)
+                return;
+
+            runner.Spawn(matchManagerPrefab);
         }
 
-        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
-        {
+        // ─────────────────────────────────────────────────────────────────────
+        // Unused callbacks (required by interface)
+        // ─────────────────────────────────────────────────────────────────────
 
-        }
+        public void OnConnectedToServer(NetworkRunner runner) { }
 
-        public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-        {
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
 
-        }
+        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
 
-        public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-        {
+        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
 
-        }
+        public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
 
-        public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
-        {
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
 
-        }
+        public void OnInput(NetworkRunner runner, NetworkInput input) { }
 
-        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
-        {
+        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
 
-        }
+        public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
 
-        public void OnSceneLoadStart(NetworkRunner runner)
-        {
+        public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
 
-        }
+        public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
 
-        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-        {
+        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
 
-        }
+        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ReadOnlySpan<byte> data) { }
 
+        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
 
-
-        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
-        {
-
-        }
-
-        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ReadOnlySpan<byte> data)
-        {
-
-        }
-
-        #endregion
+        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     }
 }

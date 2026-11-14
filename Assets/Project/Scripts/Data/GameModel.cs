@@ -31,7 +31,7 @@ namespace NonameGame
 
         [Inject] private AchievementsConfig _achievementsConfig;
 
-        public int LevelIndex { get; set; }
+        public int LevelIndex { get; set; } = 1;
         public int SessionKickCount { get; set; }
         public int SessionThrowCount { get; set; }
         public int SessionGoldCount { get; set; }
