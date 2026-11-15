@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using VContainer;
 
 namespace NonameGame
 {
@@ -25,6 +26,8 @@ namespace NonameGame
         private NetworkTransform _nt;
 
         private Vector3 _initialPosition;
+        
+        [Inject] private GameModel _gameModel;
 
         public override void Spawned()
         {
@@ -118,7 +121,7 @@ namespace NonameGame
             if (InGameManager.Instance != null &&
                 InGameManager.Instance.gameState == InGameManager.GameState.Game)
             {
-                local.ThrowCount++;
+                _gameModel.SessionThrowCount++;
             }
         }
 

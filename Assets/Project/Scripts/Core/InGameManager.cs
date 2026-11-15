@@ -704,32 +704,16 @@ namespace NonameGame
         /// <summary>UI: кнопка "Leave Game".</summary>
         public void LeaveGame()
         {
-            /*var _loadingUI = FindAnyObjectByType<LoadingUI>();
-            _loadingUI?.Show();*/
-            /*if (CrazyGames.CrazySDK.IsInitialized)
-                CrazyGames.CrazySDK.Game.HideInviteButton();*/
-
-            var localData = PlayerRaceData.LocalInstance;
-            if (localData != null)
-            {
-                _gameModel.SessionKickCount = localData.KickCount;
-                _gameModel.SessionThrowCount = localData.ThrowCount;
-                _gameModel.SessionGoldCount = localData.GoldCount;
-                _gameModel.SessionFinishCount = localData.FinishCount;
-                Debug.Log($"[InGameManager] Session totals: Kick={_gameModel.SessionKickCount}, Throw={_gameModel.SessionThrowCount}, Gold={_gameModel.SessionGoldCount}, Finish={_gameModel.SessionFinishCount}");
-            }
+            Debug.Log($"[InGameManager] Session totals: Kick={_gameModel.SessionKickCount}, Throw={_gameModel.SessionThrowCount}, Gold={_gameModel.SessionGoldCount}, Finish={_gameModel.SessionFinishCount}");
 
             _soundManager?.PlayMusic();
             var scene = SceneManager.GetActiveScene();
-            if (scene.IsValid() && scene.buildIndex > 0) // не MainMenu
+            if (scene.IsValid() && scene.buildIndex > 0)
                 SceneManager.UnloadSceneAsync(scene);
 
-            // Выгрузка Addressable-скинов всех игроков на этом клиенте
             foreach (var view in Runner.GetAllBehaviours<PlayerView>())
                 view.ReleaseSkin();
 
-            // Уведомляем StateAuthority до отключения, чтобы он мог сбросить состояние
-            // (PlayerLeft может не вызваться если уходящий сам является StateAuthority)
             RPC_NotifyPlayerLeaving(Runner.LocalPlayer);
 
             Runner.Shutdown();

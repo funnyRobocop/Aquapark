@@ -218,6 +218,7 @@ namespace NonameGame
 
         public void ClearSessionData()
         {
+            Debug.Log("Clearing session data");
             SessionFinishCount = 0;
             SessionGoldCount = 0;
             SessionKickCount = 0;

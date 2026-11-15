@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using VContainer;
 
 namespace NonameGame
 {
@@ -27,6 +28,8 @@ namespace NonameGame
         [SerializeField] private ParticleSystem pushVfx;
 
         [Networked] private TickTimer _cooldownTimer { get; set; }
+        
+        [Inject] private GameModel _gameModel;
 
         public bool IsOnCooldown => !_cooldownTimer.ExpiredOrNotRunning(Runner);
 
@@ -89,7 +92,7 @@ namespace NonameGame
                 pushedAnyone = true;
                 playerRaceData.PlayHitFeedback(target.transform.position);
                 if (InGameManager.Instance != null && InGameManager.Instance.gameState == InGameManager.GameState.Game)
-                    playerRaceData.KickCount++; // локально — StateAuthority игрока = его машина
+                    _gameModel.SessionKickCount++; // локально — StateAuthority игрока = его машина
 
                 if (hit.TryGetComponent<PlayerController>(out var playerController))
                     playerController.SetStunTimer(stunTime);
