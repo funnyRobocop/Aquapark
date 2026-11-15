@@ -49,12 +49,13 @@ namespace NonameGame
         // Когда Fusion загрузил сцену (buildIndex 1) — сцена загружена на 100%
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.buildIndex == 1)
+            if (scene.buildIndex > 0)
                 _levelSceneLoaded = true;
         }
 
         internal void ShowShutdown(ShutdownReason shutdownReason)
         {
+            Debug.Log($"FusionNetworkManager.ShowShutdown: {shutdownReason}");
             mainMenuUI.Canvas.enabled = true;
             mainMenuUI.Camera.gameObject.SetActive(true);
 
@@ -70,11 +71,12 @@ namespace NonameGame
 
         private void SceneManager_sceneUnloaded(Scene arg0)
         {
-            if (mainMenuUI.Canvas != null)
+            /*if (SceneManager.GetActiveScene().name == "MainMenu")
             {
+                Debug.Log($"FusionNetworkManager.SceneManager_sceneUnloaded: {arg0.name}");
                 mainMenuUI.Canvas.enabled = true;
                 mainMenuUI.Camera.gameObject.SetActive(true);
-            }
+            }*/
             _loadingUI?.Hide();
             Cursor.lockState = CursorLockMode.None;
         }
