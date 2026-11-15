@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 8054321445328544447}
   - component: {fileID: 3485374931062893822}
   - component: {fileID: 5298396948958590950}
+  - component: {fileID: 4938523906233658434}
   m_Layer: 5
   m_Name: LoadingUI
   m_TagString: Untagged
@@ -122,7 +123,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387905336677031312}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -191,11 +192,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NonameGame.LoadingUI
   canvas: {fileID: 274594348152005550}
+  canvasGroup: {fileID: 4938523906233658434}
   _hints:
   - {fileID: 3078433226002575920}
   - {fileID: 6013885745092134866}
   - {fileID: 905701313413711191}
   _slider: {fileID: 3167969649015496143}
+  minShowTime: 1
+  fadeInDuration: 0.25
+  fadeOutDuration: 0.3
+--- !u!225 &4938523906233658434
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387905336677031312}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &686230776527402715
 GameObject:
   m_ObjectHideFlags: 0

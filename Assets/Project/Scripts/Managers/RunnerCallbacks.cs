@@ -83,6 +83,7 @@ namespace NonameGame
             }
             else
             {
+                _loadingUI?.SetProgress(1f);
                 _loadingUI?.Hide();
 
                 var fm = GameObject.FindFirstObjectByType<FusionNetworkManager>(FindObjectsInactive.Include);
