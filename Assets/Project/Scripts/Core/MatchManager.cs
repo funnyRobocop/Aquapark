@@ -61,47 +61,45 @@ namespace NonameGame
             CurrentLevelIndex = (CurrentLevelIndex + 1) % levelBuildIndexes.Length;
             RoundNumber++;
 
-            RPC_LoadLevel(CurrentLevelIndex);
-        }
+            int levelIndex = CurrentLevelIndex;
+            int buildIndex = levelBuildIndexes[levelIndex];
 
-        public void RequestSameLevelAgain()
-        {
-            if (!Object.HasStateAuthority) return;
-            if (_isLoading) return;
+            // 1. Сказать всем показать loading + обновить LevelIndex
+            RPC_OnLevelLoadStarted(levelIndex, buildIndex);
 
-            _isLoading = true;
-            RoundNumber++;
-            RPC_LoadLevel(CurrentLevelIndex);
-        }
+            // 2. Выгрузить старые уровни (только authority)
+            UnloadAllGameLevelsExcept(buildIndex);
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_LoadLevel(int levelIndex)
-        {
-            int buildIndex = levelBuildIndexes[Mathf.Clamp(levelIndex, 0, levelBuildIndexes.Length - 1)];
-
-            if (_gameModel != null)
-                _gameModel.LevelIndex = buildIndex;
-
-            _loadingUI?.Show();
-            _loadingUI?.SetProgress(0.15f);
-
-            // Выгружаем ВСЕ игровые уровни (buildIndex > 0), кроме MainMenu
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var s = SceneManager.GetSceneAt(i);
-                if (s.IsValid() && s.buildIndex > 0 && s.buildIndex != buildIndex)
-                {
-                    Runner.UnloadScene(SceneRef.FromIndex(s.buildIndex));
-                }
-            }
-
-            // Грузим новый
+            // 3. Загрузить новый уровень (только authority) — Fusion сам синхронизирует
             Runner.LoadScene(
                 SceneRef.FromIndex(buildIndex),
                 LoadSceneMode.Additive,
                 LocalPhysicsMode.None,
                 true
             );
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_OnLevelLoadStarted(int levelIndex, int buildIndex)
+        {
+            if (_gameModel != null)
+                _gameModel.LevelIndex = buildIndex;
+
+            _loadingUI?.Show();
+            _loadingUI?.SetProgress(0.15f);
+        }
+
+        private void UnloadAllGameLevelsExcept(int keepBuildIndex)
+        {
+            for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+            {
+                var s = SceneManager.GetSceneAt(i);
+                if (!s.IsValid()) continue;
+                if (s.buildIndex <= 0) continue;          // MainMenu не трогаем
+                if (s.buildIndex == keepBuildIndex) continue;
+
+                Runner.UnloadScene(SceneRef.FromIndex(s.buildIndex));
+            }
         }
 
         private void SyncIndexWithLoadedScene()
@@ -117,13 +115,6 @@ namespace NonameGame
                     break;
                 }
             }
-        }
-
-        public int GetCurrentBuildIndex()
-        {
-            if (levelBuildIndexes == null || levelBuildIndexes.Length == 0)
-                return 1;
-            return levelBuildIndexes[Mathf.Clamp(CurrentLevelIndex, 0, levelBuildIndexes.Length - 1)];
         }
     }
 }
