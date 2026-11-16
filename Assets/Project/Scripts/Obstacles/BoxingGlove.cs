@@ -52,14 +52,14 @@ namespace NonameGame
             ApplyPosition(_currentLocalPos);
         }
 
-        private void LateUpdate()
+        /*private void LateUpdate()
         {
             float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
             alpha = Mathf.Clamp01(alpha);
 
             Vector3 visualLocal = Vector3.Lerp(_prevLocalPos, _currentLocalPos, alpha);
             ApplyPosition(visualLocal);
-        }
+        }*/
 
         private void ApplyPosition(Vector3 localPos)
         {

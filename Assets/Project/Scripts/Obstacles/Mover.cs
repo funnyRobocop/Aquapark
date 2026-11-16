@@ -61,7 +61,7 @@ namespace NonameGame
             }
         }
 
-        private void LateUpdate()
+        /*private void LateUpdate()
         {
             float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
             alpha = Mathf.Clamp01(alpha);
@@ -78,6 +78,6 @@ namespace NonameGame
                 // Коллайдер в FixedUpdate уже на _currentPos, визуально чуть интерполируем
                 transform.position = visualPos;
             }
-        }
+        }*/
     }
 }

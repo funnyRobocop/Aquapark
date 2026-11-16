@@ -11,8 +11,13 @@ namespace NonameGame
         [SerializeField] private float movementThreshold  = 0.15f;
         [SerializeField] private float dampSpeedUp        = 0.06f;
         [SerializeField] private float dampSpeedDown      = 0.04f;
-        [SerializeField] private float airControl = 0.6f; 
+        [SerializeField] private float airControl = 0.6f;
         private Vector3 _externalVelocity;
+
+        [Header("Velocity Limits")]
+        [SerializeField] private float maxHorizontalSpeed = 25f;
+        [SerializeField] private float maxUpwardSpeed = 18f;
+        [SerializeField] private float maxFallSpeed = 35f;
 
         [Header("Jump / Dash")]
         [SerializeField] private float jumpForce      = 9f;
@@ -113,7 +118,8 @@ namespace NonameGame
 
         public override void Spawned()
         {
-            _rb  = GetComponent<Rigidbody>();
+            _rb = GetComponent<Rigidbody>();
+            _rb.maxDepenetrationVelocity = 3f;
             _col = GetComponent<CapsuleCollider>();
             _originalColliderHeight = _col.height;
 
@@ -178,9 +184,11 @@ namespace NonameGame
 
             Vector3 ang = _rb.angularVelocity;
             ang.y *= 0.5f;
-            _rb.angularVelocity = ang; 
-            
+            _rb.angularVelocity = ang;
+
             _externalVelocity = Vector3.zero;
+
+            ClampVelocity();
         }
 
         // ================================================================
@@ -427,7 +435,7 @@ namespace NonameGame
 
             Vector3 gravity;
             if (_currentLockOnSlope || _isTouchingStep)
-                gravity = _down       * gravityMultiplier * -Physics.gravity.y * _coyoteJumpMultiplier;
+                gravity = _down * gravityMultiplier * -Physics.gravity.y * _coyoteJumpMultiplier;
             else
                 gravity = _globalDown * gravityMultiplier * -Physics.gravity.y * _coyoteJumpMultiplier;
 
@@ -451,6 +459,25 @@ namespace NonameGame
         // ================================================================
         //  HELPERS
         // ================================================================
+        private void ClampVelocity()
+        {
+            Vector3 vel = _rb.linearVelocity;
+
+            // 1. Ограничиваем горизонтальную скорость (XZ)
+            Vector3 horizontal = new Vector3(vel.x, 0f, vel.z);
+            if (horizontal.sqrMagnitude > maxHorizontalSpeed * maxHorizontalSpeed)
+            {
+                horizontal = horizontal.normalized * maxHorizontalSpeed;
+                vel.x = horizontal.x;
+                vel.z = horizontal.z;
+            }
+
+            // 2. Ограничиваем вертикальную скорость (вверх и вниз отдельно)
+            vel.y = Mathf.Clamp(vel.y, -maxFallSpeed, maxUpwardSpeed);
+
+            _rb.linearVelocity = vel;
+        }
+
         private void SetFriction(float friction, bool minimum)
         {
             if (_col == null || _col.material == null) return;

@@ -56,7 +56,7 @@ namespace NonameGame
             ApplyRotation(_currentLocalRotation);
         }
 
-        private void LateUpdate()
+        /*private void LateUpdate()
         {
             float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
             alpha = Mathf.Clamp01(alpha);
@@ -72,7 +72,7 @@ namespace NonameGame
             {
                 ApplyRotation(visualLocal);
             }
-        }
+        }*/
 
         private void ApplyRotation(Quaternion localRot)
         {

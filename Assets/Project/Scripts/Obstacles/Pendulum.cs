@@ -51,7 +51,7 @@ namespace NonameGame
                 transform.rotation = _currentRotation;
         }
 
-        private void LateUpdate()
+        /*private void LateUpdate()
         {
             float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
             alpha = Mathf.Clamp01(alpha);
@@ -62,6 +62,6 @@ namespace NonameGame
                 visualMesh.rotation = visualRot;
             else
                 transform.rotation = visualRot;
-        }
+        }*/
     }
 }

@@ -560,7 +560,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &6701902656928438129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +631,9 @@ MonoBehaviour:
   dampSpeedUp: 0.06
   dampSpeedDown: 0.04
   airControl: 0.6
+  maxHorizontalSpeed: 25
+  maxUpwardSpeed: 18
+  maxFallSpeed: 35
   jumpForce: 9
   dashForce: 15
   dashDuration: 0.22
