@@ -15,17 +15,18 @@ namespace NonameGame
         [SerializeField] private float retractDuration = 0.8f;
         [SerializeField] private float timeOffset = 0f;
 
+        [Header("Ссылки")]
+        [Tooltip("Триггер-коллайдер с Bumper (активен только при вылете вперед)")]
+        [SerializeField] private Collider bumperTrigger;
+
+        public bool IsPunching { get; private set; }
+
         private Vector3 _startLocalPos;
-        private Vector3 _prevLocalPos;
-        private Vector3 _currentLocalPos;
-        private Vector3 _visualBaseLocalPos;
         private Rigidbody _rb;
 
         private void Awake()
         {
             _startLocalPos = transform.localPosition;
-            _prevLocalPos = _startLocalPos;
-            _currentLocalPos = _startLocalPos;
 
             _rb = GetComponent<Rigidbody>();
             if (_rb != null)
@@ -33,6 +34,9 @@ namespace NonameGame
                 _rb.isKinematic = true;
                 _rb.useGravity = false;
             }
+
+            if (bumperTrigger != null)
+                bumperTrigger.enabled = false;
         }
 
         private void FixedUpdate()
@@ -42,14 +46,19 @@ namespace NonameGame
                 : Time.time;
 
             float timeInCycle = Mathf.Repeat(t + timeOffset, cycleDuration);
-            float progress = EvaluateProgress(timeInCycle);
 
+            bool shouldPunch = timeInCycle < extendDuration;
+            if (IsPunching != shouldPunch)
+            {
+                IsPunching = shouldPunch;
+                if (bumperTrigger != null)
+                    bumperTrigger.enabled = IsPunching;
+            }
+
+            float progress = EvaluateProgress(timeInCycle);
             Vector3 nextLocal = _startLocalPos + Vector3.forward * (punchDistance * progress);
 
-            _prevLocalPos = _currentLocalPos;
-            _currentLocalPos = nextLocal;
-
-            ApplyPosition(_currentLocalPos);
+            ApplyPosition(nextLocal);
         }
 
         private void ApplyPosition(Vector3 localPos)
@@ -61,6 +70,10 @@ namespace NonameGame
                     : localPos;
 
                 _rb.MovePosition(worldPos);
+            }
+            else
+            {
+                transform.localPosition = localPos;
             }
         }
 

@@ -16,16 +16,11 @@ namespace NonameGame
         [SerializeField] private float timeOffset = 0f;
 
         private Quaternion _startLocalRotation;
-        private Quaternion _prevLocalRotation;
-        private Quaternion _currentLocalRotation;
-        private Quaternion _visualBaseLocalRotation;
         private Rigidbody _rb;
 
         private void Awake()
         {
             _startLocalRotation = transform.localRotation;
-            _prevLocalRotation = _startLocalRotation;
-            _currentLocalRotation = _startLocalRotation;
 
             _rb = GetComponent<Rigidbody>();
             if (_rb != null)
@@ -47,10 +42,7 @@ namespace NonameGame
             float currentAngle = targetAngle * progress;
             Quaternion nextLocal = _startLocalRotation * Quaternion.AngleAxis(currentAngle, rotationAxis.normalized);
 
-            _prevLocalRotation = _currentLocalRotation;
-            _currentLocalRotation = nextLocal;
-
-            ApplyRotation(_currentLocalRotation);
+            ApplyRotation(nextLocal);
         }
 
         private void ApplyRotation(Quaternion localRot)
@@ -62,6 +54,10 @@ namespace NonameGame
                     : localRot;
 
                 _rb.MoveRotation(worldRot);
+            }
+            else
+            {
+                transform.localRotation = localRot;
             }
         }
 

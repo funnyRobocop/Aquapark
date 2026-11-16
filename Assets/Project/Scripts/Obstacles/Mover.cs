@@ -10,16 +10,11 @@ namespace NonameGame
         [SerializeField] private float timeOffset = 0f;
 
         private Vector3 _startLocalPos;
-        private Vector3 _prevLocalPos;
-        private Vector3 _currentLocalPos;
-        private Vector3 _visualBaseLocalPos;
         private Rigidbody _rb;
 
         private void Awake()
         {
             _startLocalPos = transform.localPosition;
-            _prevLocalPos = _startLocalPos;
-            _currentLocalPos = _startLocalPos;
 
             _rb = GetComponent<Rigidbody>();
             if (_rb != null)
@@ -40,10 +35,7 @@ namespace NonameGame
 
             Vector3 nextLocal = _startLocalPos + moveOffset * smooth;
 
-            _prevLocalPos = _currentLocalPos;
-            _currentLocalPos = nextLocal;
-
-            ApplyPosition(_currentLocalPos);
+            ApplyPosition(nextLocal);
         }
 
         private void ApplyPosition(Vector3 localPos)
@@ -55,6 +47,10 @@ namespace NonameGame
                     : localPos;
 
                 _rb.MovePosition(worldPos);
+            }
+            else
+            {
+                transform.localPosition = localPos;
             }
         }
     }
