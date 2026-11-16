@@ -18,6 +18,7 @@ namespace NonameGame
 
         [Inject] private GameModel _gameModel;
         [Inject] private LoadingUI _loadingUI;
+        [Inject] private ErrorUI _errorUI;
 
         // ─────────────────────────────────────────────────────────────────────
         // Player join / leave
@@ -80,6 +81,9 @@ namespace NonameGame
             if (scene.IsValid() && scene.buildIndex > 0)
             {
                 UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+
+                if (shutdownReason != ShutdownReason.GameClosed)
+                    _errorUI?.ShowConnectionFailed(shutdownReason.ToString());
             }
             else
             {
@@ -87,7 +91,7 @@ namespace NonameGame
                 _loadingUI?.Hide();
 
                 var fm = GameObject.FindFirstObjectByType<FusionNetworkManager>(FindObjectsInactive.Include);
-                fm?.ShowShutdown(shutdownReason);
+                fm?.ShowShutdown(shutdownReason); 
             }
         }
 
@@ -150,13 +154,13 @@ namespace NonameGame
 
         public void OnConnectedToServer(NetworkRunner runner) { }
 
-        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { _errorUI?.ShowConnectionFailed(reason.ToString()); }
 
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
 
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
 
-        public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+        public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { _errorUI?.ShowConnectionFailed(reason.ToString()); }
 
         public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
 

@@ -23,6 +23,7 @@ namespace NonameGame
 
         [Inject] private IObjectResolver _resolver;
         [Inject] private LoadingUI _loadingUI;
+        [Inject] private ErrorUI _errorUI;
         [Inject] private GameModel _gameModel;
 
         string[] availableRegions = { string.Empty, "eu", "us", "usw", "sa", "asia" };
@@ -63,7 +64,7 @@ namespace NonameGame
                 return;
             }
 
-            _loadingUI?.ShowConnectionFailed($"Ошибка подключения: {shutdownReason}");
+            _errorUI?.ShowConnectionFailed($"Ошибка подключения: {shutdownReason}");
         }
 
         private void SceneManager_sceneUnloaded(Scene arg0)

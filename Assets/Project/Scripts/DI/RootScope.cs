@@ -10,6 +10,7 @@ namespace NonameGame
         [SerializeField] private AchievementsConfig achievementsConfig;
         [SerializeField] private SoundManager soundManagerPrefab; 
         [SerializeField] private LoadingUI loadingUIPrefab;
+        [SerializeField] private ErrorUI errorUIPrefab;
 
         override protected void Configure(IContainerBuilder builder)
         {
@@ -31,6 +32,10 @@ namespace NonameGame
                    .AsSelf();
 
             builder.RegisterComponentInNewPrefab(loadingUIPrefab, Lifetime.Singleton)
+                   .DontDestroyOnLoad()
+                   .AsSelf();
+
+            builder.RegisterComponentInNewPrefab(errorUIPrefab, Lifetime.Singleton)
                    .DontDestroyOnLoad()
                    .AsSelf();
         }

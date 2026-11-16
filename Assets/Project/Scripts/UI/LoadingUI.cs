@@ -1,8 +1,6 @@
 using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
-using TMPro;
-using UnityEngine.SceneManagement;
 
 namespace NonameGame
 {
@@ -12,8 +10,6 @@ namespace NonameGame
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private GameObject[] _hints;
         [SerializeField] private Slider _slider;
-        [SerializeField] GameObject connectionFailedPanel;
-        [SerializeField] TextMeshProUGUI connectionFailText;
 
         [Header("Настройки времени")]
         [SerializeField] private float minShowTime = 1f;
@@ -30,16 +26,6 @@ namespace NonameGame
 
             foreach (var item in _hints)
                 item.SetActive(false);
-        }
-
-        public void ShowConnectionFailed(string message)
-        {
-            StopAllCoroutines();
-            canvas.enabled = true;
-            canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
-            connectionFailText.text = message;
-            connectionFailedPanel.SetActive(true);
         }
 
         public void Show(bool needHints = false)
@@ -148,35 +134,6 @@ namespace NonameGame
         public void SetProgress(float value) // 0..1
         {
             _slider.value = value;
-        }
-
-        public void ForceHide()
-        {
-            if (_transitionCoroutine != null)
-            {
-                StopCoroutine(_transitionCoroutine);
-                _transitionCoroutine = null;
-            }
-
-            canvasGroup.alpha = 0f;
-            canvas.enabled = false;
-            canvasGroup.blocksRaycasts = false;
-            connectionFailedPanel.SetActive(false);
-        }
-
-        public void ReopenMainMenu()
-        {
-            ForceHide();
-
-            var scene = SceneManager.GetActiveScene();
-            if (scene.IsValid() && scene.buildIndex > 0)
-                SceneManager.UnloadSceneAsync(scene);
-
-            var menuScene = SceneManager.GetSceneByName("MainMenu");
-            if (menuScene.isLoaded)
-                SceneManager.UnloadSceneAsync(menuScene);
-
-            SceneManager.LoadSceneAsync(0);
         }
     }
 }
