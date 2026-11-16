@@ -142,18 +142,5 @@ namespace NonameGame
             titleObj?.SetActive(false);
             hintsUI.HideHint();
         }
-
-        public void Reopen()
-        {
-            var levelScene = SceneManager.GetSceneByName("Level1");
-            if (levelScene.isLoaded)
-                SceneManager.UnloadSceneAsync(levelScene);
-            var menuScene = SceneManager.GetSceneByName("MainMenu");
-            if (menuScene.isLoaded)
-            {
-                SceneManager.UnloadSceneAsync(menuScene);
-                SceneManager.LoadSceneAsync(0);
-            }
-        }
     }
 }

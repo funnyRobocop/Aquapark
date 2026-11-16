@@ -20,8 +20,6 @@ namespace NonameGame
         [SerializeField] MainMenuUI mainMenuUI;
         [SerializeField] FinishPlayUI finishPlayUI;
         [SerializeField] string currentRegion = string.Empty;
-        [SerializeField] GameObject connectionFailedPanel;
-        [SerializeField] TextMeshProUGUI connectionFailText;
 
         [Inject] private IObjectResolver _resolver;
         [Inject] private LoadingUI _loadingUI;
@@ -37,7 +35,6 @@ namespace NonameGame
             Application.targetFrameRate = 60;
             SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
             SceneManager.sceneLoaded   += SceneManager_sceneLoaded;   // ← хук на загрузку сцены
-            connectionFailedPanel.SetActive(false);
         }
 
         private void OnDestroy()
@@ -65,8 +62,8 @@ namespace NonameGame
                 else { mainMenuUI.Resume(); _gameModel.ClearSessionData(); }
                 return;
             }
-            connectionFailText.text = shutdownReason.ToString();
-            connectionFailedPanel.SetActive(true);
+
+            _loadingUI?.ShowConnectionFailed($"Ошибка подключения: {shutdownReason}");
         }
 
         private void SceneManager_sceneUnloaded(Scene arg0)
@@ -100,7 +97,7 @@ namespace NonameGame
         public async void StartSession(bool isInstantJoin, bool fromInvite, string appVersion, string region, string session)
         {
             _levelSceneLoaded = false;
-            _loadingUI?.Show();
+            _loadingUI?.Show(true);
             _loadingUI?.SetProgress(0f);
 
             EventSystem.current.SetSelectedGameObject(null);
