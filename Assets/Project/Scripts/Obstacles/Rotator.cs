@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 namespace NonameGame
 {
     public class Rotator : MonoBehaviour
@@ -10,19 +9,17 @@ namespace NonameGame
         [SerializeField] private float timeOffset = 0f;
         [SerializeField] private Vector3 rotationAxis = Vector3.up;
 
-        [Header("Visual (опционально)")]
-        [SerializeField] private Transform visualMesh;
-
-        private Quaternion _startRotation;
-        private Quaternion _prevRotation;
-        private Quaternion _currentRotation;
+        private Quaternion _startLocalRotation;
+        private Quaternion _prevLocalRotation;
+        private Quaternion _currentLocalRotation;
+        private Quaternion _visualBaseLocalRotation;
         private Rigidbody _rb;
 
         private void Awake()
         {
-            _startRotation = transform.rotation;
-            _prevRotation = _startRotation;
-            _currentRotation = _startRotation;
+            _startLocalRotation = transform.localRotation;
+            _prevLocalRotation = _startLocalRotation;
+            _currentLocalRotation = _startLocalRotation;
 
             _rb = GetComponent<Rigidbody>();
             if (_rb != null)
@@ -38,29 +35,25 @@ namespace NonameGame
                 ? SimulationTimeProvider.Time
                 : Time.time;
 
-            float angle = (t + timeOffset) * rotationSpeed;
-            Quaternion next = _startRotation * Quaternion.AngleAxis(angle, rotationAxis.normalized);
+            float angle = Mathf.Repeat((t + timeOffset) * rotationSpeed, 360f);
+            Quaternion nextLocal = _startLocalRotation * Quaternion.AngleAxis(angle, rotationAxis.normalized);
 
-            _prevRotation = _currentRotation;
-            _currentRotation = next;
+            _prevLocalRotation = _currentLocalRotation;
+            _currentLocalRotation = nextLocal;
 
-            if (_rb != null)
-                _rb.MoveRotation(_currentRotation);
-            else
-                transform.rotation = _currentRotation;
+            ApplyRotation(_currentLocalRotation);
         }
 
-        /*private void LateUpdate()
+        private void ApplyRotation(Quaternion localRot)
         {
-            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
-            alpha = Mathf.Clamp01(alpha);
+            if (_rb != null)
+            {
+                Quaternion worldRot = transform.parent != null
+                    ? transform.parent.rotation * localRot
+                    : localRot;
 
-            Quaternion visualRot = Quaternion.Slerp(_prevRotation, _currentRotation, alpha);
-
-            if (visualMesh != null)
-                visualMesh.rotation = visualRot;
-            else
-                transform.rotation = visualRot;
-        }*/
+                _rb.MoveRotation(worldRot);
+            }
+        }
     }
 }

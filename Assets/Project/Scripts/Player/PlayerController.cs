@@ -95,7 +95,8 @@ namespace NonameGame
         // чтобы Animator успел запустить анимацию до перехода в Grounded.
         private int  _airForceTicks    = 0;
         private const int AirForceTicksAfterJump = 10;
-        private bool _wasPhysGrounded  = false;
+        private bool _wasPhysGrounded = false;
+        private float _launchLockTimer;
 
         private NetworkBool  _hasDashedInAir { get; set; }
         private TickTimer    _dashTimer      { get; set; }
@@ -115,6 +116,23 @@ namespace NonameGame
         {
             _externalVelocity = vel;
         }
+
+        public void LaunchFromTrampoline(Vector3 launchVelocity, float lockDuration)
+        {
+            if (!HasStateAuthority) return;
+
+            _smoothVel = Vector3.zero;
+            _coyoteTimer = 0f;
+            _airForceTicks = AirForceTicksAfterJump;
+            _hasDashedInAir = false; // Возвращаем игроку возможность сделать рывок в воздухе
+            _launchLockTimer = lockDuration;
+
+            _rb.linearVelocity = launchVelocity;
+
+            if (_view != null)
+                _view.PlayJump();
+        }
+
 
         public override void Spawned()
         {
@@ -189,6 +207,9 @@ namespace NonameGame
             _externalVelocity = Vector3.zero;
 
             ClampVelocity();
+
+            if (_launchLockTimer > 0f)
+                _launchLockTimer -= Runner.DeltaTime;
         }
 
         // ================================================================
@@ -196,6 +217,9 @@ namespace NonameGame
         // ================================================================
         private void Move()
         {
+            if (_launchLockTimer > 0f)
+                return;
+                
             float speed = moveSpeed;
             if (!_isGrounded) speed *= airControl;
 

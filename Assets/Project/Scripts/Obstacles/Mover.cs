@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 namespace NonameGame
 {
     public class Mover : MonoBehaviour
@@ -10,20 +9,17 @@ namespace NonameGame
         [SerializeField] private float speed = 0.5f;
         [SerializeField] private float timeOffset = 0f;
 
-        [Header("Visual (опционально)")]
-        [Tooltip("Если задан — сглаживается только меш, коллайдер остаётся на корне")]
-        [SerializeField] private Transform visualMesh;
-
-        private Vector3 _startWorldPos;
-        private Vector3 _prevPos;
-        private Vector3 _currentPos;
+        private Vector3 _startLocalPos;
+        private Vector3 _prevLocalPos;
+        private Vector3 _currentLocalPos;
+        private Vector3 _visualBaseLocalPos;
         private Rigidbody _rb;
 
         private void Awake()
         {
-            _startWorldPos = transform.position;
-            _prevPos = _startWorldPos;
-            _currentPos = _startWorldPos;
+            _startLocalPos = transform.localPosition;
+            _prevLocalPos = _startLocalPos;
+            _currentLocalPos = _startLocalPos;
 
             _rb = GetComponent<Rigidbody>();
             if (_rb != null)
@@ -42,42 +38,24 @@ namespace NonameGame
             float pingPong = Mathf.PingPong((t + timeOffset) * speed, 1f);
             float smooth = Mathf.SmoothStep(0f, 1f, pingPong);
 
-            Vector3 nextPos = _startWorldPos + moveOffset * smooth;
+            Vector3 nextLocal = _startLocalPos + moveOffset * smooth;
 
-            _prevPos = _currentPos;
-            _currentPos = nextPos;
+            _prevLocalPos = _currentLocalPos;
+            _currentLocalPos = nextLocal;
 
-            // Логика / коллайдер — на фиксированном тике
-            if (_rb != null)
-                _rb.MovePosition(_currentPos);
-            else
-                transform.position = _currentPos;
-
-            // Если visual вынесен отдельно, корень уже на _currentPos
-            // меш сгладим в LateUpdate
-            if (visualMesh == null)
-            {
-                // если меша нет, сглаживание корня сделаем в LateUpdate
-            }
+            ApplyPosition(_currentLocalPos);
         }
 
-        /*private void LateUpdate()
+        private void ApplyPosition(Vector3 localPos)
         {
-            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
-            alpha = Mathf.Clamp01(alpha);
-
-            Vector3 visualPos = Vector3.Lerp(_prevPos, _currentPos, alpha);
-
-            if (visualMesh != null)
+            if (_rb != null)
             {
-                visualMesh.position = visualPos;
+                Vector3 worldPos = transform.parent != null
+                    ? transform.parent.TransformPoint(localPos)
+                    : localPos;
+
+                _rb.MovePosition(worldPos);
             }
-            else
-            {
-                // Сглаживаем весь объект (удобно для платформ)
-                // Коллайдер в FixedUpdate уже на _currentPos, визуально чуть интерполируем
-                transform.position = visualPos;
-            }
-        }*/
+        }
     }
 }

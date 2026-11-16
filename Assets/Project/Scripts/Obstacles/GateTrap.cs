@@ -1,5 +1,4 @@
 using UnityEngine;
-using Fusion;
 
 namespace NonameGame
 {
@@ -16,12 +15,10 @@ namespace NonameGame
         [SerializeField] private float fallDuration = 0.8f;
         [SerializeField] private float timeOffset = 0f;
 
-        [Header("Visual (опционально)")]
-        [SerializeField] private Transform visualMesh;
-
         private Quaternion _startLocalRotation;
         private Quaternion _prevLocalRotation;
         private Quaternion _currentLocalRotation;
+        private Quaternion _visualBaseLocalRotation;
         private Rigidbody _rb;
 
         private void Awake()
@@ -44,7 +41,7 @@ namespace NonameGame
                 ? SimulationTimeProvider.Time
                 : Time.time;
 
-            float timeInCycle = (t + timeOffset) % cycleDuration;
+            float timeInCycle = Mathf.Repeat(t + timeOffset, cycleDuration);
             float progress = EvaluateProgress(timeInCycle);
 
             float currentAngle = targetAngle * progress;
@@ -56,24 +53,6 @@ namespace NonameGame
             ApplyRotation(_currentLocalRotation);
         }
 
-        /*private void LateUpdate()
-        {
-            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
-            alpha = Mathf.Clamp01(alpha);
-
-            Quaternion visualLocal = Quaternion.Slerp(_prevLocalRotation, _currentLocalRotation, alpha);
-
-            //if (visualMesh != null)
-            {
-                // visual в локальном пространстве родителя
-                //visualMesh.rotation = visualLocal;
-            }
-            //else
-            {
-                ApplyRotation(visualLocal);
-            }
-        }*/
-
         private void ApplyRotation(Quaternion localRot)
         {
             if (_rb != null)
@@ -83,10 +62,6 @@ namespace NonameGame
                     : localRot;
 
                 _rb.MoveRotation(worldRot);
-            }
-            else
-            {
-                transform.localRotation = localRot;
             }
         }
 

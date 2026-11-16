@@ -18,6 +18,7 @@ namespace NonameGame
         private Vector3 _startLocalPos;
         private Vector3 _prevLocalPos;
         private Vector3 _currentLocalPos;
+        private Vector3 _visualBaseLocalPos;
         private Rigidbody _rb;
 
         private void Awake()
@@ -40,7 +41,6 @@ namespace NonameGame
                 ? SimulationTimeProvider.Time
                 : Time.time;
 
-            // Используем Mathf.Repeat вместо %, чтобы отрицательный timeOffset не ломал цикл
             float timeInCycle = Mathf.Repeat(t + timeOffset, cycleDuration);
             float progress = EvaluateProgress(timeInCycle);
 
@@ -52,15 +52,6 @@ namespace NonameGame
             ApplyPosition(_currentLocalPos);
         }
 
-        /*private void LateUpdate()
-        {
-            float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
-            alpha = Mathf.Clamp01(alpha);
-
-            Vector3 visualLocal = Vector3.Lerp(_prevLocalPos, _currentLocalPos, alpha);
-            ApplyPosition(visualLocal);
-        }*/
-
         private void ApplyPosition(Vector3 localPos)
         {
             if (_rb != null)
@@ -71,34 +62,25 @@ namespace NonameGame
 
                 _rb.MovePosition(worldPos);
             }
-            else
-            {
-                transform.localPosition = localPos;
-            }
         }
 
         private float EvaluateProgress(float timeInCycle)
         {
-            // 1. Быстрый вылет вперед
             if (timeInCycle < extendDuration)
             {
                 float t = timeInCycle / Mathf.Max(extendDuration, 0.0001f);
-                // Резкий старт (EaseOutQuad)
                 return 1f - (1f - t) * (1f - t);
             }
 
-            // 2. Удержание в выдвинутом состоянии
             if (timeInCycle < extendDuration + holdDuration)
                 return 1f;
 
-            // 3. Плавный возврат обратно
             if (timeInCycle < extendDuration + holdDuration + retractDuration)
             {
                 float t = (timeInCycle - extendDuration - holdDuration) / Mathf.Max(retractDuration, 0.0001f);
                 return Mathf.SmoothStep(1f, 0f, t);
             }
 
-            // 4. Пауза в исходном положении до конца цикла
             return 0f;
         }
     }
