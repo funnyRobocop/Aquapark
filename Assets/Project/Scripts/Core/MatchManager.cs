@@ -12,8 +12,8 @@ namespace NonameGame
         [Networked] public int CurrentLevelIndex { get; set; }
         [Networked] public int RoundNumber { get; set; }
 
-        [SerializeField] private int[] levelBuildIndexes = { 3, 2, 1 };
-
+        [SerializeField] private int[] levelBuildIndexes;
+        
         [Inject] private GameModel _gameModel;
         [Inject] private LoadingUI _loadingUI;
         
