@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2292691341042336001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3291608944129186284}
+  m_Layer: 0
+  m_Name: donut_003_roll
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3291608944129186284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2292691341042336001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6540961141358451210}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1298189571105891517
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3291608944129186284}
+    m_Modifications:
+    - target: {fileID: -5915194545318992405, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f6fe7f9fdd09f1e448684335e151e24f, type: 2}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: -0.033961058
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 1.4291973
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.049424887
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 5.468301
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 2.065497
+      objectReference: {fileID: 0}
+    - target: {fileID: 379843541727838542, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 5.495039
+      objectReference: {fileID: 0}
+    - target: {fileID: 4866668972715516941, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_Name
+      value: donut_003
+      objectReference: {fileID: 0}
+    - target: {fileID: 5020391421748688609, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: titleAnim
+      value: Donut_Roll
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+--- !u!4 &6540961141358451210 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5242806834237013687, guid: c1a6087494aed1d4f94fc6aa7492492e, type: 3}
+  m_PrefabInstance: {fileID: 1298189571105891517}
+  m_PrefabAsset: {fileID: 0}
